@@ -215,4 +215,70 @@
     </script>
 
 </body>
+</html><!DOCTYPE html>
+<html>
+<head>
+  <title>Chatbot</title>
+  <style>
+    body { font-family: Arial; padding: 20px; }
+    #chat { border: 1px solid #ccc; padding: 10px; height: 300px; overflow-y: auto; }
+    input { padding: 10px; width: 250px; }
+    button { padding: 10px; }
+  </style>
+</head>
+<body>
+  <h1>Chatbot</h1>
+
+  <div id="chat"></div>
+
+  <input id="userInput" placeholder="Say something...">
+  <button onclick="send()">Send</button>
+
+  <script>
+    function send() {
+      const input = document.getElementById("userInput").value.toLowerCase();
+      const chat = document.getElementById("chat");
+
+      chat.innerHTML += "<p><b>You:</b> " + input + "</p>";
+
+      let reply = getReply(input);
+
+      chat.innerHTML += "<p><b>Bot:</b> " + reply + "</p>";
+
+      document.getElementById("userInput").value = "";
+      chat.scrollTop = chat.scrollHeight;
+    }
+
+    function getReply(input) {
+      const responses = [
+        { keywords: ["hello", "hi", "hey"], replies: ["Hey there!", "Hi! What's up?", "Hello! Nice to see you."] },
+        { keywords: ["how are you"], replies: ["I'm feeling great today.", "Doing awesome!", "Ready to chat anytime."] },
+        { keywords: ["school"], replies: ["School can be tough, but you're tougher.", "Learning is a superpower.", "One step at a time — you got this."] },
+        { keywords: ["study"], replies: ["Try breaking things into small steps.", "Studying gets easier with practice.", "You can totally handle this."] },
+        { keywords: ["math"], replies: ["Math is just patterns.", "Want help with something?", "Numbers are like puzzles."] },
+        { keywords: ["joke"], replies: ["Why did the computer get cold? It forgot to close its Windows.", "I tried to catch fog once… I mist.", "Parallel lines have so much in common. It’s a shame they’ll never meet."] },
+        { keywords: ["bye"], replies: ["See you later!", "Goodbye!", "Talk to you soon."] }
+      ];
+
+      for (let group of responses) {
+        for (let word of group.keywords) {
+          if (input.includes(word)) {
+            return group.replies[Math.floor(Math.random() * group.replies.length)];
+          }
+        }
+      }
+
+      const defaultReplies = [
+        "That's interesting — tell me more.",
+        "Hmm, I'm thinking about that.",
+        "I’m not sure yet, but I’m learning.",
+        "Oh wow, really?",
+        "That sounds cool."
+      ];
+
+      return defaultReplies[Math.floor(Math.random() * defaultReplies.length)];
+    }
+  </script>
+</body>
 </html>
+
