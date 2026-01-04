@@ -223,4 +223,35 @@
     </script>
 
 </body>
+</html><!DOCTYPE html>
+<html>
+<head>
+  <title>Notes with Memory</title>
+  <style>
+    body { font-family: Arial; padding: 20px; }
+    textarea { width: 300px; height: 200px; padding: 10px; }
+    button { padding: 10px; margin-top: 10px; }
+  </style>
+</head>
+<body>
+  <h1>Your Notes</h1>
+
+  <textarea id="notesBox" placeholder="Write something..."></textarea>
+  <br>
+  <button onclick="saveNotes()">Save</button>
+
+  <script>
+    // Load saved notes when the page opens
+    document.getElementById("notesBox").value =
+      localStorage.getItem("myNotes") || "";
+
+    // Save notes to this device
+    function saveNotes() {
+      const text = document.getElementById("notesBox").value;
+      localStorage.setItem("myNotes", text);
+      alert("Saved!");
+    }
+  </script>
+</body>
 </html>
+
