@@ -198,36 +198,4 @@
     </script>
 
 </body>
-</html><!DOCTYPE html>
-<html>
-<head>
-  <title>Problem Solver</title>
-  <style>
-    body { font-family: Arial; padding: 20px; }
-    input { padding: 10px; width: 250px; }
-    button { padding: 10px; }
-  </style>
-</head>
-<body>
-  <h1>Math Problem Solver</h1>
-
-  <input id="problem" placeholder="Type a math problem (5+7*2)">
-  <button onclick="solve()">Solve</button>
-
-  <p id="answer"></p>
-
-  <script>
-    function solve() {
-      const input = document.getElementById("problem").value;
-
-      try {
-        const result = Function("return " + input)();
-        document.getElementById("answer").innerText = "Answer: " + result;
-      } catch {
-        document.getElementById("answer").innerText = "Invalid problem.";
-      }
-    }
-  </script>
-</body>
 </html>
-
