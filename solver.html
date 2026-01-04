@@ -1,201 +1,43 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Problem Solver • Study Sphere</title>
-
-    <style>
-        :root {
-            --pink: #FCE7F3;
-            --lavender: #EDE7FF;
-            --mint: #DFFCF0;
-            --blue: #E3F2FD;
-            --peach: #FFEFE2;
-            --text: #3A3A3A;
-            --white: #FFFFFF;
-        }
-
-        body {
-            margin: 0;
-            font-family: "Poppins", sans-serif;
-            background: linear-gradient(135deg, var(--pink), var(--lavender), var(--mint), var(--blue), var(--peach));
-            background-size: 400% 400%;
-            animation: gradientShift 20s ease infinite;
-            color: var(--text);
-        }
-
-        @keyframes gradientShift {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        /* MENU BUTTON */
-        #menu-btn {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            width: 55px;
-            height: 55px;
-            border-radius: 50%;
-            background: var(--white);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            border: none;
-            font-size: 16px;
-            cursor: pointer;
-            z-index: 1000;
-            transition: transform 0.2s ease;
-        }
-
-        #menu-btn:hover {
-            transform: scale(1.05);
-        }
-
-        /* SIDEBAR */
-        #sidebar {
-            position: fixed;
-            top: 0;
-            left: -260px;
-            width: 260px;
-            height: 100%;
-            background: var(--white);
-            box-shadow: 4px 0 12px rgba(0,0,0,0.1);
-            padding: 30px 20px;
-            transition: left 0.3s ease;
-            z-index: 999;
-        }
-
-        #sidebar.open {
-            left: 0;
-        }
-
-        #sidebar h2 {
-            margin-top: 0;
-            font-size: 22px;
-            color: var(--text);
-        }
-
-        #sidebar a {
-            display: block;
-            margin: 15px 0;
-            text-decoration: none;
-            color: var(--text);
-            font-size: 18px;
-            padding: 8px 10px;
-            border-radius: 8px;
-            transition: background 0.2s ease;
-        }
-
-        #sidebar a:hover {
-            background: var(--lavender);
-        }
-
-        /* PAGE CONTENT */
-        .container {
-            max-width: 800px;
-            margin: 120px auto;
-            background: var(--white);
-            padding: 30px;
-            border-radius: 16px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
-
-        h1 {
-            text-align: center;
-            margin-top: 0;
-        }
-
-        textarea {
-            width: 100%;
-            height: 150px;
-            padding: 12px;
-            border-radius: 12px;
-            border: 1px solid #ccc;
-            font-size: 16px;
-            resize: none;
-        }
-
-        button {
-            padding: 12px 20px;
-            background: var(--mint);
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 16px;
-            transition: transform 0.2s ease;
-            margin-top: 20px;
-        }
-
-        button:hover {
-            transform: scale(1.05);
-        }
-
-        .output {
-            margin-top: 30px;
-            background: var(--blue);
-            padding: 20px;
-            border-radius: 12px;
-            min-height: 120px;
-        }
-    </style>
+  <title>Problem Solver</title>
+  <style>
+    body { font-family: Arial; padding: 20px; }
+    input { padding: 10px; width: 300px; }
+    button { padding: 10px; }
+    #output { margin-top: 20px; font-size: 18px; }
+  </style>
 </head>
-
 <body>
+  <h1>Problem Solver</h1>
 
-    <!-- MENU BUTTON -->
-    <button id="menu-btn">Menu</button>
+  <input id="problemInput" placeholder="Type a math problem...">
+  <button onclick="solve()">Solve</button>
 
-    <!-- SIDEBAR -->
-    <div id="sidebar">
-        <h2>Study Sphere</h2>
-        <a href="index.html">Home</a>
-        <a href="flashcards.html">Flashcards</a>
-        <a href="language.html">Language Learning</a>
-        <a href="notebook.html">Notebook</a>
-        <a href="chatbot.html">Chatbot</a>
-        <a href="solver.html">Problem Solver</a>
-    </div>
+  <div id="output"></div>
 
-    <!-- PAGE CONTENT -->
-    <div class="container">
-        <h1>Problem Solver</h1>
+  <script>
+    function solve() {
+      const input = document.getElementById("problemInput").value;
+      const output = document.getElementById("output");
 
-        <textarea id="problem" placeholder="Type your math, science, or grammar problem here..."></textarea>
+      try {
+        // Replace ^ with ** for exponent support
+        const expression = input.replace(/\^/g, "**");
 
-        <button onclick="solve()">Solve</button>
+        // Evaluate safely
+        const result = Function("return (" + expression + ")")();
 
-        <div class="output" id="output">
-            Your solution will appear here.
-        </div>
-    </div>
-
-    <script>
-        const menuBtn = document.getElementById("menu-btn");
-        const sidebar = document.getElementById("sidebar");
-
-        menuBtn.addEventListener("click", () => {
-            sidebar.classList.toggle("open");
-        });
-
-        function solve() {
-            const text = document.getElementById("problem").value;
-            const output = document.getElementById("output");
-
-            if (!text.trim()) {
-                output.textContent = "Please enter a problem first.";
-                return;
-            }
-
-            output.innerHTML = `
-                <strong>Problem:</strong> ${text}<br><br>
-                <strong>Explanation:</strong><br>
-                This is a placeholder explanation.  
-                Later, you can connect this page to a real solver API  
-                to generate step-by-step solutions automatically.
-            `;
-        }
-    </script>
-
+        output.innerHTML = `
+          <p><b>Problem:</b> ${input}</p>
+          <p><b>Answer:</b> ${result}</p>
+        `;
+      } catch (e) {
+        output.innerHTML = "<p>Sorry, I couldn't solve that one.</p>";
+      }
+    }
+  </script>
 </body>
 </html>
+
