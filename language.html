@@ -1,227 +1,68 @@
+
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Language Learning • Study Sphere</title>
-
-    <style>
-        :root {
-            --pink: #FCE7F3;
-            --lavender: #EDE7FF;
-            --mint: #DFFCF0;
-            --blue: #E3F2FD;
-            --peach: #FFEFE2;
-            --text: #3A3A3A;
-            --white: #FFFFFF;
-        }
-
-        body {
-            margin: 0;
-            font-family: "Poppins", sans-serif;
-            background: linear-gradient(135deg, var(--pink), var(--lavender), var(--mint), var(--blue), var(--peach));
-            background-size: 400% 400%;
-            animation: gradientShift 20s ease infinite;
-            color: var(--text);
-        }
-
-        @keyframes gradientShift {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        /* MENU BUTTON */
-        #menu-btn {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            width: 55px;
-            height: 55px;
-            border-radius: 50%;
-            background: var(--white);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            border: none;
-            font-size: 16px;
-            cursor: pointer;
-            z-index: 1000;
-            transition: transform 0.2s ease;
-        }
-
-        #menu-btn:hover {
-            transform: scale(1.05);
-        }
-
-        /* SIDEBAR */
-        #sidebar {
-            position: fixed;
-            top: 0;
-            left: -260px;
-            width: 260px;
-            height: 100%;
-            background: var(--white);
-            box-shadow: 4px 0 12px rgba(0,0,0,0.1);
-            padding: 30px 20px;
-            transition: left 0.3s ease;
-            z-index: 999;
-        }
-
-        #sidebar.open {
-            left: 0;
-        }
-
-        #sidebar h2 {
-            margin-top: 0;
-            font-size: 22px;
-            color: var(--text);
-        }
-
-        #sidebar a {
-            display: block;
-            margin: 15px 0;
-            text-decoration: none;
-            color: var(--text);
-            font-size: 18px;
-            padding: 8px 10px;
-            border-radius: 8px;
-            transition: background 0.2s ease;
-        }
-
-        #sidebar a:hover {
-            background: var(--lavender);
-        }
-
-        /* PAGE CONTENT */
-        .container {
-            max-width: 800px;
-            margin: 120px auto;
-            background: var(--white);
-            padding: 30px;
-            border-radius: 16px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
-
-        h1 {
-            text-align: center;
-            margin-top: 0;
-        }
-
-        .input-group {
-            margin-bottom: 20px;
-        }
-
-        input {
-            width: 100%;
-            padding: 12px;
-            border-radius: 10px;
-            border: 1px solid #ccc;
-            font-size: 16px;
-        }
-
-        button {
-            padding: 12px 20px;
-            background: var(--mint);
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 16px;
-            transition: transform 0.2s ease;
-        }
-
-        button:hover {
-            transform: scale(1.05);
-        }
-
-        /* VOCAB CARDS */
-        .vocab-card {
-            background: var(--blue);
-            padding: 20px;
-            border-radius: 12px;
-            margin: 15px 0;
-            cursor: pointer;
-            transition: transform 0.2s ease;
-        }
-
-        .vocab-card:hover {
-            transform: scale(1.02);
-        }
-
-        .delete-btn {
-            background: #ffb3b3;
-            margin-top: 10px;
-        }
-    </style>
+  <title>Translator</title>
+  <style>
+    body { font-family: Arial; padding: 20px; }
+    input, select { padding: 10px; margin: 5px 0; width: 250px; }
+    button { padding: 10px; }
+  </style>
 </head>
-
 <body>
+  <h1>Simple Translator</h1>
 
-    <!-- MENU BUTTON -->
-    <button id="menu-btn">Menu</button>
+  <input id="textInput" placeholder="Type something to translate">
 
-    <!-- SIDEBAR -->
-    <div id="sidebar">
-        <h2>Study Sphere</h2>
-        <a href="index.html">Home</a>
-        <a href="flashcards.html">Flashcards</a>
-        <a href="language.html">Language Learning</a>
-        <a href="notebook.html">Notebook</a>
-        <a href="chatbot.html">Chatbot</a>
-        <a href="solver.html">Problem Solver</a>
-    </div>
+  <br>
 
-    <!-- LANGUAGE CONTENT -->
-    <div class="container">
-        <h1>Language Learning</h1>
+  <select id="fromLang">
+    <option value="en">English</option>
+    <option value="es">Spanish</option>
+    <option value="de">German</option>
+    <option value="fr">French</option>
+  </select>
 
-        <div class="input-group">
-            <input id="word" placeholder="Word (e.g., Haus)">
-        </div>
+  <select id="toLang">
+    <option value="es">Spanish</option>
+    <option value="en">English</option>
+    <option value="de">German</option>
+    <option value="fr">French</option>
+  </select>
 
-        <div class="input-group">
-            <input id="translation" placeholder="Translation (e.g., House)">
-        </div>
+  <br>
 
-        <button onclick="addVocab()">Add Word</button>
+  <button onclick="translate()">Translate</button>
 
-        <h2>Your Vocabulary</h2>
-        <div id="vocab-list"></div>
-    </div>
+  <p id="output"></p>
 
-    <script>
-        const menuBtn = document.getElementById("menu-btn");
-        const sidebar = document.getElementById("sidebar");
+  <script>
+    const dictionary = {
+      "hello": { en: "hello", es: "hola", de: "hallo", fr: "bonjour" },
+      "bye": { en: "bye", es: "adiós", de: "tschüss", fr: "au revoir" },
+      "thanks": { en: "thanks", es: "gracias", de: "danke", fr: "merci" },
+      "cat": { en: "cat", es: "gato", de: "katze", fr: "chat" },
+      "dog": { en: "dog", es: "perro", de: "hund", fr: "chien" },
+      "love": { en: "love", es: "amor", de: "liebe", fr: "amour" }
+    };
 
-        menuBtn.addEventListener("click", () => {
-            sidebar.classList.toggle("open");
-        });
+    function translate() {
+      const text = document.getElementById("textInput").value.toLowerCase();
+      const from = document.getElementById("fromLang").value;
+      const to = document.getElementById("toLang").value;
 
-        function addVocab() {
-            const w = document.getElementById("word").value;
-            const t = document.getElementById("translation").value;
-
-            if (!w || !t) return;
-
-            const card = document.createElement("div");
-            card.className = "vocab-card";
-            card.innerHTML = `
-                <p class="front"><strong>${w}</strong></p>
-                <p class="back" style="display:none;">${t}</p>
-                <button class="delete-btn" onclick="this.parentElement.remove()">Delete</button>
-            `;
-
-            card.addEventListener("click", () => {
-                const front = card.querySelector(".front");
-                const back = card.querySelector(".back");
-                front.style.display = front.style.display === "none" ? "block" : "none";
-                back.style.display = back.style.display === "none" ? "block" : "none";
-            });
-
-            document.getElementById("vocab-list").appendChild(card);
-
-            document.getElementById("word").value = "";
-            document.getElementById("translation").value = "";
+      for (let word in dictionary) {
+        if (dictionary[word][from] === text) {
+          document.getElementById("output").innerText =
+            "Translation: " + dictionary[word][to];
+          return;
         }
-    </script>
+      }
 
+      document.getElementById("output").innerText =
+        "Sorry, I don't know that word yet.";
+    }
+  </script>
 </body>
 </html>
+
