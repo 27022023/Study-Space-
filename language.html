@@ -64,5 +64,49 @@
     }
   </script>
 </body>
-</html>
+</html><script>
+  const dictionary = {
+    "hello": { en: "hello", es: "hola", de: "hallo", fr: "bonjour" },
+    "bye": { en: "bye", es: "adiós", de: "tschüss", fr: "au revoir" },
+    "thanks": { en: "thanks", es: "gracias", de: "danke", fr: "merci" },
+    "cat": { en: "cat", es: "gato", de: "katze", fr: "chat" },
+    "dog": { en: "dog", es: "perro", de: "hund", fr: "chien" },
+    "love": { en: "love", es: "amor", de: "liebe", fr: "amour" }
+  };
+
+  // Load saved memory
+  window.onload = () => {
+    document.getElementById("textInput").value =
+      localStorage.getItem("lastWord") || "";
+
+    document.getElementById("fromLang").value =
+      localStorage.getItem("lastFrom") || "en";
+
+    document.getElementById("toLang").value =
+      localStorage.getItem("lastTo") || "es";
+  };
+
+  function translate() {
+    const text = document.getElementById("textInput").value.toLowerCase();
+    const from = document.getElementById("fromLang").value;
+    const to = document.getElementById("toLang").value;
+
+    // Save memory
+    localStorage.setItem("lastWord", text);
+    localStorage.setItem("lastFrom", from);
+    localStorage.setItem("lastTo", to);
+
+    for (let word in dictionary) {
+      if (dictionary[word][from] === text) {
+        document.getElementById("output").innerText =
+          "Translation: " + dictionary[word][to];
+        return;
+      }
+    }
+
+    document.getElementById("output").innerText =
+      "Sorry, I don't know that word yet.";
+  }
+            </script>
+
 
