@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flashcards • Study Sphere</title>
+
+    <style>
+        :root {
+            --pink: #FCE7F3;
+            --lavender: #EDE7FF;
+            --mint: #DFFCF0;
+            --blue: #E3F2FD;
+            --peach: #FFEFE2;
+            --text: #3A3A3A;
+            --white: #FFFFFF;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Poppins", sans-serif;
+            background: linear-gradient(135deg, var(--pink), var(--lavender), var(--mint), var(--blue), var(--peach));
+            background-size: 400% 400%;
+            animation: gradientShift 20s ease infinite;
+            color: var(--text);
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* MENU BUTTON */
+        #menu-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            background: var(--white);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+            z-index: 1000;
+            transition: transform 0.2s ease;
+        }
+
+        #menu-btn:hover {
+            transform: scale(1.05);
+        }
+
+        /* SIDEBAR */
+        #sidebar {
+            position: fixed;
+            top: 0;
+            left: -260px;
+            width: 260px;
+            height: 100%;
+            background: var(--white);
+            box-shadow: 4px 0 12px rgba(0,0,0,0.1);
+            padding: 30px 20px;
+            transition: left 0.3s ease;
+            z-index: 999;
+        }
+
+        #sidebar.open {
+            left: 0;
+        }
+
+        #sidebar h2 {
+            margin-top: 0;
+            font-size: 22px;
+            color: var(--text);
+        }
+
+        #sidebar a {
+            display: block;
+            margin: 15px 0;
+            text-decoration: none;
+            color: var(--text);
+            font-size: 18px;
+            padding: 8px 10px;
+            border-radius: 8px;
+            transition: background 0.2s ease;
+        }
+
+        #sidebar a:hover {
+            background: var(--lavender);
+        }
+
+        /* PAGE CONTENT */
+        .container {
+            max-width: 800px;
+            margin: 120px auto;
+            background: var(--white);
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 0;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+        }
+
+        button {
+            padding: 12px 20px;
+            background: var(--lavender);
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: transform 0.2s ease;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+        }
+
+        /* FLASHCARDS */
+        .flashcard {
+            background: var(--peach);
+            padding: 20px;
+            border-radius: 12px;
+            margin: 15px 0;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .flashcard:hover {
+            transform: scale(1.02);
+        }
+
+        .delete-btn {
+            background: #ffb3b3;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- MENU BUTTON -->
+    <button id="menu-btn">Menu</button>
+
+    <!-- SIDEBAR -->
+    <div id="sidebar">
+        <h2>Study Sphere</h2>
+        <a href="index.html">Home</a>
+        <a href="flashcards.html">Flashcards</a>
+        <a href="language.html">Language Learning</a>
+        <a href="notebook.html">Notebook</a>
+        <a href="chatbot.html">Chatbot</a>
+        <a href="solver.html">Problem Solver</a>
+    </div>
+
+    <!-- FLASHCARDS CONTENT -->
+    <div class="container">
+        <h1>Create Flashcards</h1>
+
+        <div class="input-group">
+            <input id="question" placeholder="Question">
+        </div>
+
+        <div class="input-group">
+            <textarea id="answer" placeholder="Answer"></textarea>
+        </div>
+
+        <button onclick="addFlashcard()">Add Flashcard</button>
+
+        <h2>Your Flashcards</h2>
+        <div id="flashcards"></div>
+    </div>
+
+    <script>
+        const menuBtn = document.getElementById("menu-btn");
+        const sidebar = document.getElementById("sidebar");
+
+        menuBtn.addEventListener("click", () => {
+            sidebar.classList.toggle("open");
+        });
+
+        function addFlashcard() {
+            const q = document.getElementById("question").value;
+            const a = document.getElementById("answer").value;
+
+            if (!q || !a) return;
+
+            const card = document.createElement("div");
+            card.className = "flashcard";
+            card.innerHTML = `
+                <p class="front"><strong>Q:</strong> ${q}</p>
+                <p class="back" style="display:none;"><strong>A:</strong> ${a}</p>
+                <button class="delete-btn" onclick="this.parentElement.remove()">Delete</button>
+            `;
+
+            card.addEventListener("click", () => {
+                const front = card.querySelector(".front");
+                const back = card.querySelector(".back");
+                front.style.display = front.style.display === "none" ? "block" : "none";
+                back.style.display = back.style.display === "none" ? "block" : "none";
+            });
+
+            document.getElementById("flashcards").appendChild(card);
+
+            document.getElementById("question").value = "";
+            document.getElementById("answer").value = "";
+        }
+    </script>
+
+</body>
+</html>
