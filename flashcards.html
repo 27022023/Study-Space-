@@ -224,4 +224,84 @@
     </script>
 
 </body>
+</html><!DOCTYPE html>
+<html>
+<head>
+  <title>Flashcards</title>
+  <style>
+    body { font-family: Arial; padding: 20px; }
+    #card { 
+      border: 1px solid #ccc; 
+      padding: 20px; 
+      width: 300px; 
+      height: 150px; 
+      display: flex; 
+      justify-content: center; 
+      align-items: center; 
+      font-size: 20px; 
+      margin-bottom: 20px;
+    }
+    button { padding: 10px; margin-right: 10px; }
+  </style>
+</head>
+<body>
+
+  <h1>Flashcards</h1>
+
+  <div id="card"></div>
+
+  <button onclick="prevCard()">Previous</button>
+  <button onclick="nextCard()">Next</button>
+  <button onclick="markLearned()">Mark as Learned</button>
+
+  <p id="status"></p>
+
+  <script>
+    const cards = [
+      { q: "What is 2 + 2?", a: "4" },
+      { q: "Capital of France?", a: "Paris" },
+      { q: "Opposite of hot?", a: "Cold" }
+    ];
+
+    // Load memory
+    let currentIndex = parseInt(localStorage.getItem("flashIndex")) || 0;
+    let learned = JSON.parse(localStorage.getItem("flashLearned")) || [];
+
+    function updateCard() {
+      const card = document.getElementById("card");
+      const status = document.getElementById("status");
+
+      card.innerHTML = cards[currentIndex].q;
+
+      status.innerHTML =
+        "Card " + (currentIndex + 1) + " of " + cards.length +
+        "<br>Learned: " + learned.length + "/" + cards.length;
+
+      // Save memory
+      localStorage.setItem("flashIndex", currentIndex);
+      localStorage.setItem("flashLearned", JSON.stringify(learned));
+    }
+
+    function nextCard() {
+      currentIndex = (currentIndex + 1) % cards.length;
+      updateCard();
+    }
+
+    function prevCard() {
+      currentIndex = (currentIndex - 1 + cards.length) % cards.length;
+      updateCard();
+    }
+
+    function markLearned() {
+      if (!learned.includes(currentIndex)) {
+        learned.push(currentIndex);
+      }
+      updateCard();
+    }
+
+    updateCard();
+  </script>
+
+</body>
 </html>
+
