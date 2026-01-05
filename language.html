@@ -1,114 +1,413 @@
-
 <!DOCTYPE html>
 <html>
 <head>
-  <link rel="stylesheet" href="style.css">
-  
   <title>Translator</title>
+  <link rel="stylesheet" href="style.css">
+
   <style>
-    body { font-family: Arial; padding: 20px; }
-    input, select { padding: 10px; margin: 5px 0; width: 250px; }
-    button { padding: 10px; }
+    /* Fancy translator-specific styling (works with your pastel theme) */
+    .translator-page {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .translator-card {
+      background: rgba(255, 255, 255, 0.8);
+      border-radius: 20px;
+      box-shadow: 0 18px 45px rgba(0, 0, 0, 0.12);
+      max-width: 600px;
+      width: 100%;
+      padding: 25px 28px 30px;
+      backdrop-filter: blur(12px);
+      text-align: center;
+      animation: cardFadeIn 0.7s ease-out;
+    }
+
+    .translator-title {
+      font-size: 26px;
+      margin-bottom: 6px;
+    }
+
+    .translator-subtitle {
+      font-size: 14px;
+      opacity: 0.8;
+      margin-bottom: 18px;
+    }
+
+    .translator-input {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: none;
+      outline: none;
+      font-size: 15px;
+      margin-bottom: 12px;
+      box-shadow: 0 0 0 1px rgba(0,0,0,0.05);
+    }
+
+    .translator-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .translator-select {
+      flex: 1 1 150px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: none;
+      box-shadow: 0 0 0 1px rgba(0,0,0,0.06);
+      font-size: 14px;
+      outline: none;
+    }
+
+    .translator-button {
+      margin-top: 4px;
+      padding: 12px 26px;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      color: #ffffff;
+      background: linear-gradient(120deg, #ff9fd6, #a98bff, #7fd9ff);
+      background-size: 200% 200%;
+      box-shadow: 0 12px 25px rgba(0,0,0,0.18);
+      transition: transform 0.15s ease, box-shadow 0.15s ease, background-position 2s ease;
+    }
+
+    .translator-button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 16px 30px rgba(0,0,0,0.22);
+      background-position: 100% 0;
+    }
+
+    .translator-button:active {
+      transform: translateY(1px) scale(0.98);
+      box-shadow: 0 8px 18px rgba(0,0,0,0.16);
+    }
+
+    .translator-output {
+      margin-top: 18px;
+      text-align: left;
+      padding: 14px 14px 12px;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.9);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+      min-height: 40px;
+      font-size: 15px;
+      line-height: 1.5;
+      opacity: 0;
+      transform: translateY(4px);
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+
+    .translator-output.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .translator-output-label {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      opacity: 0.6;
+      margin-bottom: 4px;
+    }
+
+    .translator-meta {
+      font-size: 12px;
+      opacity: 0.6;
+      margin-top: 8px;
+    }
+
+    .translator-meta span {
+      display: inline-block;
+      margin-right: 8px;
+    }
+
+    @keyframes cardFadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px) scale(0.98);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    @media (max-width: 480px) {
+      .translator-card {
+        padding: 20px 18px 24px;
+      }
+    }
   </style>
 </head>
-<body>
-  <h1>Simple Translator</h1>
+<body class="translator-page">
+  <div class="translator-card">
+    <h1 class="translator-title">Fancy Translator ✨</h1>
+    <p class="translator-subtitle">
+      Auto-detects your language and translates complete sentences using an offline mini-dictionary.
+    </p>
 
-  <input id="textInput" placeholder="Type something to translate">
+    <input
+      id="textInput"
+      class="translator-input"
+      placeholder="Type a word or sentence in English, Spanish, German, or French..."
+    >
 
-  <br>
+    <div class="translator-row">
+      <select id="toLang" class="translator-select">
+        <option value="en">English 🇬🇧</option>
+        <option value="es">Spanish 🇪🇸</option>
+        <option value="de">German 🇩🇪</option>
+        <option value="fr">French 🇫🇷</option>
+      </select>
 
-  <select id="fromLang">
-    <option value="en">English</option>
-    <option value="es">Spanish</option>
-    <option value="de">German</option>
-    <option value="fr">French</option>
-  </select>
+      <button class="translator-button" onclick="translateText()">
+        Translate ✨
+      </button>
+    </div>
 
-  <select id="toLang">
-    <option value="es">Spanish</option>
-    <option value="en">English</option>
-    <option value="de">German</option>
-    <option value="fr">French</option>
-  </select>
-
-  <br>
-
-  <button onclick="translate()">Translate</button>
-
-  <p id="output"></p>
+    <div id="outputBox" class="translator-output">
+      <div class="translator-output-label">Translation</div>
+      <div id="output"></div>
+      <div class="translator-meta" id="metaInfo"></div>
+    </div>
+  </div>
 
   <script>
+    // Big offline dictionary: you can keep expanding it if you like
     const dictionary = {
+      // greetings / basics
       "hello": { en: "hello", es: "hola", de: "hallo", fr: "bonjour" },
+      "hi": { en: "hi", es: "hola", de: "hi", fr: "salut" },
       "bye": { en: "bye", es: "adiós", de: "tschüss", fr: "au revoir" },
+      "goodbye": { en: "goodbye", es: "adiós", de: "auf wiedersehen", fr: "au revoir" },
+      "please": { en: "please", es: "por favor", de: "bitte", fr: "s'il vous plaît" },
       "thanks": { en: "thanks", es: "gracias", de: "danke", fr: "merci" },
+      "thank you": { en: "thank you", es: "gracias", de: "danke", fr: "merci" },
+      "yes": { en: "yes", es: "sí", de: "ja", fr: "oui" },
+      "no": { en: "no", es: "no", de: "nein", fr: "non" },
+      "sorry": { en: "sorry", es: "perdón", de: "entschuldigung", fr: "désolé" },
+
+      // people / family
+      "friend": { en: "friend", es: "amigo", de: "freund", fr: "ami" },
+      "family": { en: "family", es: "familia", de: "familie", fr: "famille" },
+      "mother": { en: "mother", es: "madre", de: "mutter", fr: "mère" },
+      "father": { en: "father", es: "padre", de: "vater", fr: "père" },
+      "brother": { en: "brother", es: "hermano", de: "bruder", fr: "frère" },
+      "sister": { en: "sister", es: "hermana", de: "schwester", fr: "soeur" },
+      "girl": { en: "girl", es: "niña", de: "mädchen", fr: "fille" },
+      "boy": { en: "boy", es: "niño", de: "junge", fr: "garçon" },
+      "teacher": { en: "teacher", es: "maestro", de: "lehrer", fr: "professeur" },
+      "student": { en: "student", es: "estudiante", de: "student", fr: "étudiant" },
+
+      // feelings
+      "happy": { en: "happy", es: "feliz", de: "glücklich", fr: "heureux" },
+      "sad": { en: "sad", es: "triste", de: "traurig", fr: "triste" },
+      "tired": { en: "tired", es: "cansado", de: "müde", fr: "fatigué" },
+      "angry": { en: "angry", es: "enojado", de: "wütend", fr: "fâché" },
+      "love": { en: "love", es: "amor", de: "liebe", fr: "amour" },
+      "beautiful": { en: "beautiful", es: "hermoso", de: "schön", fr: "beau" },
+      "funny": { en: "funny", es: "gracioso", de: "lustig", fr: "drôle" },
+
+      // time / day
+      "morning": { en: "morning", es: "mañana", de: "morgen", fr: "matin" },
+      "afternoon": { en: "afternoon", es: "tarde", de: "nachmittag", fr: "après-midi" },
+      "evening": { en: "evening", es: "noche", de: "abend", fr: "soir" },
+      "night": { en: "night", es: "noche", de: "nacht", fr: "nuit" },
+      "today": { en: "today", es: "hoy", de: "heute", fr: "aujourd'hui" },
+      "tomorrow": { en: "tomorrow", es: "mañana", de: "morgen", fr: "demain" },
+      "yesterday": { en: "yesterday", es: "ayer", de: "gestern", fr: "hier" },
+
+      // places / objects
+      "house": { en: "house", es: "casa", de: "haus", fr: "maison" },
+      "home": { en: "home", es: "hogar", de: "heim", fr: "maison" },
+      "school": { en: "school", es: "escuela", de: "schule", fr: "école" },
+      "city": { en: "city", es: "ciudad", de: "stadt", fr: "ville" },
+      "street": { en: "street", es: "calle", de: "straße", fr: "rue" },
+      "car": { en: "car", es: "coche", de: "auto", fr: "voiture" },
+      "bus": { en: "bus", es: "autobús", de: "bus", fr: "bus" },
+      "train": { en: "train", es: "tren", de: "zug", fr: "train" },
+      "book": { en: "book", es: "libro", de: "buch", fr: "livre" },
+      "phone": { en: "phone", es: "teléfono", de: "telefon", fr: "téléphone" },
+      "computer": { en: "computer", es: "computadora", de: "computer", fr: "ordinateur" },
+
+      // nature / things
+      "water": { en: "water", es: "agua", de: "wasser", fr: "eau" },
+      "food": { en: "food", es: "comida", de: "essen", fr: "nourriture" },
+      "sun": { en: "sun", es: "sol", de: "sonne", fr: "soleil" },
+      "moon": { en: "moon", es: "luna", de: "mond", fr: "lune" },
+      "star": { en: "star", es: "estrella", de: "stern", fr: "étoile" },
+      "flower": { en: "flower", es: "flor", de: "blume", fr: "fleur" },
+      "tree": { en: "tree", es: "árbol", de: "baum", fr: "arbre" },
+
+      // animals
       "cat": { en: "cat", es: "gato", de: "katze", fr: "chat" },
       "dog": { en: "dog", es: "perro", de: "hund", fr: "chien" },
-      "love": { en: "love", es: "amor", de: "liebe", fr: "amour" }
+      "bird": { en: "bird", es: "pájaro", de: "vogel", fr: "oiseau" },
+      "fish": { en: "fish", es: "pez", de: "fisch", fr: "poisson" },
+
+      // common verbs
+      "go": { en: "go", es: "ir", de: "gehen", fr: "aller" },
+      "come": { en: "come", es: "venir", de: "kommen", fr: "venir" },
+      "eat": { en: "eat", es: "comer", de: "essen", fr: "manger" },
+      "drink": { en: "drink", es: "beber", de: "trinken", fr: "boire" },
+      "sleep": { en: "sleep", es: "dormir", de: "schlafen", fr: "dormir" },
+      "read": { en: "read", es: "leer", de: "lesen", fr: "lire" },
+      "write": { en: "write", es: "escribir", de: "schreiben", fr: "écrire" },
+      "play": { en: "play", es: "jugar", de: "spielen", fr: "jouer" },
+      "study": { en: "study", es: "estudiar", de: "studieren", fr: "étudier" },
+
+      // adjectives
+      "big": { en: "big", es: "grande", de: "groß", fr: "grand" },
+      "small": { en: "small", es: "pequeño", de: "klein", fr: "petit" },
+      "new": { en: "new", es: "nuevo", de: "neu", fr: "nouveau" },
+      "old": { en: "old", es: "viejo", de: "alt", fr: "vieux" },
+      "hot": { en: "hot", es: "caliente", de: "heiß", fr: "chaud" },
+      "cold": { en: "cold", es: "frío", de: "kalt", fr: "froid" },
+      "good": { en: "good", es: "bueno", de: "gut", fr: "bon" },
+      "bad": { en: "bad", es: "malo", de: "schlecht", fr: "mauvais" },
+
+      // little words
+      "and": { en: "and", es: "y", de: "und", fr: "et" },
+      "or": { en: "or", es: "o", de: "oder", fr: "ou" },
+      "with": { en: "with", es: "con", de: "mit", fr: "avec" },
+      "without": { en: "without", es: "sin", de: "ohne", fr: "sans" },
+      "for": { en: "for", es: "para", de: "für", fr: "pour" },
+      "in": { en: "in", es: "en", de: "in", fr: "dans" },
+      "on": { en: "on", es: "sobre", de: "auf", fr: "sur" },
+      "under": { en: "under", es: "debajo", de: "unter", fr: "sous" }
     };
 
-    function translate() {
-      const text = document.getElementById("textInput").value.toLowerCase();
-      const from = document.getElementById("fromLang").value;
-      const to = document.getElementById("toLang").value;
+    const languages = ["en", "es", "de", "fr"];
 
-      for (let word in dictionary) {
-        if (dictionary[word][from] === text) {
-          document.getElementById("output").innerText =
-            "Translation: " + dictionary[word][to];
-          return;
+    // Try to detect which language the text is in based on known words
+    function detectLanguage(words) {
+      const counts = { en: 0, es: 0, de: 0, fr: 0 };
+
+      words.forEach(word => {
+        const cleanWord = stripPunctuation(word.toLowerCase());
+        for (const key in dictionary) {
+          const entry = dictionary[key];
+          languages.forEach(lang => {
+            if (entry[lang] === cleanWord) {
+              counts[lang]++;
+            }
+          });
+        }
+      });
+
+      // Find language with highest count
+      let bestLang = "en";
+      let bestCount = -1;
+      for (const lang of languages) {
+        if (counts[lang] > bestCount) {
+          bestCount = counts[lang];
+          bestLang = lang;
         }
       }
 
-      document.getElementById("output").innerText =
-        "Sorry, I don't know that word yet.";
+      return bestLang;
+    }
+
+    function stripPunctuation(word) {
+      return word.replace(/^[.,!?;:()"'«»]+|[.,!?;:()"'«»]+$/g, "");
+    }
+
+    function restorePunctuation(original, translated) {
+      let result = translated;
+      if (original[0] === original[0].toUpperCase()) {
+        result = result.charAt(0).toUpperCase() + result.slice(1);
+      }
+
+      const trailing = original.match(/[.,!?;:()"'«»]+$/);
+      if (trailing) {
+        result += trailing[0];
+      }
+
+      return result;
+    }
+
+    function translateWord(word, fromLang, toLang) {
+      const cleanWord = stripPunctuation(word.toLowerCase());
+
+      // Try to find this word in the dictionary in the given fromLang
+      for (const key in dictionary) {
+        const entry = dictionary[key];
+        if (entry[fromLang] === cleanWord) {
+          return restorePunctuation(word, entry[toLang]);
+        }
+      }
+
+      // If not found, try all languages as fallback
+      for (const key in dictionary) {
+        const entry = dictionary[key];
+        for (const lang of languages) {
+          if (entry[lang] === cleanWord) {
+            return restorePunctuation(word, entry[toLang]);
+          }
+        }
+      }
+
+      // If still not found, keep original word
+      return word;
+    }
+
+    function translateText() {
+      const input = document.getElementById("textInput").value.trim();
+      const toLang = document.getElementById("toLang").value;
+      const outputElem = document.getElementById("output");
+      const metaElem = document.getElementById("metaInfo");
+      const box = document.getElementById("outputBox");
+
+      if (!input) {
+        outputElem.innerText = "Type something first to translate.";
+        metaElem.innerText = "";
+        box.classList.add("visible");
+        return;
+      }
+
+      const words = input.split(/\s+/);
+      const detectedLang = detectLanguage(words);
+
+      if (detectedLang === toLang) {
+        outputElem.innerText = "Input and output languages are the same. Try a different target language.";
+        metaElem.innerHTML = `<span>Detected: ${languageName(detectedLang)}</span>`;
+        box.classList.add("visible");
+        return;
+      }
+
+      const translatedWords = words.map(w => translateWord(w, detectedLang, toLang));
+      const result = translatedWords.join(" ");
+
+      outputElem.innerText = result;
+      metaElem.innerHTML =
+        `<span>Detected: ${languageName(detectedLang)}</span>` +
+        `<span>→</span>` +
+        `<span>Target: ${languageName(toLang)}</span>`;
+      box.classList.add("visible");
+    }
+
+    function languageName(code) {
+      switch (code) {
+        case "en": return "English";
+        case "es": return "Spanish";
+        case "de": return "German";
+        case "fr": return "French";
+        default: return code;
+      }
     }
   </script>
 </body>
-</html><script>
-  const dictionary = {
-    "hello": { en: "hello", es: "hola", de: "hallo", fr: "bonjour" },
-    "bye": { en: "bye", es: "adiós", de: "tschüss", fr: "au revoir" },
-    "thanks": { en: "thanks", es: "gracias", de: "danke", fr: "merci" },
-    "cat": { en: "cat", es: "gato", de: "katze", fr: "chat" },
-    "dog": { en: "dog", es: "perro", de: "hund", fr: "chien" },
-    "love": { en: "love", es: "amor", de: "liebe", fr: "amour" }
-  };
+</html>
 
-  // Load saved memory
-  window.onload = () => {
-    document.getElementById("textInput").value =
-      localStorage.getItem("lastWord") || "";
-
-    document.getElementById("fromLang").value =
-      localStorage.getItem("lastFrom") || "en";
-
-    document.getElementById("toLang").value =
-      localStorage.getItem("lastTo") || "es";
-  };
-
-  function translate() {
-    const text = document.getElementById("textInput").value.toLowerCase();
-    const from = document.getElementById("fromLang").value;
-    const to = document.getElementById("toLang").value;
-
-    // Save memory
-    localStorage.setItem("lastWord", text);
-    localStorage.setItem("lastFrom", from);
-    localStorage.setItem("lastTo", to);
-
-    for (let word in dictionary) {
-      if (dictionary[word][from] === text) {
-        document.getElementById("output").innerText =
-          "Translation: " + dictionary[word][to];
-        return;
-      }
-    }
-
-    document.getElementById("output").innerText =
-      "Sorry, I don't know that word yet.";
-  }
-            </script>
-
-
+          
