@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Relax</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .breath-box {
+      font-size: 40px;
+      padding: 40px;
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(6px);
+      width: 300px;
+      margin: auto;
+      margin-top: 40px;
+      animation: fade 4s ease-in-out infinite;
+    }
+
+    @keyframes fade {
+      0% { opacity: 0.3; }
+      50% { opacity: 1; }
+      100% { opacity: 0.3; }
+    }
+
+    .text {
+      font-size: 22px;
+      margin-top: 15px;
+      color: #5a4a6a;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>Take a Moment</h1>
+
+  <div class="breath-box" id="emojiBox">☺️</div>
+  <p class="text" id="breathText">breathe in…</p>
+
+  <script>
+    const emojis = ["☺️", "💗", "🪷", "🌿"];
+    let index = 0;
+    let breathingIn = true;
+
+    function updateBreathing() {
+      // Change emoji
+      index = (index + 1) % emojis.length;
+      document.getElementById("emojiBox").innerText = emojis[index];
+
+      // Change text
+      breathingIn = !breathingIn;
+      document.getElementById("breathText").innerText =
+        breathingIn ? "breathe in…" : "breathe out…";
+    }
+
+    setInterval(updateBreathing, 4000);
+  </script>
+
+</body>
+</html>
