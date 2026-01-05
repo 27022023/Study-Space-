@@ -1,3 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Translator</title>
+  <style>
+    body { font-family: Arial; padding: 20px; }
+    input, select { padding: 10px; margin: 5px 0; width: 250px; }
+    button { padding: 10px; }
+  </style>
+</head>
+<body>
+  <h1>Simple Translator</h1>
+
+  <input id="textInput" placeholder="Type something to translate">
+
+  <br>
+
+  <select id="fromLang">
+    <option value="en">English</option>
+    <option value="es">Spanish</option>
+    <option value="de">German</option>
+    <option value="fr">French</option>
+  </select>
+
+  <select id="toLang">
+    <option value="es">Spanish</option>
+    <option value="en">English</option>
+    <option value="de">German</option>
+    <option value="fr">French</option>
+  </select>
+
+  <br>
+
+  <button onclick="translate()">Translate</button>
+
+  <p id="output"></p>
+
+  <script>
+    const dictionary = {
+      "hello": { en: "hello", es: "hola", de: "hallo", fr: "bonjour" },
+      "bye": { en: "bye", es: "adiós", de: "tschüss", fr: "au revoir" },
+      "thanks": { en: "thanks", es: "gracias", de: "danke", fr: "merci" },
+      "cat": { en: "cat", es: "gato", de: "katze", fr: "chat" },
+      "dog": { en: "dog", es: "perro", de: "hund", fr: "chien" },
+      "love": { en: "love", es: "amor", de: "liebe", fr: "amour" }
+    };
+
+    function translate() {
+      const text = document.getElementById("textInput").value.toLowerCase();
+      const from = document.getElementById("fromLang").value;
+      const to = document.getElementById("toLang").value;
+
+      for (let word in dictionary) {
+        if (dictionary[word][from] === text) {
+          document.getElementById("output").innerText =
+            "Translation: " + dictionary[word][to];
+          return;
+        }
+      }
+
+      document.getElementById("output").innerText =
+        "Sorry, I don't know that word yet.";
+    }
+  </script>
+</body>
+</html>
 
 <!DOCTYPE html>
 <html>
