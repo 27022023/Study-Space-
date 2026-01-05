@@ -1,0 +1,61 @@
+/* 🌸 Global Pastel Theme for StudySphere */
+
+/* Background gradient */
+body {
+  margin: 0;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  background: linear-gradient(135deg, #ffd6e8, #e3d7ff, #d6ecff);
+  background-size: 300% 300%;
+  animation: gradientShift 12s ease infinite;
+  text-align: center;
+}
+
+/* Soft gradient animation */
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Main content box */
+.container {
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(6px);
+  padding: 25px;
+  border-radius: 20px;
+  max-width: 450px;
+  margin: auto;
+  box-shadow: 0 0 20px rgba(0,0,0,0.1);
+}
+
+/* Buttons */
+button {
+  background: #e8c7ff;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 10px;
+  font-size: 16px;
+  cursor: pointer;
+  margin: 5px;
+  transition: 0.2s;
+}
+
+button:hover {
+  background: #f7bfff;
+}
+
+/* Inputs */
+input, select, textarea {
+  width: 90%;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  margin-bottom: 10px;
+  font-size: 16px;
+}
+
+/* Text */
+h1, h2, h3, p {
+  color: #5a4a6a;
+}
