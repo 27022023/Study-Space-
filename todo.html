@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To‑Do List</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #6a5acd, #836fff);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 25px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 400px;
+            backdrop-filter: blur(10px);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        #taskInput {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: none;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background: #483d8b;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #372f6b;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+            margin-top: 20px;
+        }
+
+        li {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        li.completed {
+            text-decoration: line-through;
+            opacity: 0.6;
+        }
+
+        .deleteBtn {
+            background: #ff4d4d;
+            border: none;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .deleteBtn:hover {
+            background: #cc0000;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>To‑Do List</h1>
+
+        <input type="text" id="taskInput" placeholder="Write a task...">
+        <button onclick="addTask()">Add Task</button>
+
+        <ul id="taskList"></ul>
+    </div>
+
+    <script>
+        // Load saved tasks when page opens
+        document.addEventListener("DOMContentLoaded", loadTasks);
+
+        function addTask() {
+            const input = document.getElementById("taskInput");
+            const taskText = input.value.trim();
+            if (taskText === "") return;
+
+            createTaskElement(taskText, false);
+            saveTasks();
+            input.value = "";
+        }
+
+        function createTaskElement(text, completed) {
+            const ul = document.getElementById("taskList");
+            const li = document.createElement("li");
+
+            if (completed) li.classList.add("completed");
+
+            li.innerHTML = `
+                <span onclick="toggleComplete(this)">${text}</span>
+                <button class="deleteBtn" onclick="deleteTask(this)">X</button>
+            `;
+
+            ul.appendChild(li);
+        }
+
+        function toggleComplete(span) {
+            span.parentElement.classList.toggle("completed");
+            saveTasks();
+        }
+
+        function deleteTask(btn) {
+            btn.parentElement.remove();
+            saveTasks();
+        }
+
+        function saveTasks() {
+            const tasks = [];
+            document.querySelectorAll("#taskList li").forEach(li => {
+                tasks.push({
+                    text: li.querySelector("span").innerText,
+                    completed: li.classList.contains("completed")
+                });
+            });
+            localStorage.setItem("todoList", JSON.stringify(tasks));
+        }
+
+        function loadTasks() {
+            const saved = JSON.parse(localStorage.getItem("todoList")) || [];
+            saved.forEach(task => createTaskElement(task.text, task.completed));
+        }
+    </script>
+</body>
+</html>
