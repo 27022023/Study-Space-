@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Microscope Lab</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        *{box-sizing:border-box;margin:0;padding:0}
+        body{
+            font-family:Arial,sans-serif;
+            background:radial-gradient(circle at top,#dde3ff,#c2d4e6 45%,#b7c8d6 80%);
+            color:#243046;
+            min-height:100vh;
+            display:flex;
+            flex-direction:column;
+            align-items:center;
+        }
+        h1{margin:18px 0 4px;font-size:26px;text-align:center}
+        .subtitle{font-size:13px;color:#5b6478;margin-bottom:14px;text-align:center}
+        .lab-shell{
+            width:100%;max-width:960px;
+            padding:10px 14px 20px;
+        }
+        .lab-room{
+            position:relative;
+            border-radius:16px;
+            background:linear-gradient(to bottom,#eef1ff,#f8f9ff 35%,#f1f3f8);
+            box-shadow:0 6px 18px rgba(40,60,90,.25);
+            min-height:430px;
+            overflow:hidden;
+        }
+        .desk{
+            position:absolute;left:16px;right:16px;bottom:110px;height:90px;
+            border-radius:14px;
+            background:linear-gradient(to bottom,#e0e5f3,#cfd5e7);
+            box-shadow:0 -3px 8px rgba(70,80,110,.25) inset;
+        }
+        .desk-top{
+            position:absolute;left:5%;right:5%;top:-12px;height:24px;
+            border-radius:14px;
+            background:linear-gradient(to bottom,#fdfdff,#d7dde9);
+            box-shadow:0 4px 10px rgba(40,50,80,.3);
+        }
+        .lab-main{
+            position:relative;
+            padding:70px 40px 130px;
+            display:flex;
+            align-items:flex-end;
+            justify-content:center;
+            gap:30px;
+        }
+        /* Extra-large microscope */
+        .microscope-area{
+            position:relative;
+            width:320px;
+            height:240px;
+            cursor:pointer;
+        }
+        .tap-hint{
+            position:absolute;top:-20px;width:100%;text-align:center;
+            font-size:12px;color:#505a72;
+        }
+        .m-base{
+            position:absolute;left:35px;right:35px;bottom:0;height:26px;
+            border-radius:12px;
+            background:linear-gradient(to right,#d8ddea,#c2c8dc);
+            box-shadow:0 3px 8px rgba(40,50,80,.35);
+        }
+        .m-arm{
+            position:absolute;left:120px;bottom:30px;width:74px;height:140px;
+            border-radius:36px;
+            background:linear-gradient(to bottom,#fdfefe,#dadfe9);
+            box-shadow:0 2px 8px rgba(40,50,80,.25);
+            transform:rotate(-10deg);
+        }
+        .m-body{
+            position:absolute;left:120px;bottom:120px;width:110px;height:56px;
+            border-radius:30px;
+            background:linear-gradient(to right,#fdfefe,#e2e7f1);
+            box-shadow:0 2px 8px rgba(40,50,80,.25);
+        }
+        .m-eyepiece{
+            position:absolute;left:165px;bottom:165px;width:30px;height:70px;
+            border-radius:16px;
+            background:linear-gradient(to bottom,#fdfefe,#d5dbe7);
+            box-shadow:0 2px 6px rgba(40,50,80,.25);
+            transform:rotate(12deg);
+        }
+        .m-stage{
+            position:absolute;left:96px;bottom:82px;width:150px;height:18px;
+            border-radius:10px;
+            background:linear-gradient(to right,#c2cadc,#b2bbce);
+            box-shadow:0 2px 6px rgba(30,40,60,.35);
+        }
+        .m-knob{
+            position:absolute;left:98px;bottom:105px;width:22px;height:22px;
+            border-radius:50%;background:#9aa5c6;
+            box-shadow:0 2px 4px rgba(30,40,60,.4);
+        }
+        .m-highlight{
+            position:absolute;left:120px;bottom:125px;width:60px;height:22px;
+            border-radius:12px;
+            background:radial-gradient(circle at 25% 30%,#fff,rgba(255,255,255,0));
+            opacity:.7;
+        }
+        /* Lamp and plant */
+        .side-decor{
+            display:flex;
+            flex-direction:column;
+            align-items:center;
+            gap:14px;
+        }
+        .lamp-simple{
+            width:52px;height:52px;
+            border-radius:50% 50% 40% 40%;
+            background:radial-gradient(circle at 30% 20%,#fff,#f6e0b5);
+            box-shadow:0 0 12px rgba(255,230,180,.8);
+        }
+        .plant-simple{
+            width:56px;
+            height:40px;
+            position:relative;
+        }
+        .plant-pot{
+            position:absolute;bottom:0;left:10px;right:10px;height:16px;
+            border-radius:6px 6px 4px 4px;
+            background:#d3c7a8;
+        }
+        .plant-stem{
+            position:absolute;bottom:14px;left:26px;width:4px;height:20px;
+            border-radius:3px;background:#6e8f5e;
+        }
+        .plant-leaf{
+            position:absolute;width:18px;height:10px;border-radius:14px;
+            background:#7da86a;
+        }
+        .plant-leaf.l{left:10px;bottom:24px;transform:rotate(-20deg);}
+        .plant-leaf.r{right:10px;bottom:26px;transform:rotate(20deg);}
+        /* Slide tray */
+        .slide-tray{
+            position:absolute;left:16px;right:16px;bottom:10px;height:96px;
+            border-radius:12px;
+            background:rgba(227,232,245,.97);
+            box-shadow:0 3px 10px rgba(40,50,80,.18) inset;
+            padding:6px 8px;
+            display:flex;flex-direction:column;gap:4px;
+        }
+        .tray-header{
+            font-size:12px;font-weight:bold;color:#3a425b;
+            display:flex;justify-content:space-between;align-items:center;
+        }
+        .tray-list{
+            display:flex;gap:8px;overflow-x:auto;padding-bottom:3px;
+        }
+        .slide-card{
+            min-width:120px;max-width:120px;
+            border-radius:9px;background:#f9f9ff;
+            box-shadow:0 2px 5px rgba(40,50,80,.25);
+            padding:5px;display:flex;flex-direction:column;
+        }
+        .slide-thumb{width:100%;height:60px;border-radius:7px;object-fit:cover;}
+        .slide-caption{
+            margin-top:3px;font-size:10px;color:#474f6a;
+            white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+        }
+        .slide-delete{
+            margin-top:2px;align-self:flex-end;
+            border:none;border-radius:6px;
+            background:#c76363;color:#fff;
+            font-size:10px;padding:2px 6px;cursor:pointer;
+        }
+        .slide-delete:hover{background:#aa4747;}
+        /* Modal */
+        .backdrop{
+            position:fixed;inset:0;
+            display:none;align-items:center;justify-content:center;
+            background:rgba(20,28,50,.45);z-index:50;
+        }
+        .modal{
+            width:95%;max-width:850px;max-height:90vh;
+            background:#f7f7ff;border-radius:16px;
+            box-shadow:0 10px 24px rgba(10,18,40,.6);
+            display:flex;overflow:hidden;
+        }
+        .modal-left,.modal-right{padding:14px;}
+        .modal-left{flex:2;border-right:1px solid #d3d7ee;display:flex;flex-direction:column;}
+        .modal-right{flex:1.4;background:linear-gradient(to bottom,#eef1ff,#dde4f8);display:flex;flex-direction:column;}
+        .modal-header{
+            display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;
+        }
+        .modal-title{font-size:17px;font-weight:bold;color:#252b3f;}
+        .modal-close{
+            border:none;background:none;cursor:pointer;font-size:20px;color:#5c6278;
+        }
+        .viewer-frame{
+            flex:1;margin-top:4px;max-width:340px;margin-inline:auto;
+            aspect-ratio:1/1;border-radius:50%;
+            background:radial-gradient(circle at 30% 18%,#fff,#e2e7f7,#a4b0d3);
+            box-shadow:0 0 0 9px #c4c9de,0 0 0 14px #949bb8,0 10px 22px rgba(20,24,50,.6);
+            position:relative;overflow:hidden;
+        }
+        .viewer-inner{
+            position:absolute;inset:7px;border-radius:50%;
+            overflow:hidden;background:#111827;
+        }
+        .viewer-image{
+            width:100%;height:100%;object-fit:cover;
+            transform-origin:center center;cursor:grab;
+        }
+        .viewer-empty{
+            width:100%;height:100%;display:flex;
+            align-items:center;justify-content:center;
+            color:#cdd2ec;font-size:13px;text-align:center;padding:0 10px;
+        }
+        .zoom-controls{
+            display:flex;justify-content:center;align-items:center;
+            gap:8px;margin-top:6px;
+        }
+        .zoom-btn{
+            border:none;border-radius:999px;
+            background:#9ba8e6;color:#fff;
+            padding:5px 10px;font-size:13px;cursor:pointer;
+        }
+        .zoom-btn:hover{background:#8393d4;}
+        .zoom-level{font-size:12px;color:#444b68;}
+        .panel-title{font-size:14px;font-weight:bold;color:#2d3550;margin-bottom:4px;}
+        .preset-list{flex:1;overflow-y:auto;padding-right:4px;margin-bottom:6px;}
+        .preset-group-label{font-size:11px;font-weight:bold;color:#4a5274;margin:4px 0 2px;}
+        .preset-buttons{display:flex;flex-wrap:wrap;gap:4px;}
+        .preset-btn{
+            border:none;border-radius:999px;
+            padding:3px 8px;font-size:11px;cursor:pointer;
+            background:#fff;color:#3b4360;
+            box-shadow:0 1px 3px rgba(30,40,70,.3);
+        }
+        .preset-btn:hover{background:#d9e2ff;}
+        .upload-box{
+            border-radius:10px;padding:6px 7px;
+            background:#f0f2ff;
+            box-shadow:0 1px 4px rgba(20,30,60,.15) inset;
+        }
+        .upload-row{display:flex;gap:6px;align-items:center;margin-bottom:4px;}
+        .upload-row input[type=file]{flex:1;font-size:11px;}
+        .caption-input{
+            width:100%;border-radius:7px;border:1px solid #c3c8e3;
+            padding:4px 6px;font-size:12px;margin-bottom:4px;
+        }
+        .save-slide-btn{
+            width:100%;border:none;border-radius:8px;
+            background:#7e93e3;color:#fff;
+            padding:5px 0;font-size:13px;cursor:pointer;
+        }
+        .save-slide-btn:hover{background:#6579ca;}
+        .helper-text{font-size:10px;color:#626c8c;margin-top:3px;}
+        @media(max-width:800px){
+            .modal{flex-direction:column;}
+            .modal-left{border-right:none;border-bottom:1px solid #d3d7ee;}
+        }
+        @media(max-width:700px){
+            .lab-main{padding:32px 20px 130px;flex-direction:column-reverse;align-items:center;}
+            .desk{bottom:100px;}
+        }
+    </style>
+</head>
+<body>
+<h1>Microscope Lab</h1>
+<p class="subtitle">Tap the microscope to explore samples or add your own slides for your future doctors.</p>
+
+<div class="lab-shell">
+    <div class="lab-room">
+        <div class="desk"><div class="desk-top"></div></div>
+
+        <div class="lab-main">
+            <div class="side-decor">
+                <div class="lamp-simple"></div>
+                <div class="plant-simple">
+                    <div class="plant-pot"></div>
+                    <div class="plant-stem"></div>
+                    <div class="plant-leaf l"></div>
+                    <div class="plant-leaf r"></div>
+                </div>
+            </div>
+
+            <div class="microscope-area" id="microscope">
+                <div class="tap-hint">Tap the microscope to open the viewer</div>
+                <div class="m-base"></div>
+                <div class="m-arm"></div>
+                <div class="m-body"></div>
+                <div class="m-eyepiece"></div>
+                <div class="m-stage"></div>
+                <div class="m-knob"></div>
+                <div class="m-highlight"></div>
+            </div>
+        </div>
+
+        <div class="slide-tray">
+            <div class="tray-header">
+                <span>Saved Slides</span>
+                <span style="font-size:11px;color:#6a728e;">Scroll to view all</span>
+            </div>
+            <div class="tray-list" id="slideTray"></div>
+        </div>
+    </div>
+</div>
+
+<div class="backdrop" id="backdrop">
+    <div class="modal">
+        <div class="modal-left">
+            <div class="modal-header">
+                <div class="modal-title">Microscope Viewer</div>
+                <button class="modal-close" id="closeModal">&times;</button>
+            </div>
+            <div class="viewer-frame">
+                <div class="viewer-inner">
+                    <img id="viewerImage" class="viewer-image" style="display:none" alt="Microscope view">
+                    <div id="viewerEmpty" class="viewer-empty">
+                        Choose a preset sample or upload your own image to view it here.
+                    </div>
+                </div>
+            </div>
+            <div class="zoom-controls">
+                <button class="zoom-btn" id="zoomOut">−</button>
+                <div class="zoom-level" id="zoomLevel">Zoom: 100%</div>
+                <button class="zoom-btn" id="zoomIn">+</button>
+            </div>
+        </div>
+        <div class="modal-right">
+            <div class="panel-title">Sample Library</div>
+            <div class="preset-list">
+                <div class="preset-group-label">Nature</div>
+                <div class="preset-buttons">
+                    <button class="preset-btn" data-preset="flower_petal">Flower petal</button>
+                    <button class="preset-btn" data-preset="rose_petal_cells">Rose petal cells</button>
+                    <button class="preset-btn" data-preset="lavender_pollen">Lavender pollen</button>
+                    <button class="preset-btn" data-preset="tree_leaf">Tree leaf</button>
+                    <button class="preset-btn" data-preset="leaf_vein">Leaf vein cross‑section</button>
+                    <button class="preset-btn" data-preset="fern_leaf">Fern leaf cells</button>
+                    <button class="preset-btn" data-preset="moss">Moss</button>
+                    <button class="preset-btn" data-preset="grass_blade">Grass blade cells</button>
+                    <button class="preset-btn" data-preset="pine_needle">Pine needle cells</button>
+                    <button class="preset-btn" data-preset="tree_bark">Tree bark fibers</button>
+                </div>
+
+                <div class="preset-group-label">Crystals & particles</div>
+                <div class="preset-buttons">
+                    <button class="preset-btn" data-preset="salt_crystals">Salt crystals</button>
+                    <button class="preset-btn" data-preset="sugar_crystals">Sugar crystals</button>
+                    <button class="preset-btn" data-preset="colored_sand">Colored sand grains</button>
+                    <button class="preset-btn" data-preset="glitter">Glitter particles</button>
+                    <button class="preset-btn" data-preset="makeup_powder">Makeup powder</button>
+                    <button class="preset-btn" data-preset="pencil_pigment">Colored pencil pigment</button>
+                </div>
+
+                <div class="preset-group-label">Everyday materials</div>
+                <div class="preset-buttons">
+                    <button class="preset-btn" data-preset="fabric_fibers">Fabric fibers</button>
+                    <button class="preset-btn" data-preset="paper_fibers">Paper fibers</button>
+                    <button class="preset-btn" data-preset="feather_barbules">Feather barbules</button>
+                </div>
+
+                <div class="preset-group-label">Biology‑ish</div>
+                <div class="preset-buttons">
+                    <button class="preset-btn" data-preset="mixed_pollen">Pollen grains</button>
+                </div>
+            </div>
+
+            <div class="panel-title">Add your own sample</div>
+            <div class="upload-box">
+                <div class="upload-row">
+                    <input type="file" id="uploadInput" accept="image/*">
+                </div>
+                <input type="text" id="captionInput" class="caption-input" placeholder="Caption (e.g., My leaf sample)">
+                <button class="save-slide-btn" id="saveSlide">Save as slide</button>
+                <div class="helper-text">
+                    Upload a photo (for example, something under a real microscope or a close‑up),
+                    then save it as a slide for your future doctors to revisit.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+const SLIDES_KEY="microscopeLabSlides_v2";
+const presetImages={
+    flower_petal:"linear-gradient(135deg,#f7c3d9,#fbe7f0)",
+    rose_petal_cells:"linear-gradient(135deg,#f8a3bd,#fcd0df)",
+    lavender_pollen:"linear-gradient(135deg,#c0a6e8,#ebddff)",
+    tree_leaf:"linear-gradient(135deg,#7dbb6c,#c2ecb4)",
+    leaf_vein:"linear-gradient(135deg,#6e9c57,#e2f6d2)",
+    fern_leaf:"linear-gradient(135deg,#4f8c5d,#a2d6a7)",
+    moss:"linear-gradient(135deg,#426c3a,#81a760)",
+    grass_blade:"linear-gradient(135deg,#4f9b4b,#a6e19b)",
+    pine_needle:"linear-gradient(135deg,#3d6652,#82b89a)",
+    tree_bark:"linear-gradient(135deg,#7b5b3c,#c49b70)",
+    salt_crystals:"linear-gradient(135deg,#e1ecff,#b4c9e6)",
+    sugar_crystals:"linear-gradient(135deg,#f6f0ff,#e0d0ff)",
+    colored_sand:"linear-gradient(135deg,#f4c16a,#f48fb1)",
+    glitter:"radial-gradient(circle at 20% 20%,#fff,#e4c3ff,#c18df5)",
+    makeup_powder:"linear-gradient(135deg,#f5d0b5,#fce5d5)",
+    pencil_pigment:"linear-gradient(135deg,#8c7ad9,#f783ac)",
+    fabric_fibers:"linear-gradient(135deg,#b0c4de,#dde7f7)",
+    paper_fibers:"linear-gradient(135deg,#f5f1e8,#e0d5c5)",
+    feather_barbules:"linear-gradient(135deg,#afc9f4,#f1fbff)",
+    mixed_pollen:"radial-gradient(circle at 30% 30%,#f9e47b,#f4b0ce,#c2d6ff)"
+};
+const microscope=document.getElementById("microscope");
+const backdrop=document.getElementById("backdrop");
+const closeModal=document.getElementById("closeModal");
+const viewerImage=document.getElementById("viewerImage");
+const viewerEmpty=document.getElementById("viewerEmpty");
+const zoomIn=document.getElementById("zoomIn");
+const zoomOut=document.getElementById("zoomOut");
+const zoomLevel=document.getElementById("zoomLevel");
+const uploadInput=document.getElementById("uploadInput");
+const captionInput=document.getElementById("captionInput");
+const saveSlideBtn=document.getElementById("saveSlide");
+const slideTray=document.getElementById("slideTray");
+
+let currentZoom=1,imgX=0,imgY=0,isDragging=false,startX=0,startY=0;
+let currentImageData=null; // {type:"preset"|"upload",value:...}
+
+function applyTransform(){
+    viewerImage.style.transform=`translate(${imgX}px,${imgY}px) scale(${currentZoom})`;
+    zoomLevel.textContent=`Zoom: ${Math.round(currentZoom*100)}%`;
+}
+function setGradientView(gradient){
+    viewerImage.style.display="none";
+    viewerEmpty.style.display="flex";
+    viewerEmpty.style.background=gradient;
+    viewerEmpty.textContent="Preset sample view — imagine the microscopic structure here.";
+    currentImageData={type:"preset",value:gradient};
+    currentZoom=1;imgX=0;imgY=0;
+    zoomLevel.textContent="Zoom: 100%";
+}
+function setImageView(dataURL){
+    viewerEmpty.style.display="none";
+    viewerEmpty.style.background="transparent";
+    viewerImage.style.display="block";
+    viewerImage.src=dataURL;
+    currentImageData={type:"upload",value:dataURL};
+    currentZoom=1;imgX=0;imgY=0;
+    applyTransform();
+}
+
+microscope.addEventListener("click",()=>{backdrop.style.display="flex";});
+closeModal.addEventListener("click",()=>{backdrop.style.display="none";});
+backdrop.addEventListener("click",e=>{if(e.target===backdrop)backdrop.style.display="none";});
+
+zoomIn.addEventListener("click",()=>{currentZoom=Math.min(currentZoom+0.2,4);applyTransform();});
+zoomOut.addEventListener("click",()=>{currentZoom=Math.max(currentZoom-0.2,0.6);applyTransform();});
+
+viewerImage.addEventListener("mousedown",e=>{
+    isDragging=true;
+    startX=e.clientX-imgX;
+    startY=e.clientY-imgY;
+    viewerImage.style.cursor="grabbing";
+});
+document.addEventListener("mousemove",e=>{
+    if(!isDragging)return;
+    imgX=e.clientX-startX;
+    imgY=e.
