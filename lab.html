@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,21 +6,22 @@
 <title>Microscope Lab</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
+  *{box-sizing:border-box;margin:0;padding:0}
   body{
-    font-family:Arial, sans-serif;
-    background:#e3e7f2;
-    margin:0;
-    padding:20px;
+    font-family:Arial,sans-serif;
+    background:#e2e7f2;
+    padding:20px 10px 40px;
     display:flex;
     flex-direction:column;
     align-items:center;
+    color:#111827;
   }
-  h1{margin-bottom:6px;font-size:24px;color:#1f2937}
-  .subtitle{font-size:13px;color:#4b5563;margin-bottom:16px}
+  h1{font-size:24px;margin-bottom:6px;text-align:center}
+  .subtitle{font-size:13px;color:#4b5563;margin-bottom:16px;text-align:center}
 
   .container{
-    width:100%;max-width:850px;
-    background:#f9fafc;
+    width:100%;max-width:840px;
+    background:#f9fafb;
     border-radius:14px;
     padding:14px;
     box-shadow:0 4px 12px rgba(0,0,0,0.15);
@@ -27,34 +29,40 @@
     flex-wrap:wrap;
     gap:14px;
   }
+  .left,.right{flex:1 1 260px;min-width:260px}
 
-  .left,.right{flex:1 1 260px}
-
-  /* Microscope */
+  /* Microscope card */
   .microscope-box{
-    background:#e6e9f8;
+    background:#e4e7ff;
     border-radius:12px;
     padding:12px;
     text-align:center;
-    box-shadow:0 3px 8px rgba(0,0,0,0.2);
+    box-shadow:0 3px 8px rgba(0,0,0,0.18);
   }
   .microscope-area{
     width:200px;height:160px;
-    margin:0 auto;
+    margin:0 auto 8px;
     background:#f5f7ff;
     border-radius:12px;
-    display:flex;align-items:center;justify-content:center;
+    display:flex;
+    align-items:center;
+    justify-content:center;
     cursor:pointer;
     position:relative;
     box-shadow:inset 0 0 0 2px #c7cce0;
   }
-  .microscope-area:hover{box-shadow:0 0 0 3px #6366f1, inset 0 0 0 2px #c7cce0}
+  .microscope-area:hover{
+    box-shadow:0 0 0 3px #6366f1,inset 0 0 0 2px #c7cce0;
+  }
+  .microscope-icon{width:90px;height:auto}
   .tap-hint{
     position:absolute;bottom:6px;left:50%;transform:translateX(-50%);
-    background:#111827;color:#fff;font-size:10px;
+    background:#111827;color:#f9fafb;font-size:10px;
     padding:2px 6px;border-radius:999px;
   }
-  .microscope-icon{width:90px}
+  .info-text{
+    font-size:12px;color:#4b5563;
+  }
 
   /* Viewer */
   .viewer{
@@ -64,56 +72,110 @@
     padding:10px;
     display:none;
   }
+  .viewer-title{
+    font-size:14px;font-weight:bold;margin-bottom:6px;color:#111827;text-align:left;
+  }
   .viewer-frame{
     width:100%;max-width:300px;margin:0 auto;
     aspect-ratio:1/1;
-    background:#0f172a;
     border-radius:14px;
     overflow:hidden;
-    display:flex;align-items:center;justify-content:center;
+    position:relative;
+    background:#0f172a; /* default */
+    display:flex;
+    align-items:center;
+    justify-content:center;
   }
   .viewer-image{
     width:100%;height:100%;object-fit:cover;
     transform-origin:center;
+    display:none;
   }
   .viewer-empty{
-    color:#9ca3af;font-size:12px;text-align:center;padding:8px;
+    position:absolute;
+    inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding:8px;
+    font-size:12px;
+    color:#e5e7eb;
   }
   .viewer-controls{
-    margin-top:6px;display:flex;justify-content:center;gap:8px;font-size:12px;
+    margin-top:6px;
+    display:flex;
+    justify-content:center;
+    gap:8px;
+    font-size:12px;
   }
   .btn{
-    border:none;border-radius:999px;padding:4px 10px;font-size:12px;
-    cursor:pointer;background:#6366f1;color:#fff;
+    border:none;
+    border-radius:999px;
+    padding:4px 10px;
+    font-size:12px;
+    cursor:pointer;
+    background:#6366f1;
+    color:#fff;
   }
   .btn:hover{background:#4f46e5}
   .zoom-label{color:#374151}
+  .viewer-caption{
+    text-align:center;
+    margin-top:6px;
+    font-size:12px;
+    color:#374151;
+    min-height:16px;
+  }
 
-  /* Samples */
-  .section-title{font-size:14px;font-weight:bold;margin-bottom:4px;color:#1f2937}
+  /* Right side */
+  .section-title{
+    font-size:14px;font-weight:bold;margin-bottom:4px;color:#111827;
+  }
   .sample-list{
     background:#f3f4ff;
     border-radius:10px;
     padding:6px;
     max-height:200px;
     overflow-y:auto;
-    display:flex;flex-wrap:wrap;gap:4px;
+    display:flex;
+    flex-wrap:wrap;
+    gap:4px;
   }
   .sample-btn{
-    border:none;border-radius:999px;
-    padding:4px 8px;font-size:11px;
-    background:#fff;color:#374151;
-    cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,0.2);
+    border:none;
+    border-radius:999px;
+    padding:4px 8px;
+    font-size:11px;
+    background:#ffffff;
+    color:#374151;
+    cursor:pointer;
+    box-shadow:0 1px 3px rgba(0,0,0,0.2);
   }
   .sample-btn:hover{background:#e0e7ff}
 
-  /* Upload */
   .upload-box{
-    margin-top:10px;background:#eef1ff;border-radius:12px;padding:8px;font-size:12px;
+    margin-top:10px;
+    background:#eef1ff;
+    border-radius:12px;
+    padding:8px;
+    font-size:12px;
   }
   .upload-caption{
-    width:100%;border-radius:8px;border:1px solid #c7d2fe;
-    padding:4px 6px;font-size:12px;margin-top:6px;
+    width:100%;
+    border-radius:8px;
+    border:1px solid #c7d2fe;
+    padding:4px 6px;
+    font-size:12px;
+    margin-top:6px;
+  }
+  .small-note{
+    font-size:11px;color:#6b7280;margin-top:4px;
+  }
+
+  @media(max-width:600px){
+    .microscope-area{width:180px;height:145px}
+    .microscope-icon{width:80px}
   }
 </style>
 </head>
@@ -127,7 +189,8 @@
   <div class="left">
     <div class="microscope-box">
       <div class="microscope-area" id="microscopeArea">
-        <svg class="microscope-icon" viewBox="0 0 64 64">
+        <!-- Simple microscope icon -->
+        <svg class="microscope-icon" viewBox="0 0 64 64" aria-hidden="true">
           <rect x="10" y="50" width="44" height="6" rx="3" fill="#6b7280"/>
           <rect x="26" y="32" width="14" height="10" rx="3" fill="#9ca3af"/>
           <rect x="29" y="14" width="8" height="16" rx="3" fill="#9ca3af"/>
@@ -135,111 +198,148 @@
         </svg>
         <div class="tap-hint">Tap to open</div>
       </div>
+      <p class="info-text">Use the microscope area, then pick a sample or upload your own image.</p>
 
       <div class="viewer" id="viewer">
-        <div class="viewer-frame">
-          <img id="viewerImage" class="viewer-image" style="display:none">
-          <div id="viewerEmpty" class="viewer-empty">Choose a sample to view.</div>
+        <div class="viewer-title">Microscope viewer</div>
+        <div class="viewer-frame" id="viewerFrame">
+          <img id="viewerImage" class="viewer-image" alt="Sample view">
+          <div id="viewerEmpty" class="viewer-empty">
+            Choose a sample on the right or upload an image.
+          </div>
         </div>
         <div class="viewer-controls">
           <button class="btn" id="zoomOut">−</button>
           <span class="zoom-label" id="zoomLabel">Zoom: 100%</span>
           <button class="btn" id="zoomIn">+</button>
         </div>
-        <div id="viewerCaption" style="text-align:center;margin-top:6px;font-size:12px;color:#374151"></div>
+        <div class="viewer-caption" id="viewerCaption"></div>
       </div>
     </div>
   </div>
 
   <div class="right">
-    <div class="section-title">Sample Library</div>
+    <div class="section-title">Sample library</div>
     <div class="sample-list">
       <button class="sample-btn" data-id="flower">Flower petal</button>
       <button class="sample-btn" data-id="leaf">Leaf cells</button>
       <button class="sample-btn" data-id="pollen">Pollen grains</button>
+      <button class="sample-btn" data-id="fern">Fern texture</button>
       <button class="sample-btn" data-id="salt">Salt crystals</button>
       <button class="sample-btn" data-id="sugar">Sugar crystals</button>
+      <button class="sample-btn" data-id="sand">Colored sand</button>
       <button class="sample-btn" data-id="fabric">Fabric fibers</button>
+      <button class="sample-btn" data-id="paper">Paper fibers</button>
+      <button class="sample-btn" data-id="feather">Feather detail</button>
     </div>
 
     <div class="upload-box">
       <div class="section-title">Upload your own sample</div>
       <input type="file" id="uploadInput" accept="image/*">
-      <input type="text" id="uploadCaption" class="upload-caption" placeholder="Caption">
+      <input type="text" id="uploadCaption" class="upload-caption" placeholder="Caption (optional)">
       <button class="btn" id="useUpload">View</button>
+      <p class="small-note">
+        The image stays in your browser only. You can try photos of leaves, flowers, or small objects.
+      </p>
     </div>
   </div>
 
 </div>
 
 <script>
-const PRESETS={
-  flower:{bg:"radial-gradient(circle,#ffe4f1,#f472b6)",cap:"Flower petal"},
-  leaf:{bg:"radial-gradient(circle,#dcfce7,#22c55e)",cap:"Leaf cells"},
-  pollen:{bg:"radial-gradient(circle,#fef9c3,#facc15)",cap:"Pollen grains"},
-  salt:{bg:"radial-gradient(circle,#e5e7eb,#cbd5f5)",cap:"Salt crystals"},
-  sugar:{bg:"radial-gradient(circle,#fee2e2,#f97373)",cap:"Sugar crystals"},
-  fabric:{bg:"radial-gradient(circle,#e0f2fe,#1d4ed8)",cap:"Fabric fibers"}
-};
-
-const microscope=document.getElementById("microscopeArea");
-const viewer=document.getElementById("viewer");
-const viewerImage=document.getElementById("viewerImage");
-const viewerEmpty=document.getElementById("viewerEmpty");
-const viewerCaption=document.getElementById("viewerCaption");
-const zoomLabel=document.getElementById("zoomLabel");
-
-let zoom=1;
-
-function showViewer(){
-  viewer.style.display="block";
-}
-
-function showPreset(id){
-  const p=PRESETS[id];
-  if(!p)return;
-  showViewer();
-  viewerImage.style.display="none";
-  viewerEmpty.style.display="flex";
-  viewerEmpty.style.background=p.bg;
-  viewerCaption.textContent=p.cap;
-  zoom=1;
-  zoomLabel.textContent="Zoom: 100%";
-}
-
-document.querySelectorAll(".sample-btn").forEach(btn=>{
-  btn.onclick=()=>showPreset(btn.dataset.id);
-});
-
-microscope.onclick=showViewer;
-
-document.getElementById("zoomIn").onclick=()=>{
-  zoom=Math.min(zoom+0.2,3);
-  viewerImage.style.transform=`scale(${zoom})`;
-  zoomLabel.textContent=`Zoom: ${Math.round(zoom*100)}%`;
-};
-document.getElementById("zoomOut").onclick=()=>{
-  zoom=Math.max(zoom-0.2,0.6);
-  viewerImage.style.transform=`scale(${zoom})`;
-  zoomLabel.textContent=`Zoom: ${Math.round(zoom*100)}%`;
-};
-
-document.getElementById("useUpload").onclick=()=>{
-  const file=document.getElementById("uploadInput").files[0];
-  if(!file){alert("Choose an image first.");return;}
-  const reader=new FileReader();
-  reader.onload=e=>{
-    showViewer();
-    viewerEmpty.style.display="none";
-    viewerImage.style.display="block";
-    viewerImage.src=e.target.result;
-    viewerCaption.textContent=document.getElementById("uploadCaption").value||"Uploaded sample";
-    zoom=1;
-    zoomLabel.textContent="Zoom: 100%";
+  // Simple presets using background colors (no files)
+  const PRESETS = {
+    flower:{bg:"#f472b6", caption:"Flower petal – think of colorful, soft cells."},
+    leaf:{bg:"#22c55e", caption:"Leaf cells – tiny green structures packed with chlorophyll."},
+    pollen:{bg:"#facc15", caption:"Pollen grains – small shapes that help plants reproduce."},
+    fern:{bg:"#16a34a", caption:"Fern texture – repeating patterns along the leaf."},
+    salt:{bg:"#cbd5f5", caption:"Salt crystals – square, sharp-edged shapes."},
+    sugar:{bg:"#fca5a5", caption:"Sugar crystals – bright, reflective tiny pieces."},
+    sand:{bg:"#f97316", caption:"Colored sand – many grains mixed together."},
+    fabric:{bg:"#60a5fa", caption:"Fabric fibers – threads crossing over and under."},
+    paper:{bg:"#e5e7eb", caption:"Paper fibers – pressed and tangled fibers."},
+    feather:{bg:"#a5b4fc", caption:"Feather detail – fine structures that link together."}
   };
-  reader.readAsDataURL(file);
-};
+
+  const microscopeArea = document.getElementById("microscopeArea");
+  const viewer = document.getElementById("viewer");
+  const viewerFrame = document.getElementById("viewerFrame");
+  const viewerImage = document.getElementById("viewerImage");
+  const viewerEmpty = document.getElementById("viewerEmpty");
+  const viewerCaption = document.getElementById("viewerCaption");
+  const zoomLabel = document.getElementById("zoomLabel");
+  const zoomInBtn = document.getElementById("zoomIn");
+  const zoomOutBtn = document.getElementById("zoomOut");
+  const uploadInput = document.getElementById("uploadInput");
+  const uploadCaption = document.getElementById("uploadCaption");
+  const useUploadBtn = document.getElementById("useUpload");
+
+  let currentZoom = 1;
+
+  function openViewer(){
+    viewer.style.display = "block";
+  }
+
+  function setZoom(z){
+    currentZoom = Math.min(Math.max(z, 0.6), 3);
+    viewerImage.style.transform = "scale(" + currentZoom + ")";
+    zoomLabel.textContent = "Zoom: " + Math.round(currentZoom * 100) + "%";
+  }
+
+  function showPreset(id){
+    const preset = PRESETS[id];
+    if(!preset) return;
+    openViewer();
+
+    // Hide empty text and image, color the frame instead
+    viewerEmpty.style.display = "none";
+    viewerImage.style.display = "none";
+    viewerFrame.style.background = preset.bg;
+
+    viewerCaption.textContent = preset.caption;
+    setZoom(1);
+  }
+
+  function showUpload(dataURL, caption){
+    openViewer();
+
+    // Reset background to dark so the image stands out
+    viewerFrame.style.background = "#0f172a";
+
+    viewerEmpty.style.display = "none";
+    viewerImage.style.display = "block";
+    viewerImage.src = dataURL;
+
+    viewerCaption.textContent = caption || "Uploaded sample.";
+    setZoom(1);
+  }
+
+  microscopeArea.addEventListener("click", openViewer);
+
+  document.querySelectorAll(".sample-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const id = btn.getAttribute("data-id");
+      showPreset(id);
+    });
+  });
+
+  zoomInBtn.addEventListener("click", () => setZoom(currentZoom + 0.2));
+  zoomOutBtn.addEventListener("click", () => setZoom(currentZoom - 0.2));
+
+  useUploadBtn.addEventListener("click", () => {
+    const file = uploadInput.files && uploadInput.files[0];
+    if(!file){
+      alert("Choose an image first.");
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = e => {
+      showUpload(e.target.result, uploadCaption.value.trim());
+    };
+    reader.readAsDataURL(file);
+  });
 </script>
 
 </body>
 </html>
+ 
