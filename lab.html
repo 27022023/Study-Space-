@@ -1,9 +1,8 @@
-
-<!DOCTYPE html>
+> <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Microscope Lab</title>
+<title>Sample viewer</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
   *{box-sizing:border-box;margin:0;padding:0}
@@ -81,7 +80,7 @@
     border-radius:14px;
     overflow:hidden;
     position:relative;
-    background:#0f172a; /* default */
+    background:#0f172a;
     display:flex;
     align-items:center;
     justify-content:center;
@@ -136,7 +135,7 @@
     background:#f3f4ff;
     border-radius:10px;
     padding:6px;
-    max-height:200px;
+    max-height:220px;
     overflow-y:auto;
     display:flex;
     flex-wrap:wrap;
@@ -181,8 +180,8 @@
 </head>
 <body>
 
-<h1>Microscope Lab</h1>
-<p class="subtitle">Tap the microscope, choose a sample, and zoom in.</p>
+<h1>Sample viewer</h1>
+<p class="subtitle">Tap the microscope, choose a sample, or upload your own image.</p>
 
 <div class="container">
 
@@ -198,7 +197,7 @@
         </svg>
         <div class="tap-hint">Tap to open</div>
       </div>
-      <p class="info-text">Use the microscope area, then pick a sample or upload your own image.</p>
+      <p class="info-text">Open the viewer, then pick a sample on the right or upload your own image.</p>
 
       <div class="viewer" id="viewer">
         <div class="viewer-title">Microscope viewer</div>
@@ -224,7 +223,6 @@
       <button class="sample-btn" data-id="flower">Flower petal</button>
       <button class="sample-btn" data-id="leaf">Leaf cells</button>
       <button class="sample-btn" data-id="pollen">Pollen grains</button>
-      <button class="sample-btn" data-id="fern">Fern texture</button>
       <button class="sample-btn" data-id="salt">Salt crystals</button>
       <button class="sample-btn" data-id="sugar">Sugar crystals</button>
       <button class="sample-btn" data-id="sand">Colored sand</button>
@@ -239,7 +237,7 @@
       <input type="text" id="uploadCaption" class="upload-caption" placeholder="Caption (optional)">
       <button class="btn" id="useUpload">View</button>
       <p class="small-note">
-        The image stays in your browser only. You can try photos of leaves, flowers, or small objects.
+        The image stays in your browser only. Try photos of leaves, flowers, or small objects.
       </p>
     </div>
   </div>
@@ -247,18 +245,17 @@
 </div>
 
 <script>
-  // Simple presets using background colors (no files)
+  // Mapping presets to image file paths and captions
   const PRESETS = {
-    flower:{bg:"#f472b6", caption:"Flower petal – think of colorful, soft cells."},
-    leaf:{bg:"#22c55e", caption:"Leaf cells – tiny green structures packed with chlorophyll."},
-    pollen:{bg:"#facc15", caption:"Pollen grains – small shapes that help plants reproduce."},
-    fern:{bg:"#16a34a", caption:"Fern texture – repeating patterns along the leaf."},
-    salt:{bg:"#cbd5f5", caption:"Salt crystals – square, sharp-edged shapes."},
-    sugar:{bg:"#fca5a5", caption:"Sugar crystals – bright, reflective tiny pieces."},
-    sand:{bg:"#f97316", caption:"Colored sand – many grains mixed together."},
-    fabric:{bg:"#60a5fa", caption:"Fabric fibers – threads crossing over and under."},
-    paper:{bg:"#e5e7eb", caption:"Paper fibers – pressed and tangled fibers."},
-    feather:{bg:"#a5b4fc", caption:"Feather detail – fine structures that link together."}
+    flower:{src:"samples/flower.jpg", caption:"Flower petal"},
+    leaf:{src:"samples/leaf.jpg", caption:"Leaf cells"},
+    pollen:{src:"samples/pollen.jpg", caption:"Pollen grains"},
+    salt:{src:"samples/salt.jpg", caption:"Salt crystals"},
+    sugar:{src:"samples/sugar.jpg", caption:"Sugar crystals"},
+    sand:{src:"samples/sand.jpg", caption:"Colored sand"},
+    fabric:{src:"samples/fabric.jpg", caption:"Fabric fibers"},
+    paper:{src:"samples/paper.jpg", caption:"Paper fibers"},
+    feather:{src:"samples/feather.jpg", caption:"Feather detail"}
   };
 
   const microscopeArea = document.getElementById("microscopeArea");
@@ -286,32 +283,24 @@
     zoomLabel.textContent = "Zoom: " + Math.round(currentZoom * 100) + "%";
   }
 
-  function showPreset(id){
-    const preset = PRESETS[id];
-    if(!preset) return;
+  function showImage(src, caption){
     openViewer();
-
-    // Hide empty text and image, color the frame instead
     viewerEmpty.style.display = "none";
-    viewerImage.style.display = "none";
-    viewerFrame.style.background = preset.bg;
-
-    viewerCaption.textContent = preset.caption;
+    viewerImage.style.display = "block";
+    viewerFrame.style.background = "#0f172a";
+    viewerImage.src = src;
+    viewerCaption.textContent = caption || "";
     setZoom(1);
   }
 
+  function showPreset(id){
+    const preset = PRESETS[id];
+    if(!preset) return;
+    showImage(preset.src, preset.caption);
+  }
+
   function showUpload(dataURL, caption){
-    openViewer();
-
-    // Reset background to dark so the image stands out
-    viewerFrame.style.background = "#0f172a";
-
-    viewerEmpty.style.display = "none";
-    viewerImage.style.display = "block";
-    viewerImage.src = dataURL;
-
-    viewerCaption.textContent = caption || "Uploaded sample.";
-    setZoom(1);
+    showImage(dataURL, caption || "Uploaded sample.");
   }
 
   microscopeArea.addEventListener("click", openViewer);
@@ -341,6 +330,7 @@
 </script>
 
 </body>
-</html>?nocache=1
+</html>
+?nocache=1
 
  
