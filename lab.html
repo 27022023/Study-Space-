@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Sample Viewer</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: #e2e7f2;
+    padding: 20px;
+    text-align: center;
+  }
+  h1 { margin-bottom: 10px; }
+  .container {
+    max-width: 900px;
+    margin: auto;
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .viewer-box, .sample-box {
+    background: white;
+    padding: 15px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    width: 350px;
+  }
+  .viewer-frame {
+    width: 100%;
+    aspect-ratio: 1/1;
+    background: #111;
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+  }
+  #viewerImage {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform-origin: center;
+    display: none;
+  }
+  #viewerEmpty {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ccc;
+    font-size: 14px;
+  }
+  .controls {
+    margin-top: 10px;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+  }
+  button {
+    padding: 6px 12px;
+    border: none;
+    background: #6366f1;
+    color: white;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  button:hover { background: #4f46e5; }
+  .sample-list button {
+    margin: 4px;
+    background: #eef;
+    color: #333;
+  }
+</style>
+</head>
+<body>
+
+<h1>Sample Viewer</h1>
+<p>Choose a sample or upload your own image.</p>
+
+<div class="container">
+
+  <div class="viewer-box">
+    <div class="viewer-frame">
+      <img id="viewerImage">
+      <div id="viewerEmpty">No sample selected</div>
+    </div>
+    <div class="controls">
+      <button onclick="zoomOut()">−</button>
+      <span id="zoomLabel">Zoom: 100%</span>
+      <button onclick="zoomIn()">+</button>
+    </div>
+    <p id="caption"></p>
+  </div>
+
+  <div class="sample-box">
+    <h3>Sample Library</h3>
+    <div class="sample-list">
+      <button onclick="loadSample('flower')">Flower Petal</button>
+      <button onclick="loadSample('leaf')">Leaf Cells</button>
+      <button onclick="loadSample('pollen')">Pollen</button>
+      <button onclick="loadSample('salt')">Salt Crystals</button>
+      <button onclick="loadSample('sugar')">Sugar Crystals</button>
+      <button onclick="loadSample('fabric')">Fabric Fibers</button>
+      <button onclick="loadSample('paper')">Paper Fibers</button>
+      <button onclick="loadSample('feather')">Feather Detail</button>
+      <button onclick="loadSample('sand')">Sand Grains</button>
+    </div>
+
+    <h3 style="margin-top:20px;">Upload Your Own</h3>
+    <input type="file" id="uploadInput" accept="image/*">
+    <button onclick="useUpload()">View</button>
+  </div>
+
+</div>
+
+<script>
+const SAMPLES = {
+  flower: {
+    src: "https://upload.wikimedia.org/wikipedia/commons/4/4c/Microscope_image_of_flower_petal.jpg",
+    caption: "Flower Petal"
+  },
+  leaf: {
+    src: "https://upload.wikimedia.org/wikipedia/commons/3/3c/Leaf_cells_under_microscope.jpg",
+    caption: "Leaf Cells"
+  },
+  pollen: {
+    src: "https://upload.wikimedia.org/wikipedia/commons/0/0c/Pollen_microscope.jpg",
+    caption: "Pollen Grains"
+  },
+  salt: {
+    src: "https://upload.wikimedia.org/wikipedia/commons/6/6d/Salt_crystals_microscope.jpg",
+    caption: "Salt Crystals"
+  },
+  sugar: {
+    src: "https://upload.wikimedia.org/wikipedia/commons/5/5e/Sugar_crystals_microscope.jpg",
+    caption: "Sugar Crystals"
+  },
+  fabric: {
+    src: "https://upload.wikimedia.org/wikipedia/commons/8/8d/Fabric_fibers_microscope.jpg",
+    caption: "Fabric Fibers"
+  },
+  paper: {
+    src: "https://upload.wikimedia.org/wikipedia/commons/2/2e/Paper_fibers_microscope.jpg",
+    caption: "Paper Fibers"
+  },
+  feather: {
+    src: "https://upload.wikimedia.org/wikipedia/commons/7/7b/Feather_detail_microscope.jpg",
+    caption: "Feather Detail"
+  },
+  sand: {
+    src: "https://upload.wikimedia.org/wikipedia/commons/1/1d/Sand_grains_microscope.jpg",
+    caption: "Sand Grains"
+  }
+};
+
+let zoom = 1;
+
+function loadSample(name) {
+  const sample = SAMPLES[name];
+  const img = document.getElementById("viewerImage");
+  const empty = document.getElementById("viewerEmpty");
+
+  img.src = sample.src;
+  img.style.display = "block";
+  empty.style.display = "none";
+
+  document.getElementById("caption").textContent = sample.caption;
+  setZoom(1);
+}
+
+function useUpload() {
+  const file = document.getElementById("uploadInput").files[0];
+  if (!file) return alert("Choose an image first");
+
+  const reader = new FileReader();
+  reader.onload = e => {
+    const img = document.getElementById("viewerImage");
+    const empty = document.getElementById("viewerEmpty");
+
+    img.src = e.target.result;
+    img.style.display = "block";
+    empty.style.display = "none";
+
+    document.getElementById("caption").textContent = "Uploaded Sample";
+    setZoom(1);
+  };
+  reader.readAsDataURL(file);
+}
+
+function setZoom(z) {
+  zoom = Math.min(Math.max(z, 0.5), 3);
+  document.getElementById("viewerImage").style.transform = `scale(${zoom})`;
+  document.getElementById("zoomLabel").textContent = `Zoom: ${Math.round(zoom * 100)}%`;
+}
+
+function zoomIn() { setZoom(zoom + 0.2); }
+function zoomOut() { setZoom(zoom - 0.2); }
+</script>
+
+</body>
+</html>
