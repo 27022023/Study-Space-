@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Whiteboard</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+    body {
+        margin: 0;
+        background: #ffffff;
+        font-family: Arial, sans-serif;
+        overflow: hidden;
+    }
+
+    #toolbar {
+        display: flex;
+        gap: 10px;
+        padding: 10px;
+        background: #f0f0f0;
+        border-bottom: 1px solid #ccc;
+        align-items: center;
+    }
+
+    #whiteboard {
+        position: absolute;
+        top: 60px;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: white;
+        touch-action: none;
+    }
+
+    .tool-btn {
+        padding: 6px 12px;
+        background: #ddd;
+        border-radius: 5px;
+        cursor: pointer;
+        user-select: none;
+    }
+
+    .tool-btn:hover {
+        background: #ccc;
+    }
+
+    #textInput {
+        position: absolute;
+        display: none;
+        font-size: 20px;
+        border: 1px solid #000;
+        background: white;
+    }
+</style>
+</head>
+
+<body>
+
+<div id="toolbar">
+    <div class="tool-btn" onclick="setMode('draw')">✏️ Draw</div>
+    <div class="tool-btn" onclick="setMode('erase')">🧽 Erase</div>
+
+    <label>Size:
+        <input type="range" id="size" min="2" max="40" value="5">
+    </label>
+
+    <input type="color" id="color" value="#000000">
+
+    <div class="tool-btn" onclick="setMode('text')">🔤 Text</div>
+
+    <input type="file" id="imgUpload" accept="image/*" style="display:none" onchange="addImage(event)">
+    <div class="tool-btn" onclick="document.getElementById('imgUpload').click()">🖼️ Image</div>
+
+    <div class="tool-btn" onclick="saveBoard()">💾 Save</div>
+    <div class="tool-btn" onclick="clearBoard()">🗑️ Clear</div>
+</div>
+
+<canvas id="whiteboard"></canvas>
+<input id="textInput" type="text" onkeydown="finishText(event)">
+
+<script>
+const canvas = document.getElementById("whiteboard");
+const ctx = canvas.getContext("2d");
+let mode = "draw";
+let drawing = false;
+let lastX = 0, lastY = 0;
+
+function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight - 60;
+    loadSaved();
+}
+resizeCanvas();
+window.onresize = resizeCanvas;
+
+function setMode(m) {
+    mode = m;
+}
+
+canvas.addEventListener("pointerdown", e => {
+    if (mode === "text") {
+        placeTextInput(e);
+        return;
+    }
+    drawing = true;
+    [lastX, lastY] = [e.offsetX, e.offsetY];
+});
+
+canvas.addEventListener("pointermove", e => {
+    if (!drawing || mode === "text") return;
+
+    ctx.lineWidth = document.getElementById("size").value;
+    ctx.lineCap = "round";
+
+    if (mode === "draw") {
+        ctx.strokeStyle = document.getElementById("color").value;
+    } else if (mode === "erase") {
+        ctx.strokeStyle = "#ffffff";
+    }
+
+    ctx.beginPath();
+    ctx.moveTo(lastX, lastY);
+    ctx.lineTo(e.offsetX, e.offsetY);
+    ctx.stroke();
+
+    [lastX, lastY] = [e.offsetX, e.offsetY];
+});
+
+canvas.addEventListener("pointerup", () => {
+    drawing = false;
+    saveToLocal();
+});
+
+function placeTextInput(e) {
+    const input = document.getElementById("textInput");
+    input.style.left = e.clientX + "px";
+    input.style.top = e.clientY + "px";
+    input.style.display = "block";
+    input.value = "";
+    input.focus();
+}
+
+function finishText(e) {
+    if (e.key === "Enter") {
+        const input = document.getElementById("textInput");
+        ctx.font = "20px Arial";
+        ctx.fillStyle = document.getElementById("color").value;
+        ctx.fillText(input.value, parseInt(input.style.left), parseInt(input.style.top) - 60);
+        input.style.display = "none";
+        saveToLocal();
+    }
+}
+
+function addImage(event) {
+    const file = event.target.files[0];
+    const img = new Image();
+    img.onload = () => {
+        ctx.drawImage(img, 50, 50, img.width * 0.5, img.height * 0.5);
+        saveToLocal();
+    };
+    img.src = URL.createObjectURL(file);
+}
+
+function saveBoard() {
+    const link = document.createElement("a");
+    link.download = "whiteboard.png";
+    link.href = canvas.toDataURL();
+    link.click();
+}
+
+function clearBoard() {
+    ctx.fillStyle = "white";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    saveToLocal();
+}
+
+function saveToLocal() {
+    localStorage.setItem("whiteboardData", canvas.toDataURL());
+}
+
+function loadSaved() {
+    const data = localStorage.getItem("whiteboardData");
+    if (data) {
+        const img = new Image();
+        img.onload = () => ctx.drawImage(img, 0, 0);
+        img.src = data;
+    }
+}
+</script>
+
+</body>
+</html>
