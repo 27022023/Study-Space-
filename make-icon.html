@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<body style="display:flex;justify-content:center;align-items:center;height:100vh;background:#eee;font-family:sans-serif;">
+
+<canvas id="iconCanvas" width="512" height="512" style="border:1px solid #ccc;"></canvas>
+
+<script>
+// Get canvas
+const canvas = document.getElementById("iconCanvas");
+const ctx = canvas.getContext("2d");
+
+// Background color
+ctx.fillStyle = "#D8BFD8"; // light purple
+ctx.fillRect(0, 0, 512, 512);
+
+// Text
+ctx.fillStyle = "#000000"; // black
+ctx.font = "bold 60px Arial";
+ctx.textAlign = "center";
+ctx.textBaseline = "middle";
+ctx.fillText("Study Sphere", 256, 256);
+
+// Download the image
+canvas.toBlob(function(blob) {
+    const link = document.createElement("a");
+    link.download = "icon-512.png";
+    link.href = URL.createObjectURL(blob);
+    link.click();
+});
+</script>
+
+</body>
+</html>
