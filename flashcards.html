@@ -321,4 +321,28 @@ if ("serviceWorker" in navigator) {
 }
 </script>
 </html>
+// Load saved flashcard states
+let saved = JSON.parse(localStorage.getItem("flashcardMemory")) || {};
 
+// Assign IDs if missing
+document.querySelectorAll(".flashcard").forEach((card, index) => {
+    if (!card.dataset.id) {
+        card.dataset.id = "card" + index;
+    }
+
+    const id = card.dataset.id;
+
+    // Apply saved state
+    if (saved[id]) {
+        card.classList.add("completed");
+    }
+
+    // When user interacts
+    card.addEventListener("click", () => {
+        card.classList.toggle("completed");
+
+        // Save new state
+        saved[id] = card.classList.contains("completed");
+        localStorage.setItem("flashcardMemory", JSON.stringify(saved));
+    });
+});
