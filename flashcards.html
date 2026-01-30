@@ -257,48 +257,33 @@
     button { padding: 10px; margin-right: 10px; }
   </style>
 </head>
+<body>   
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Flashcards</title>
+  <style>
+    body { font-family: Arial; padding: 20px; }
+    textarea { width: 300px; height: 200px; padding: 10px; }
+    button { padding: 10px; margin-top: 10px; }
+  </style>
+</head>
 <body>
+  <h1>Your Flashcards</h1>
+  <button onclick="saveNotes()">Save</button>
 
-   
-      // Load memory
-    let currentIndex = parseInt(localStorage.getItem("flashIndex")) || 0;
-    let learned = JSON.parse(localStorage.getItem("flashLearned")) || [];
+  <script>
+    // Load saved notes when the page opens
+    document.getElementById("notesBox").value =
+      localStorage.getItem("myNotes") || "";
 
-    function updateCard() {
-      const card = document.getElementById("card");
-      const status = document.getElementById("status");
-
-      card.innerHTML = cards[currentIndex].q;
-
-      status.innerHTML =
-        "Card " + (currentIndex + 1) + " of " + cards.length +
-        "<br>Learned: " + learned.length + "/" + cards.length;
-
-      // Save memory
-      localStorage.setItem("flashIndex", currentIndex);
-      localStorage.setItem("flashLearned", JSON.stringify(learned));
+    // Save notes to this device
+    function saveNotes() {
+      const text = document.getElementById("notesBox").value;
+      localStorage.setItem("myNotes", text);
+      alert("Saved!");
     }
-
-    function nextCard() {
-      currentIndex = (currentIndex + 1) % cards.length;
-      updateCard();
-    }
-
-    function prevCard() {
-      currentIndex = (currentIndex - 1 + cards.length) % cards.length;
-      updateCard();
-    }
-
-    function markLearned() {
-      if (!learned.includes(currentIndex)) {
-        learned.push(currentIndex);
-      }
-      updateCard();
-    }
-
-    updateCard();
   </script>
-
 </body>
 <script>
 if ("serviceWorker" in navigator) {
