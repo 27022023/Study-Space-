@@ -258,23 +258,6 @@
 </head>
 <body>
 
-  <h1>Flashcards</h1>
-
-  <div id="card"></div>
-
-  <button onclick="prevCard()">Previous</button>
-  <button onclick="nextCard()">Next</button>
-  <button onclick="markLearned()">Mark as Learned</button>
-
-  <p id="status"></p>
-
-  <script>
-    const cards = [
-      { q: "What is 2 + 2?", a: "4" },
-      { q: "Capital of France?", a: "Paris" },
-      { q: "Opposite of hot?", a: "Cold" }
-    ];
-
     // Load memory
     let currentIndex = parseInt(localStorage.getItem("flashIndex")) || 0;
     let learned = JSON.parse(localStorage.getItem("flashLearned")) || [];
