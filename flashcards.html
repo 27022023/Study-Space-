@@ -199,90 +199,78 @@
         <div id="flashcards"></div>
     </div>
 
-    <script>
-        const menuBtn = document.getElementById("menu-btn");
-        const sidebar = document.getElementById("sidebar");
+    <script><script>
+    const menuBtn = document.getElementById("menu-btn");
+    const sidebar = document.getElementById("sidebar");
 
-        menuBtn.addEventListener("click", () => {
-            sidebar.classList.toggle("open");
+    menuBtn.addEventListener("click", () => {
+        sidebar.classList.toggle("open");
+    });
+
+    // Load saved flashcards
+    let savedCards = JSON.parse(localStorage.getItem("flashcards")) || [];
+
+    function saveFlashcards() {
+        localStorage.setItem("flashcards", JSON.stringify(savedCards));
+    }
+
+    function createFlashcard(front, back, index) {
+        const card = document.createElement("div");
+        card.className = "flashcard";
+
+        card.innerHTML = `
+            <p class="front"><strong>Q:</strong> ${front}</p>
+            <p class="back" style="display:none;"><strong>A:</strong> ${back}</p>
+            <button class="delete-btn">Delete</button>
+        `;
+
+        // Flip card
+        card.addEventListener("click", (e) => {
+            if (e.target.classList.contains("delete-btn")) return;
+
+            const frontSide = card.querySelector(".front");
+            const backSide = card.querySelector(".back");
+
+            frontSide.style.display = frontSide.style.display === "none" ? "block" : "none";
+            backSide.style.display = backSide.style.display === "none" ? "block" : "none";
         });
 
-        function addFlashcard() {
-            const q = document.getElementById("question").value;
-            const a = document.getElementById("answer").value;
+        // Delete card
+        card.querySelector(".delete-btn").addEventListener("click", () => {
+            savedCards.splice(index, 1);
+            saveFlashcards();
+            loadFlashcards();
+        });
 
-            if (!q || !a) return;
+        document.getElementById("flashcards").appendChild(card);
+    }
 
-            const card = document.createElement("div");
-            card.className = "flashcard";
-            card.innerHTML = `
-                <p class="front"><strong>Q:</strong> ${q}</p>
-                <p class="back" style="display:none;"><strong>A:</strong> ${a}</p>
-                <button class="delete-btn" onclick="this.parentElement.remove()">Delete</button>
-            `;
+    function loadFlashcards() {
+        document.getElementById("flashcards").innerHTML = "";
+        savedCards.forEach((card, index) => {
+            createFlashcard(card.front, card.back, index);
+        });
+    }
 
-            card.addEventListener("click", () => {
-                const front = card.querySelector(".front");
-                const back = card.querySelector(".back");
-                front.style.display = front.style.display === "none" ? "block" : "none";
-                back.style.display = back.style.display === "none" ? "block" : "none";
-            });
+    function addFlashcard() {
+        const q = document.getElementById("question").value;
+        const a = document.getElementById("answer").value;
 
-            document.getElementById("flashcards").appendChild(card);
+        if (!q || !a) return;
 
-            document.getElementById("question").value = "";
-            document.getElementById("answer").value = "";
-        }
+        savedCards.push({ front: q, back: a });
+        saveFlashcards();
+        loadFlashcards();
+
+        document.getElementById("question").value = "";
+        document.getElementById("answer").value = "";
+    }
+
+    // Load flashcards on page open
+    loadFlashcards();
     </script>
-
-</body>
-</html> 
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Flashcards</title>
-  <style>
-    body { font-family: Arial; padding: 20px; }
-    #card { 
-      border: 1px solid #ccc; 
-      padding: 20px; 
-      width: 300px; 
-      height: 150px; 
-      display: flex; 
-      justify-content: center; 
-      align-items: center; 
-      font-size: 20px; 
-      margin-bottom: 20px;
-    }
-    button { padding: 10px; margin-right: 10px; }
-  </style>
-</head>
-<body>   
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Flashcards</title>
-  <style>
-    body { font-family: Arial; padding: 20px; }
-    textarea { width: 300px; height: 200px; padding: 10px; }
-    button { padding: 10px; margin-top: 10px; }
-  </style>
-</head>
-<body>
-  <h1>Your Flashcards</h1>
-  <button onclick="saveNotes()">Save</button>
-
-  <script>
-    // Load saved notes when the page opens
-    document.getElementById("notesBox").value =
-      localStorage.getItem("myNotes") || "";
-
-    // Save notes to this device
-    function saveNotes() {
-      const text = document.getElementById("notesBox").value;
-      localStorage.setItem("myNotes", text);
-      alert("Saved!");
-    }
+      
+        
   </script>
 </body>
 <script>
