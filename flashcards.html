@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-      <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+   link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
 <link rel="manifest" href="/site.webmanifest">
@@ -11,6 +11,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Flashcards • Study Sphere</title>
+
+
+    <link rel="stylesheet" href="style.css">
 
     <style>
         :root {
@@ -176,9 +179,9 @@
         <a href="solver.html">Problem Solver</a>
         <a href="whiteboard.html">Whiteboard</a>
         <a href="lab.html">Microscope Lab</a>
-       <a href="todo.html">To-Do List</a>
-       <a href="weekly.html">Weekly Planner</a>
-       <a href="relax.html"> Relax</a>
+        <a href="todo.html">To-Do List</a>
+        <a href="weekly.html">Weekly Planner</a>
+        <a href="relax.html">Relax</a>
     </div>
 
     <!-- FLASHCARDS CONTENT -->
@@ -199,83 +202,83 @@
         <div id="flashcards"></div>
     </div>
 
-    <script><script>
-    const menuBtn = document.getElementById("menu-btn");
-    const sidebar = document.getElementById("sidebar");
+    <script>
+        /* SIDEBAR */
+        const menuBtn = document.getElementById("menu-btn");
+        const sidebar = document.getElementById("sidebar");
 
-    menuBtn.addEventListener("click", () => {
-        sidebar.classList.toggle("open");
-    });
-
-    // Load saved flashcards
-    let savedCards = JSON.parse(localStorage.getItem("flashcards")) || [];
-
-    function saveFlashcards() {
-        localStorage.setItem("flashcards", JSON.stringify(savedCards));
-    }
-
-    function createFlashcard(front, back, index) {
-        const card = document.createElement("div");
-        card.className = "flashcard";
-
-        card.innerHTML = `
-            <p class="front"><strong>Q:</strong> ${front}</p>
-            <p class="back" style="display:none;"><strong>A:</strong> ${back}</p>
-            <button class="delete-btn">Delete</button>
-        `;
-
-        // Flip card
-        card.addEventListener("click", (e) => {
-            if (e.target.classList.contains("delete-btn")) return;
-
-            const frontSide = card.querySelector(".front");
-            const backSide = card.querySelector(".back");
-
-            frontSide.style.display = frontSide.style.display === "none" ? "block" : "none";
-            backSide.style.display = backSide.style.display === "none" ? "block" : "none";
+        menuBtn.addEventListener("click", () => {
+            sidebar.classList.toggle("open");
         });
 
-        // Delete card
-        card.querySelector(".delete-btn").addEventListener("click", () => {
-            savedCards.splice(index, 1);
+        /* FLASHCARD SYSTEM */
+        let savedCards = JSON.parse(localStorage.getItem("flashcards")) || [];
+
+        function saveFlashcards() {
+            localStorage.setItem("flashcards", JSON.stringify(savedCards));
+        }
+
+        function createFlashcard(front, back, index) {
+            const card = document.createElement("div");
+            card.className = "flashcard";
+
+            card.innerHTML = `
+                <p class="front"><strong>Q:</strong> ${front}</p>
+                <p class="back" style="display:none;"><strong>A:</strong> ${back}</p>
+                <button class="delete-btn">Delete</button>
+            `;
+
+            // Flip card
+            card.addEventListener("click", (e) => {
+                if (e.target.classList.contains("delete-btn")) return;
+
+                const frontSide = card.querySelector(".front");
+                const backSide = card.querySelector(".back");
+
+                frontSide.style.display = frontSide.style.display === "none" ? "block" : "none";
+                backSide.style.display = backSide.style.display === "none" ? "block" : "none";
+            });
+
+            // Delete card
+            card.querySelector(".delete-btn").addEventListener("click", () => {
+                savedCards.splice(index, 1);
+                saveFlashcards();
+                loadFlashcards();
+            });
+
+            document.getElementById("flashcards").appendChild(card);
+        }
+
+        function loadFlashcards() {
+            document.getElementById("flashcards").innerHTML = "";
+            savedCards.forEach((card, index) => {
+                createFlashcard(card.front, card.back, index);
+            });
+        }
+
+        function addFlashcard() {
+            const q = document.getElementById("question").value;
+            const a = document.getElementById("answer").value;
+
+            if (!q || !a) return;
+
+            savedCards.push({ front: q, back: a });
             saveFlashcards();
             loadFlashcards();
-        });
 
-        document.getElementById("flashcards").appendChild(card);
-    }
+            document.getElementById("question").value = "";
+            document.getElementById("answer").value = "";
+        }
 
-    function loadFlashcards() {
-        document.getElementById("flashcards").innerHTML = "";
-        savedCards.forEach((card, index) => {
-            createFlashcard(card.front, card.back, index);
-        });
-    }
-
-    function addFlashcard() {
-        const q = document.getElementById("question").value;
-        const a = document.getElementById("answer").value;
-
-        if (!q || !a) return;
-
-        savedCards.push({ front: q, back: a });
-        saveFlashcards();
         loadFlashcards();
-
-        document.getElementById("question").value = "";
-        document.getElementById("answer").value = "";
-    }
-
-    // Load flashcards on page open
-    loadFlashcards();
     </script>
-      
-        
-  </script>
-</body>
 <script>
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("service-worker.js");
 }
 </script>
 </html>
+</body>
+</html>
+
+        
