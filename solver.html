@@ -760,7 +760,33 @@ function solveSingleEquation() {
         steps.innerText = "Try a simpler form like 2x+4=10 or x^2-5x+6=0.";
     }
 }
+// ---------- CALCULATOR ----------
+function pressCalc(val) {
+    document.getElementById("calcInput").value += val;
+}
 
+function clearCalc() {
+    document.getElementById("calcInput").value = "";
+    document.getElementById("calcResult").innerText = "Result will appear here";
+}
+
+function solveCalc() {
+    let input = document.getElementById("calcInput").value;
+    const out = document.getElementById("calcResult");
+
+    if (!input) {
+        out.innerText = "Please type an expression.";
+        return;
+    }
+
+    try {
+        const answer = eval(input);
+        out.innerText = "Answer: " + answer;
+    } catch {
+        out.innerText = "Invalid expression.";
+    }
+}
+        
 <html>
 <head>
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
