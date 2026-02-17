@@ -105,15 +105,35 @@ function solveSingleEquation() {
 
 /* SINGLE EQUATION SOLVER */
 function solveSingleEquation() {
+  const raw = document.getElementById("eqInput").value.replace(/\s+/g, "");
+  const [left, right] = raw.split("=");
+
+  if (!right) {
+    document.getElementById("eqResult").innerText = "Use format: equation = value";
+    return;
+  }
+
   try {
-    const input = document.getElementById("eqInput").value;
-    const sol = math.solve(input, "x");
-    document.getElementById("eqResult").innerText = sol;
-    document.getElementById("eqSteps").innerText = "Steps hidden in shrink mode.";
-  } catch {
+    // Move everything to left side: left - right = 0
+    const expr = math.simplify(`${left}-(${right})`);
+    const poly = math.polyCoefficients(expr, "x");
+
+    if (!poly) {
+      document.getElementById("eqResult").innerText = "Could not interpret equation.";
+      return;
+    }
+
+    // Solve polynomial
+    const roots = math.roots(poly);
+
+    document.getElementById("eqResult").innerText = "x = " + roots.join(", ");
+    document.getElementById("eqSteps").innerText = "Solved as polynomial in x.";
+  } catch (e) {
     document.getElementById("eqResult").innerText = "Invalid equation.";
+    document.getElementById("eqSteps").innerText = "";
   }
 }
+ 
 
 /* CALCULATOR */
 function pressCalc(v) {
