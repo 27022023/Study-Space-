@@ -303,9 +303,31 @@ sqrt(-1)
  
   <!-- SINGLE / QUADRATIC EQUATION SOLVER -->
   <script>
-      });
 
+function runUnifiedSolver() {
+  const input = document.getElementById("unifiedInput").value.trim();
+  const chat = document.getElementById("unifiedChat");
 
+  if (!input) return;
+
+  // Clear previous results
+  chat.innerHTML = "";
+
+  // Split into lines (each line = one problem)
+  const problems = input.split("\n").filter(line => line.trim() !== "");
+
+  problems.forEach(problem => {
+    addUserBubble(problem);
+    solveProblem(problem);
+  });
+}
+function addUserBubble(text) {
+  const chat = document.getElementById("unifiedChat");
+  const bubble = document.createElement("div");
+  bubble.className = "user-bubble";
+  bubble.textContent = text;
+  chat.appendChild(bubble);
+}
 function addSolverBubble(answer, steps = null) {
   const chat = document.getElementById("unifiedChat");
   const bubble = document.createElement("div");
@@ -405,6 +427,59 @@ function solveProblem(problem) {
     addSolverBubble("Could not solve this problem.");
   }
 }
+function runUnifiedSolver() {
+  const input = document.getElementById("unifiedInput").value.trim();
+  const chat = document.getElementById("unifiedChat");
+
+  if (!input) return;
+
+  // Clear previous results
+  chat.innerHTML = "";
+
+  // Split into lines (each line = one problem)
+  const problems = input.split("\n").filter(line => line.trim() !== "");
+
+  problems.forEach(problem => {
+    addUserBubble(problem);
+    solveProblem(problem);
+       
+function addSolverBubble(answer, steps = null) {
+  const chat = document.getElementById("unifiedChat");
+  const bubble = document.createElement("div");
+  bubble.className = "solver-bubble";
+
+  bubble.innerHTML = answer;
+
+  if (steps) {
+    const btn = document.createElement("button");
+    btn.className = "show-steps-btn";
+    btn.textContent = "Show Steps";
+
+    const stepsBox = document.createElement("div");
+    stepsBox.className = "steps";
+    stepsBox.style.display = "none";
+    stepsBox.textContent = steps;
+
+    btn.onclick = () => {
+      if (stepsBox.style.display === "none") {
+        stepsBox.style.display = "block";
+        btn.textContent = "Hide Steps";
+      } else {
+        stepsBox.style.display = "none";
+        btn.textContent = "Show Steps";
+      }
+    };
+
+    bubble.appendChild(document.createElement("br"));
+    bubble.appendChild(btn);
+    bubble.appendChild(stepsBox);
+  }
+
+  chat.appendChild(bubble);
+}
+
+function solveProblem(problem) {
+
    
   <!-- SCIENTIFIC CALCULATOR -->
   <section>
