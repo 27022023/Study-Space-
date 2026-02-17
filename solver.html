@@ -287,20 +287,131 @@
 
   <!-- SINGLE / QUADRATIC EQUATION SOLVER -->
   <section>
-    <h2>Single / Quadratic Equation Solver</h2>
-    <input type="text" id="eqInput" placeholder="Example: 2x+3=7 or x^2 - 5x + 6 = 0">
-    <button class="btn" onclick="solveSingleEquation()">Solve</button>
-    <div id="eqResult" class="result"></div>
-  </section>
+    function runUnifiedSolver() {
+  const input = document.getElementById("unifiedInput").value.trim();
+  const chat = document.getElementById("unifiedChat");
 
-  <!-- SYSTEM SOLVER -->
-  <section>
-    <h2>System of Equations (2×2)</h2>
-    <input type="text" id="sysEq1" placeholder="Example: 2x + 3y = 7">
-    <input type="text" id="sysEq2" placeholder="Example: x - y = 1">
-    <button class="btn" onclick="solveSystem()">Solve System</button>
-    <div id="sysResult" class="result"></div>
-  </section>
+  if (!input) return;
+
+  // Clear previous results
+  chat.innerHTML = "";
+
+  // Split into lines (each line = one problem)
+  const problems = input.split("\n").filter(line => line.trim() !== "");
+
+  problems.forEach(problem => {
+    addUserBubble(problem);
+    solveProblem(problem);
+  });
+}
+
+function addUserBubble(text) {
+  const chat = document.getElementById("unifiedChat");
+  const bubble = document.createElement("div");
+  bubble.className = "user-bubble";
+  bubble.textContent = text;
+  chat.appendChild(bubble);
+}
+
+function addSolverBubble(answer, steps = null) {
+  const chat = document.getElementById("unifiedChat");
+  const bubble = document.createElement("div");
+  bubble.className = "solver-bubble";
+
+  bubble.innerHTML = answer;
+
+  if (steps) {
+    const btn = document.createElement("button");
+    btn.className = "show-steps-btn";
+    btn.textContent = "Show Steps";
+
+    const stepsBox = document.createElement("div");
+    stepsBox.className = "steps";
+    stepsBox.style.display = "none";
+    stepsBox.textContent = steps;
+
+    btn.onclick = () => {
+      if (stepsBox.style.display === "none") {
+        stepsBox.style.display = "block";
+        btn.textContent = "Hide Steps";
+      } else {
+        stepsBox.style.display = "none";
+        btn.textContent = "Show Steps";
+      }
+    };
+
+    bubble.appendChild(document.createElement("br"));
+    bubble.appendChild(btn);
+    bubble.appendChild(stepsBox);
+  }
+
+  chat.appendChild(bubble);
+}
+
+function solveProblem(problem) {
+  let steps = "";
+  let answer = "";
+
+  try {
+    // Detect system of equations
+    if (problem.includes(",") && problem.includes("=")) {
+      const eqs = problem.split(",").map(e => e.trim());
+      const parsed = eqs.map(e => {
+        const [L, R] = e.split("=");
+        return math.simplify(`(${L}) - (${R})`);
+      });
+
+      const sol = math.solve(
+        parsed.map(p => math.parse(p.toString())),
+        ["x", "y"]
+      );
+
+      answer = `x = ${sol.x}, y = ${sol.y}`;
+      steps = "Solved as a 2×2 system using matrix methods.";
+      addSolverBubble(answer, steps);
+      return;
+    }
+
+    // Detect single equation
+    if (problem.includes("=")) {
+      const [L, R] = problem.split("=");
+      const eq = math.simplify(`(${L}) - (${R})`);
+
+      // Try polynomial
+      let poly;
+      try {
+        poly = math.polyCoefficients(eq, "x");
+      } catch {
+        poly = null;
+      }
+
+      if (poly && poly.length > 1) {
+        const roots = math.roots(poly);
+        answer = "x = " + roots.join(", ");
+        steps = "Solved as a polynomial equation using root finding.";
+        addSolverBubble(answer, steps);
+        return;
+      }
+
+      // Numeric solve
+      const f = x => eq.evaluate({ x });
+      const sol = math.solve(f, 0);
+      answer = "x ≈ " + sol;
+      steps = "Solved numerically.";
+      addSolverBubble(answer, steps);
+      return;
+    }
+
+    // Otherwise evaluate expression
+    const val = math.evaluate(problem);
+    answer = val.toString();
+    steps = "Evaluated as a mathematical expression.";
+    addSolverBubble(answer, steps);
+
+  } catch (err) {
+    addSolverBubble("Could not solve this problem.");
+  }
+}
 
   <!-- SCIENTIFIC CALCULATOR -->
   <section>
