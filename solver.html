@@ -1,9 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Problem Solver • Study Sphere</title>
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/site.webmanifest">
+<link rel="stylesheet" href="style.css">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#ffffff">
+  <title>Problem Solver</title>
 
     <style>
         :root {
@@ -786,25 +791,40 @@ function solveCalc() {
         out.innerText = "Invalid expression.";
     }
 }
-        
-<html>
-<head>
-<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-<link rel="manifest" href="/site.webmanifest">
-  <link rel="stylesheet" href="style.css">
-  <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#ffffff">
-  <title>Problem Solver</title>
-  <style>
-  
-  </script>
-</body>
-<script>
+// ---------- FORMULA BOOK TABS ----------
+const tabButtons = document.querySelectorAll(".tab-btn");
+const tabContents = {
+    algebra: document.getElementById("tab-algebra"),
+    geometry: document.getElementById("tab-geometry"),
+    physics: document.getElementById("tab-physics"),
+    chemistry: document.getElementById("tab-chemistry")
+};
+
+tabButtons.forEach(btn => {
+    btn.addEventListener("click", () => {
+        const tab = btn.getAttribute("data-tab");
+
+        // If already active → clicking again closes it
+        if (btn.classList.contains("active")) {
+            btn.classList.remove("active");
+            Object.values(tabContents).forEach(c => c.classList.remove("active"));
+            return;
+        }
+
+        // Otherwise activate this tab and deactivate others
+        tabButtons.forEach(b => b.classList.remove("active"));
+        Object.values(tabContents).forEach(c => c.classList.remove("active"));
+
+        btn.classList.add("active");
+        const content = tabContents[tab];
+        if (content) content.classList.add("active");
+    });
+});
+script>
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("service-worker.js");
 }
-</script>
-</html>
+    </script>
 
+</body>
+</html>
