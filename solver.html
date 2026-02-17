@@ -806,7 +806,21 @@ function solveCalc() {
     }
 }
 // ---------- FORMULA BOOK TABS ----------
-const tabButtons = document.querySelectorAll(".tab-btn");
+<section>
+  <h2>Formula Book</h2>
+  <div>
+    <button class="tab-btn" data-tab="algebra">Algebra</button>
+    <button class="tab-btn" data-tab="geometry">Geometry</button>
+    <button class="tab-btn" data-tab="physics">Physics</button>
+    <button class="tab-btn" data-tab="chemistry">Chemistry</button>
+  </div>
+
+  <div id="tab-algebra" class="tab-content">Algebra formulas here</div>
+  <div id="tab-geometry" class="tab-content">Geometry formulas here</div>
+  <div id="tab-physics" class="tab-content">Physics formulas here</div>
+  <div id="tab-chemistry" class="tab-content">Chemistry formulas here</div>
+</section>
+  const tabButtons = document.querySelectorAll(".tab-btn");
 const tabContents = {
     algebra: document.getElementById("tab-algebra"),
     geometry: document.getElementById("tab-geometry"),
