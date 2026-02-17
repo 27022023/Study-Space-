@@ -564,7 +564,14 @@
         });
 
 // ---------- SYSTEM OF EQUATIONS (x, y) ----------
-function parseTwoVarEquation(eq) {
+<section>
+  <h2>System of Equations</h2>
+  <input id="sysEq1" placeholder="e.g. 2x+3y=7">
+  <input id="sysEq2" placeholder="e.g. x-y=1">
+  <button onclick="solveSystem()">Solve System</button>
+  <div id="sysResult"></div>
+</section>
+  function parseTwoVarEquation(eq) {
     // Expect something like "2x+3y=7" or "x-y=1"
     let [left, right] = eq.split("=");
     if (right === undefined) throw new Error("Equation must contain =");
