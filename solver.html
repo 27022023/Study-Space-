@@ -570,7 +570,6 @@
   <input id="sysEq2" placeholder="e.g. x-y=1">
   <button onclick="solveSystem()">Solve System</button>
   <div id="sysResult"></div>
-  <button onclick="solveSystem()">Solve</button>
   
 </section>
   function parseTwoVarEquation(eq) {
@@ -645,7 +644,8 @@ function solveSystem() {
     }
 }
    // ---------- SINGLE EQUATION SOLVER (in x) ----------
-function parseLinearOneVar(eq) {
+<button onclick="solveSingleEquation()">Solve Equation</button>
+      function parseLinearOneVar(eq) {
     // ax + b = c
     let [left, right] = eq.split("=");
     if (right === undefined) throw new Error("Equation must contain =");
