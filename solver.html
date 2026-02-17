@@ -302,31 +302,10 @@ sqrt(-1)
 </section>
  
   <!-- SINGLE / QUADRATIC EQUATION SOLVER -->
-  <section>
-    function runUnifiedSolver() {
-  const input = document.getElementById("unifiedInput").value.trim();
-  const chat = document.getElementById("unifiedChat");
+  <script>
+      });
 
-  if (!input) return;
 
-  // Clear previous results
-  chat.innerHTML = "";
-
-  // Split into lines (each line = one problem)
-  const problems = input.split("\n").filter(line => line.trim() !== "");
-
-  problems.forEach(problem => {
-    addUserBubble(problem);
-    solveProblem(problem);
-  });
-}
-function addUserBubble(text) {
-  const chat = document.getElementById("unifiedChat");
-  const bubble = document.createElement("div");
-  bubble.className = "user-bubble";
-  bubble.textContent = text;
-  chat.appendChild(bubble);
-}
 function addSolverBubble(answer, steps = null) {
   const chat = document.getElementById("unifiedChat");
   const bubble = document.createElement("div");
@@ -426,7 +405,7 @@ function solveProblem(problem) {
     addSolverBubble("Could not solve this problem.");
   }
 }
-
+   
   <!-- SCIENTIFIC CALCULATOR -->
   <section>
     <h2>Scientific Calculator</h2>
