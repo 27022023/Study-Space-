@@ -284,7 +284,23 @@
 <body>
 <div class="wrapper">
   <h1>Problem Solver</h1>
+<section id="unifiedSolver">
+  <h2>Unified Math Solver</h2>
 
+  <textarea id="unifiedInput" placeholder="Type any math problem here...
+Examples:
+2x+3=7
+x^2-5x+6=0
+sin(30°)
+2x+3y=7, x-y=1
+sqrt(-1)
+" rows="4"></textarea>
+
+  <button id="unifiedSolveBtn" class="btn" onclick="runUnifiedSolver()">Solve</button>
+
+  <div id="unifiedChat"></div>
+</section>
+ 
   <!-- SINGLE / QUADRATIC EQUATION SOLVER -->
   <section>
     function runUnifiedSolver() {
