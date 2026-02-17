@@ -68,7 +68,6 @@
   }
 
   .formula {
-    background: #f3e8ff;
     padding: 12px;
     border-radius: 10px;
     margin-bottom: 12px;
@@ -77,8 +76,49 @@
 
   .formula h3 {
     margin: 0 0 5px;
-    color: #4b0082;
+    color: #111827;
   }
+
+  #formulaSearch {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 20px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+  }
+
+  /* Subject Colors */
+  .math {
+    background: #f3e8ff;
+  }
+
+  .physics {
+    background: #e0f0ff;
+  }
+
+  .chemistry {
+    background: #e7ffe7;
+  }
+
+  .biology {
+    background: #fff7d6;
+  }
+
+  /* Subject Titles */
+  .subject-title {
+    margin-top: 30px;
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 8px;
+    font-size: 22px;
+    font-weight: bold;
+  }
+
+  .subject-title.math { background: #e9d5ff; color: #4b0082; }
+  .subject-title.physics { background: #d6eaff; color: #1d4ed8; }
+  .subject-title.chemistry { background: #d9ffd9; color: #166534; }
+  .subject-title.biology { background: #fff0b3; color: #92400e; }
 </style>
 </head>
 
@@ -124,162 +164,282 @@
 
 <!-- FORMULA BOOK -->
 <section id="formulaBook">
-  <h2>Formula Book </h2>
+  <h2>Formula Book (Β’ & Γ’ Λυκείου)</h2>
 
-  <!-- ALGEBRA -->
-  <div class="formula">
+  <!-- SEARCH BAR (visual only) -->
+  <input type="text" id="formulaSearch" placeholder="Search formulas... (visual only, no JS)" />
+
+  <!-- MATHEMATICS -->
+  <h2 class="subject-title math">Mathematics</h2>
+
+  <div class="formula math">
     <h3>Quadratic Equation</h3>
     <p>x = (-b ± √(b² - 4ac)) / 2a</p>
   </div>
 
-  <div class="formula">
+  <div class="formula math">
     <h3>Discriminant</h3>
     <p>Δ = b² - 4ac</p>
   </div>
 
-  <div class="formula">
+  <div class="formula math">
     <h3>Arithmetic Sequence</h3>
     <p>aₙ = a₁ + (n - 1)d</p>
     <p>Sₙ = n(a₁ + aₙ) / 2</p>
   </div>
 
-  <div class="formula">
+  <div class="formula math">
     <h3>Geometric Sequence</h3>
     <p>aₙ = a₁ · rⁿ⁻¹</p>
     <p>Sₙ = a₁ (rⁿ - 1) / (r - 1)</p>
   </div>
 
-  <!-- FUNCTIONS & GEOMETRY -->
-  <div class="formula">
+  <div class="formula math">
     <h3>Slope of a Line</h3>
     <p>m = (y₂ - y₁) / (x₂ - x₁)</p>
   </div>
 
-  <div class="formula">
+  <div class="formula math">
     <h3>Distance Between Two Points</h3>
     <p>d = √[(x₂ - x₁)² + (y₂ - y₁)²]</p>
   </div>
 
-  <div class="formula">
+  <div class="formula math">
     <h3>Midpoint</h3>
     <p>M = ((x₁ + x₂)/2 , (y₁ + y₂)/2)</p>
   </div>
 
-  <!-- TRIGONOMETRY -->
-  <div class="formula">
+  <div class="formula math">
     <h3>Basic Trigonometric Identities</h3>
     <p>sin²x + cos²x = 1</p>
     <p>tan x = sin x / cos x</p>
   </div>
 
-  <div class="formula">
+  <div class="formula math">
     <h3>Sum & Difference</h3>
     <p>sin(a ± b) = sin a cos b ± cos a sin b</p>
     <p>cos(a ± b) = cos a cos b ∓ sin a sin b</p>
   </div>
 
-  <div class="formula">
+  <div class="formula math">
     <h3>Double Angle</h3>
     <p>sin 2x = 2 sin x cos x</p>
     <p>cos 2x = cos²x - sin²x</p>
   </div>
 
-  <div class="formula">
-    <h3>Law of Sines</h3>
-    <p>a / sin A = b / sin B = c / sin C</p>
-  </div>
-
-  <div class="formula">
-    <h3>Law of Cosines</h3>
-    <p>c² = a² + b² - 2ab cos C</p>
-  </div>
-
-  <!-- ANALYTIC GEOMETRY -->
-  <div class="formula">
-    <h3>Circle Equation</h3>
-    <p>(x - a)² + (y - b)² = R²</p>
-  </div>
-
-  <div class="formula">
-    <h3>Ellipse</h3>
-    <p>x²/a² + y²/b² = 1</p>
-  </div>
-
-  <div class="formula">
-    <h3>Hyperbola</h3>
-    <p>x²/a² - y²/b² = 1</p>
-  </div>
-
-  <!-- VECTORS -->
-  <div class="formula">
-    <h3>Vector Magnitude</h3>
-    <p>|v| = √(x² + y²)</p>
-  </div>
-
-  <div class="formula">
-    <h3>Dot Product</h3>
-    <p>a · b = ax·bx + ay·by</p>
-    <p>a · b = |a||b| cos θ</p>
-  </div>
-
-  <!-- LIMITS -->
-  <div class="formula">
+  <div class="formula math">
     <h3>Notable Limits</h3>
     <p>lim (sin x / x) = 1 as x → 0</p>
     <p>lim (1 + 1/x)ˣ = e as x → ∞</p>
   </div>
 
-  <!-- DERIVATIVES -->
-  <div class="formula">
+  <div class="formula math">
     <h3>Basic Derivatives</h3>
     <p>(xⁿ)' = n xⁿ⁻¹</p>
     <p>(eˣ)' = eˣ</p>
     <p>(ln x)' = 1/x</p>
   </div>
 
-  <div class="formula">
+  <div class="formula math">
     <h3>Trigonometric Derivatives</h3>
     <p>(sin x)' = cos x</p>
     <p>(cos x)' = -sin x</p>
     <p>(tan x)' = sec² x</p>
   </div>
 
-  <div class="formula">
+  <div class="formula math">
     <h3>Derivative Rules</h3>
     <p>(fg)' = f'g + fg'</p>
     <p>(f/g)' = (f'g - fg') / g²</p>
     <p>(f(g(x)))' = f'(g(x)) · g'(x)</p>
   </div>
 
-  <!-- INTEGRALS -->
-  <div class="formula">
+  <div class="formula math">
     <h3>Basic Integrals</h3>
     <p>∫ xⁿ dx = xⁿ⁺¹/(n+1) + C</p>
     <p>∫ eˣ dx = eˣ + C</p>
     <p>∫ 1/x dx = ln|x| + C</p>
   </div>
 
-  <div class="formula">
-    <h3>Trigonometric Integrals</h3>
-    <p>∫ sin x dx = -cos x + C</p>
-    <p>∫ cos x dx = sin x + C</p>
-    <p>∫ sec² x dx = tan x + C</p>
+  <!-- PHYSICS -->
+  <h2 class="subject-title physics">Physics</h2>
+
+  <div class="formula physics">
+    <h3>Velocity</h3>
+    <p>v = Δx / Δt</p>
   </div>
 
-  <!-- STATISTICS -->
-  <div class="formula">
-    <h3>Mean</h3>
-    <p>x̄ = (Σxᵢ) / n</p>
+  <div class="formula physics">
+    <h3>Acceleration</h3>
+    <p>a = Δv / Δt</p>
   </div>
 
-  <div class="formula">
-    <h3>Variance</h3>
-    <p>σ² = Σ(xᵢ - x̄)² / n</p>
+  <div class="formula physics">
+    <h3>Equations of Motion</h3>
+    <p>v = v₀ + at</p>
+    <p>x = x₀ + v₀t + ½at²</p>
+    <p>v² = v₀² + 2aΔx</p>
   </div>
 
-  <div class="formula">
-    <h3>Standard Deviation</h3>
-    <p>σ = √σ²</p>
+  <div class="formula physics">
+    <h3>Force (Newton's 2nd Law)</h3>
+    <p>F = m · a</p>
+  </div>
+
+  <div class="formula physics">
+    <h3>Weight</h3>
+    <p>W = m · g</p>
+  </div>
+
+  <div class="formula physics">
+    <h3>Work</h3>
+    <p>W = F · d · cosθ</p>
+  </div>
+
+  <div class="formula physics">
+    <h3>Kinetic Energy</h3>
+    <p>Eₖ = ½mv²</p>
+  </div>
+
+  <div class="formula physics">
+    <h3>Potential Energy</h3>
+    <p>Eₚ = mgh</p>
+  </div>
+
+  <div class="formula physics">
+    <h3>Mechanical Energy</h3>
+    <p>E = Eₖ + Eₚ</p>
+  </div>
+
+  <div class="formula physics">
+    <h3>Power</h3>
+    <p>P = W / t</p>
+  </div>
+
+  <div class="formula physics">
+    <h3>Momentum</h3>
+    <p>p = m · v</p>
+  </div>
+
+  <div class="formula physics">
+    <h3>Density</h3>
+    <p>ρ = m / V</p>
+  </div>
+
+  <div class="formula physics">
+    <h3>Hooke's Law</h3>
+    <p>F = kx</p>
+  </div>
+
+  <div class="formula physics">
+    <h3>Electric Current</h3>
+    <p>I = Q / t</p>
+  </div>
+
+  <div class="formula physics">
+    <h3>Ohm's Law</h3>
+    <p>V = I · R</p>
+  </div>
+
+  <div class="formula physics">
+    <h3>Electric Power</h3>
+    <p>P = V · I</p>
+  </div>
+
+  <div class="formula physics">
+    <h3>Coulomb's Law</h3>
+    <p>F = k · (q₁q₂ / r²)</p>
+  </div>
+
+  <div class="formula physics">
+    <h3>Wave Speed</h3>
+    <p>v = λ · f</p>
+  </div>
+
+  <div class="formula physics">
+    <h3>Ideal Gas Law</h3>
+    <p>PV = nRT</p>
+  </div>
+
+  <!-- CHEMISTRY -->
+  <h2 class="subject-title chemistry">Chemistry</h2>
+
+  <div class="formula chemistry">
+    <h3>Molar Mass</h3>
+    <p>M = m / n</p>
+  </div>
+
+  <div class="formula chemistry">
+    <h3>Moles</h3>
+    <p>n = m / M</p>
+  </div>
+
+  <div class="formula chemistry">
+    <h3>Avogadro's Number</h3>
+    <p>N = n · Nₐ</p>
+  </div>
+
+  <div class="formula chemistry">
+    <h3>Concentration (mol/L)</h3>
+    <p>C = n / V</p>
+  </div>
+
+  <div class="formula chemistry">
+    <h3>Mass Concentration</h3>
+    <p>ρ = m / V</p>
+  </div>
+
+  <div class="formula chemistry">
+    <h3>Ideal Gas Law</h3>
+    <p>PV = nRT</p>
+  </div>
+
+  <div class="formula chemistry">
+    <h3>pH</h3>
+    <p>pH = -log[H⁺]</p>
+  </div>
+
+  <div class="formula chemistry">
+    <h3>Reaction Yield</h3>
+    <p>% Yield = (Actual / Theoretical) × 100</p>
+  </div>
+
+  <div class="formula chemistry">
+    <h3>Heat</h3>
+    <p>Q = m · c · ΔT</p>
+  </div>
+
+  <div class="formula chemistry">
+    <h3>Enthalpy Change</h3>
+    <p>ΔH = ΣH(products) − ΣH(reactants)</p>
+  </div>
+
+  <!-- BIOLOGY -->
+  <h2 class="subject-title biology">Biology</h2>
+
+  <div class="formula biology">
+    <h3>DNA Structure</h3>
+    <p>Double helix, antiparallel strands, A-T & C-G pairing</p>
+  </div>
+
+  <div class="formula biology">
+    <h3>Central Dogma</h3>
+    <p>DNA → RNA → Protein</p>
+  </div>
+
+  <div class="formula biology">
+    <h3>Photosynthesis</h3>
+    <p>6CO₂ + 6H₂O → C₆H₁₂O₆ + 6O₂</p>
+  </div>
+
+  <div class="formula biology">
+    <h3>Cellular Respiration</h3>
+    <p>C₆H₁₂O₆ + 6O₂ → 6CO₂ + 6H₂O + Energy (ATP)</p>
+  </div>
+
+  <div class="formula biology">
+    <h3>Mendelian Genetics</h3>
+    <p>Punnett squares, dominant/recessive alleles</p>
   </div>
 
 </section>
