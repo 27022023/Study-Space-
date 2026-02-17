@@ -187,9 +187,7 @@ function solveSingleEquation() {
 
     document.getElementById("eqResult").innerText = "x = " + roots.join(", ");
     document.getElementById("eqSteps").innerText = "Solved as polynomial in x.";
-  } catch {
-    document.getElementById("eqResult").innerText = "Invalid equation.";
-    document.getElementById("eqSteps").innerText = "";
+  } catch 
   }
 }
 
@@ -215,9 +213,12 @@ function solveSystem() {
     document.getElementById("sysResult").innerText =
       `x = ${sol.x}, y = ${sol.y}`;
   } catch {
-    document.getElementById("sysResult").innerText = "Invalid system.";
+    document.getElementById 
   }
 }
+    
+  }
+
 
 /* ---------------- CALCULATOR ---------------- */
 function pressCalc(v) {
