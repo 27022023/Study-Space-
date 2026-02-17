@@ -775,7 +775,12 @@ function solveSingleEquation() {
     }
 }
 // ---------- CALCULATOR ----------
-function pressCalc(val) {
+<button onclick="pressCalc('1')">1</button>
+<button onclick="pressCalc('2')">2</button>
+<button onclick="pressCalc('+')">+</button>
+<button onclick="solveCalc()">=</button>
+<button onclick="clearCalc()">C</button>
+  function pressCalc(val) {
     document.getElementById("calcInput").value += val;
 }
 
