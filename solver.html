@@ -855,3 +855,141 @@ if ("serviceWorker" in navigator) {
     </script>
 </body>
 </html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/site.webmanifest">
+<link rel="stylesheet" href="style.css">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#ffffff">
+  <title>Problem Solver</title>
+  <link rel="stylesheet" href="style.css">
+
+  <!-- Math.js for solving equations -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.8.0/math.min.js"></script>
+</head>
+
+<body>
+
+<!-- SYSTEM OF EQUATIONS -->
+<section>
+  <h2>System of Equations</h2>
+  <input id="sysEq1" placeholder="2x+3y=7">
+  <input id="sysEq2" placeholder="x-y=1">
+  <button onclick="solveSystem()">Solve System</button>
+  <div id="sysResult"></div>
+</section>
+
+<!-- SINGLE EQUATION SOLVER -->
+<section>
+  <h2>Equation Solver</h2>
+  <input id="eqInput" placeholder="x^2 - 5x + 6 = 0">
+  <button onclick="solveSingleEquation()">Solve Equation</button>
+  <div id="eqResult"></div>
+  <pre id="eqSteps"></pre>
+</section>
+
+<!-- CALCULATOR -->
+<section>
+  <h2>Calculator</h2>
+  <input id="calcInput">
+  <div>
+    <button onclick="pressCalc('1')">1</button>
+    <button onclick="pressCalc('2')">2</button>
+    <button onclick="pressCalc('3')">3</button>
+    <button onclick="pressCalc('+')">+</button>
+    <button onclick="pressCalc('-')">-</button>
+    <button onclick="pressCalc('*')">*</button>
+    <button onclick="pressCalc('/')">/</button>
+    <button onclick="solveCalc()">=</button>
+    <button onclick="clearCalc()">C</button>
+  </div>
+  <div id="calcResult"></div>
+</section>
+
+<!-- FORMULA BOOK -->
+<section>
+  <h2>Formula Book</h2>
+  <button class="tab-btn" data-tab="algebra">Algebra</button>
+  <button class="tab-btn" data-tab="geometry">Geometry</button>
+  <button class="tab-btn" data-tab="physics">Physics</button>
+  <button class="tab-btn" data-tab="chemistry">Chemistry</button>
+
+  <div id="tab-algebra" class="tab-content">Algebra formulas...</div>
+  <div id="tab-geometry" class="tab-content">Geometry formulas...</div>
+  <div id="tab-physics" class="tab-content">Physics formulas...</div>
+  <div id="tab-chemistry" class="tab-content">Chemistry formulas...</div>
+</section>
+
+<!-- JAVASCRIPT -->
+<script>
+
+/* SYSTEM OF EQUATIONS */
+function solveSystem() {
+  try {
+    const eq1 = math.parse(document.getElementById("sysEq1").value);
+    const eq2 = math.parse(document.getElementById("sysEq2").value);
+    const sol = math.solve([eq1, eq2], ["x", "y"]);
+    document.getElementById("sysResult").innerText = JSON.stringify(sol);
+  } catch {
+    document.getElementById("sysResult").innerText = "Invalid system.";
+  }
+}
+
+/* SINGLE EQUATION SOLVER */
+function solveSingleEquation() {
+  try {
+    const input = document.getElementById("eqInput").value;
+    const sol = math.solve(input, "x");
+    document.getElementById("eqResult").innerText = sol;
+    document.getElementById("eqSteps").innerText = "Steps hidden in shrink mode.";
+  } catch {
+    document.getElementById("eqResult").innerText = "Invalid equation.";
+  }
+}
+
+/* CALCULATOR */
+function pressCalc(v) {
+  document.getElementById("calcInput").value += v;
+}
+function solveCalc() {
+  try {
+    const r = math.evaluate(document.getElementById("calcInput").value);
+    document.getElementById("calcResult").innerText = r;
+  } catch {
+    document.getElementById("calcResult").innerText = "Error";
+  }
+}
+function clearCalc() {
+  document.getElementById("calcInput").value = "";
+  document.getElementById("calcResult").innerText = "";
+}
+
+/* FORMULA BOOK TABS */
+const tabButtons = document.querySelectorAll(".tab-btn");
+const tabContents = {
+  algebra: document.getElementById("tab-algebra"),
+  geometry: document.getElementById("tab-geometry"),
+  physics: document.getElementById("tab-physics"),
+  chemistry: document.getElementById("tab-chemistry")
+};
+
+tabButtons.forEach(btn => {
+  btn.addEventListener("click", () => {
+    const tab = btn.dataset.tab;
+    tabButtons.forEach(b => b.classList.remove("active"));
+    Object.values(tabContents).forEach(c => c.classList.remove("active"));
+    btn.classList.add("active");
+    tabContents[tab].classList.add("active");
+  });
+});
+
+</script>
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("service-worker.js");
+}
+</body>
+</html>
