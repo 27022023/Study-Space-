@@ -1,46 +1,128 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Problem Solver</title>
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<title>Problem Solver</title>
+
+<!-- Math.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.8.0/math.min.js"></script>
+
+<style>
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: #FCE7F3; /* pastel pink */
+        padding: 20px;
+    }
+
+    h2 {
+        margin-top: 0;
+    }
+
+    section {
+        background: white;
+        padding: 20px;
+        margin-bottom: 25px;
+        border-radius: 12px;
+        box-shadow: 0 0 8px rgba(0,0,0,0.1);
+    }
+
+    input {
+        width: 100%;
+        padding: 10px;
+        margin: 8px 0;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+        background: #EDE7FF; /* pastel lavender */
+    }
+
+    button {
+        padding: 10px 15px;
+        background: #DFFCF0; /* pastel mint */
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        margin: 5px;
+        font-weight: bold;
+    }
+
+    button:hover {
+        background: #C8F5E4;
+    }
+
+    .tab-btn {
+        background: #FFEFE2; /* pastel peach */
+        margin-right: 5px;
+    }
+
+    .tab-btn.active {
+        background: #E3F2FD; /* pastel blue */
+    }
+
+    .tab-content {
+        display: none;
+        background: #E3F2FD;
+        padding: 10px;
+        border-radius: 6px;
+        margin-top: 10px;
+    }
+
+    .tab-content.active {
+        display: block;
+    }
+</style>
 </head>
 
 <body>
 
-<!-- SYSTEM OF EQUATIONS -->
-<section>
-  <h2>System of Equations</h2>
-  <input id="sysEq1" placeholder="2x+3y=7">
-  <input id="sysEq2" placeholder="x-y=1">
-  <button onclick="solveSystem()">Solve System</button>
-  <div id="sysResult"></div>
-</section>
-
 <!-- SINGLE EQUATION SOLVER -->
 <section>
-  <h2>Equation Solver</h2>
-  <input id="eqInput" placeholder="x^2 - 5x + 6 = 0">
-  <button onclick="solveSingleEquation()">Solve Equation</button>
+  <h2>Single Equation Solver</h2>
+  <input id="eqInput" placeholder="Example: x^2 - 5x + 6 = 0">
+  <button onclick="solveSingleEquation()">Solve</button>
   <div id="eqResult"></div>
   <pre id="eqSteps"></pre>
+</section>
+
+<!-- SYSTEM SOLVER -->
+<section>
+  <h2>System of Equations</h2>
+  <input id="sysEq1" placeholder="Example: 2x + 3y = 7">
+  <input id="sysEq2" placeholder="Example: x - y = 1">
+  <button onclick="solveSystem()">Solve System</button>
+  <div id="sysResult"></div>
 </section>
 
 <!-- CALCULATOR -->
 <section>
   <h2>Calculator</h2>
   <input id="calcInput">
+
+  <!-- FULL NUMBER PAD 0–9 -->
   <div>
+    <button onclick="pressCalc('7')">7</button>
+    <button onclick="pressCalc('8')">8</button>
+    <button onclick="pressCalc('9')">9</button>
+    <button onclick="pressCalc('/')">/</button>
+
+    <button onclick="pressCalc('4')">4</button>
+    <button onclick="pressCalc('5')">5</button>
+    <button onclick="pressCalc('6')">6</button>
+    <button onclick="pressCalc('*')">*</button>
+
     <button onclick="pressCalc('1')">1</button>
     <button onclick="pressCalc('2')">2</button>
     <button onclick="pressCalc('3')">3</button>
-    <button onclick="pressCalc('+')">+</button>
     <button onclick="pressCalc('-')">-</button>
-    <button onclick="pressCalc('*')">*</button>
-    <button onclick="pressCalc('/')">/</button>
+
+    <button onclick="pressCalc('0')">0</button>
+    <button onclick="pressCalc('.')">.</button>
     <button onclick="solveCalc()">=</button>
+    <button onclick="pressCalc('+')">+</button>
+
     <button onclick="clearCalc()">C</button>
   </div>
+
   <div id="calcResult"></div>
 </section>
 
@@ -58,36 +140,63 @@
   <div id="tab-chemistry" class="tab-content">Chemistry formulas...</div>
 </section>
 
-<!-- JAVASCRIPT -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.8.0/math.min.js"></script>
-
 <script>
+/* ---------------- SINGLE EQUATION SOLVER ---------------- */
+function solveSingleEquation() {
+  const raw = document.getElementById("eqInput").value.replace(/\s+/g, "");
+  const [left, right] = raw.split("=");
 
-/* SYSTEM OF EQUATIONS */
+  if (!right) {
+    document.getElementById("eqResult").innerText = "Use format: equation = value";
+    return;
+  }
+
+  try {
+    const expr = math.simplify(`${left}-(${right})`);
+    const poly = math.polyCoefficients(expr, "x");
+
+    if (!poly) {
+      document.getElementById("eqResult").innerText = "Could not interpret equation.";
+      return;
+    }
+
+    const roots = math.roots(poly);
+
+    document.getElementById("eqResult").innerText = "x = " + roots.join(", ");
+    document.getElementById("eqSteps").innerText = "Solved as polynomial in x.";
+  } catch {
+    document.getElementById("eqResult").innerText = "Invalid equation.";
+    document.getElementById("eqSteps").innerText = "";
+  }
+}
+
+/* ---------------- SYSTEM SOLVER ---------------- */
 function solveSystem() {
   try {
-    const eq1 = math.parse(document.getElementById("sysEq1").value);
-    const eq2 = math.parse(document.getElementById("sysEq2").value);
-    const sol = math.solve([eq1, eq2], ["x", "y"]);
-    document.getElementById("sysResult").innerText = JSON.stringify(sol);
+    const eq1 = document.getElementById("sysEq1").value.replace(/\s+/g, "");
+    const eq2 = document.getElementById("sysEq2").value.replace(/\s+/g, "");
+
+    const [L1, R1] = eq1.split("=");
+    const [L2, R2] = eq2.split("=");
+
+    const e1 = math.simplify(`${L1}-(${R1})`);
+    const e2 = math.simplify(`${L2}-(${R2})`);
+
+    const sys = [
+      math.parse(e1.toString()),
+      math.parse(e2.toString())
+    ];
+
+    const sol = math.solve(sys, ["x", "y"]);
+
+    document.getElementById("sysResult").innerText =
+      `x = ${sol.x}, y = ${sol.y}`;
   } catch {
     document.getElementById("sysResult").innerText = "Invalid system.";
   }
 }
 
-/* SINGLE EQUATION SOLVER */
-function solveSingleEquation() {
-  try {
-    const input = document.getElementById("eqInput").value;
-    const sol = math.solve(input, "x");
-    document.getElementById("eqResult").innerText = sol;
-    document.getElementById("eqSteps").innerText = "Steps hidden in shrink mode.";
-  } catch {
-    document.getElementById("eqResult").innerText = "Invalid equation.";
-  }
-}
-
-/* CALCULATOR */
+/* ---------------- CALCULATOR ---------------- */
 function pressCalc(v) {
   document.getElementById("calcInput").value += v;
 }
@@ -104,7 +213,7 @@ function clearCalc() {
   document.getElementById("calcResult").innerText = "";
 }
 
-/* FORMULA BOOK TABS */
+/* ---------------- FORMULA BOOK TABS ---------------- */
 const tabButtons = document.querySelectorAll(".tab-btn");
 const tabContents = {
   algebra: document.getElementById("tab-algebra"),
@@ -122,9 +231,7 @@ tabButtons.forEach(btn => {
     tabContents[tab].classList.add("active");
   });
 });
-
 </script>
 
 </body>
 </html>
-
