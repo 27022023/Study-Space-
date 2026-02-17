@@ -2,102 +2,21 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+ <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
 <link rel="manifest" href="/site.webmanifest">
 <link rel="stylesheet" href="style.css">
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#ffffff">
- <title>Problem Solver</title>
-<style>
-    body {
-        margin: 0;
-        font-family: Arial, sans-serif;
-        background: #f5f5f5;
-        display: flex;
-    }
+ <title>Problem Solver</title> 
+  <link rel="stylesheet" href="style.css">
 
-    /* SIDEBAR */
-    .sidebar {
-        width: 220px;
-        background: #333;
-        color: white;
-        height: 100vh;
-        padding: 20px;
-        box-sizing: border-box;
-    }
-    .sidebar h2 {
-        margin-top: 0;
-    }
-
-    /* MAIN CONTENT */
-    .content {
-        flex: 1;
-        padding: 20px;
-    }
-
-    section {
-        background: white;
-        padding: 20px;
-        margin-bottom: 20px;
-        border-radius: 8px;
-        box-shadow: 0 0 5px rgba(0,0,0,0.1);
-    }
-
-    input {
-        padding: 8px;
-        margin: 5px 0;
-        width: 100%;
-        box-sizing: border-box;
-    }
-
-    button {
-        padding: 10px 15px;
-        margin: 5px 0;
-        cursor: pointer;
-        background: #4a90e2;
-        color: white;
-        border: none;
-        border-radius: 5px;
-    }
-
-    /* TABS */
-    .tab-btn {
-        background: #ddd;
-        color: black;
-        margin-right: 5px;
-    }
-    .tab-btn.active {
-        background: #4a90e2;
-        color: white;
-    }
-    .tab-content {
-        display: none;
-        margin-top: 10px;
-        padding: 10px;
-        background: #eef;
-        border-radius: 5px;
-    }
-    .tab-content.active {
-        display: block;
-    }
-</style>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.8.0/math.min.js"></script>
+  <!-- Math.js for solving equations -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.8.0/math.min.js"></script>
 </head>
 
 <body>
-
-<div class="sidebar">
-    <h2>Menu</h2>
-    <p>System Solver</p>
-    <p>Equation Solver</p>
-    <p>Calculator</p>
-    <p>Formula Book</p>
-</div>
-
-<div class="content">
 
 <!-- SYSTEM OF EQUATIONS -->
 <section>
@@ -149,66 +68,34 @@
   <div id="tab-chemistry" class="tab-content">Chemistry formulas...</div>
 </section>
 
-</div>
-
+<!-- JAVASCRIPT -->
 <script>
 
-/* ---------------- SINGLE EQUATION SOLVER ---------------- */
-function solveSingleEquation() {
-  const raw = document.getElementById("eqInput").value.replace(/\s+/g, "");
-  const [left, right] = raw.split("=");
-
-  if (!right) {
-    document.getElementById("eqResult").innerText = "Use format: equation = value";
-    return;
-  }
-
-  try {
-    const expr = math.simplify(`${left}-(${right})`);
-    const poly = math.polyCoefficients(expr, "x");
-
-    if (!poly) {
-      document.getElementById("eqResult").innerText = "Could not interpret equation.";
-      return;
-    }
-
-    const roots = math.roots(poly);
-
-    document.getElementById("eqResult").innerText = "x = " + roots.join(", ");
-    document.getElementById("eqSteps").innerText = "Solved as polynomial in x.";
-  } catch {
-    document.getElementById("eqResult").innerText = "Invalid equation.";
-    document.getElementById("eqSteps").innerText = "";
-  }
-}
-
-/* ---------------- SYSTEM OF EQUATIONS ---------------- */
+/* SYSTEM OF EQUATIONS */
 function solveSystem() {
   try {
-    const eq1 = document.getElementById("sysEq1").value.replace(/\s+/g, "");
-    const eq2 = document.getElementById("sysEq2").value.replace(/\s+/g, "");
-
-    const [L1, R1] = eq1.split("=");
-    const [L2, R2] = eq2.split("=");
-
-    const e1 = math.simplify(`${L1}-(${R1})`);
-    const e2 = math.simplify(`${L2}-(${R2})`);
-
-    const sys = [
-      math.parse(e1.toString()),
-      math.parse(e2.toString())
-    ];
-
-    const sol = math.solve(sys, ["x", "y"]);
-
-    document.getElementById("sysResult").innerText =
-      `x = ${sol.x}, y = ${sol.y}`;
+    const eq1 = math.parse(document.getElementById("sysEq1").value);
+    const eq2 = math.parse(document.getElementById("sysEq2").value);
+    const sol = math.solve([eq1, eq2], ["x", "y"]);
+    document.getElementById("sysResult").innerText = JSON.stringify(sol);
   } catch {
     document.getElementById("sysResult").innerText = "Invalid system.";
   }
 }
 
-/* ---------------- CALCULATOR ---------------- */
+/* SINGLE EQUATION SOLVER */
+function solveSingleEquation() {
+  try {
+    const input = document.getElementById("eqInput").value;
+    const sol = math.solve(input, "x");
+    document.getElementById("eqResult").innerText = sol;
+    document.getElementById("eqSteps").innerText = "Steps hidden in shrink mode.";
+  } catch {
+    document.getElementById("eqResult").innerText = "Invalid equation.";
+  }
+}
+
+/* CALCULATOR */
 function pressCalc(v) {
   document.getElementById("calcInput").value += v;
 }
@@ -225,7 +112,7 @@ function clearCalc() {
   document.getElementById("calcResult").innerText = "";
 }
 
-/* ---------------- FORMULA BOOK TABS ---------------- */
+/* FORMULA BOOK TABS */
 const tabButtons = document.querySelectorAll(".tab-btn");
 const tabContents = {
   algebra: document.getElementById("tab-algebra"),
@@ -249,4 +136,5 @@ if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("service-worker.js");
 </body>
 </html>
+
 
