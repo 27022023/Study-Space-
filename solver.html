@@ -4,258 +4,504 @@
 <meta charset="UTF-8">
 <title>Problem Solver</title>
 
-<!-- Math.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.8.0/math.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.11.0/math.min.js"></script>
 
 <style>
-    body {
-        margin: 0;
-        font-family: Arial, sans-serif;
-        background: #FCE7F3; /* pastel pink */
-        padding: 20px;
-    }
+  :root {
+    --lavender: #EDE7FF;
+    --pink: #FCE7F3;
+    --blue: #E3F2FD;
+    --mint: #DFFCF0;
+    --shadow: 0 4px 10px rgba(0,0,0,0.08);
+    --radius: 14px;
+  }
 
-    h2 {
-        margin-top: 0;
-    }
+  * {
+    box-sizing: border-box;
+  }
 
-    section {
-        background: white;
-        padding: 20px;
-        margin-bottom: 25px;
-        border-radius: 12px;
-        box-shadow: 0 0 8px rgba(0,0,0,0.1);
-    }
+  body {
+    margin: 0;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: linear-gradient(135deg, var(--pink), var(--lavender));
+    padding: 24px;
+    display: flex;
+    justify-content: center;
+  }
 
-    input {
-        width: 100%;
-        padding: 10px;
-        margin: 8px 0;
-        border-radius: 6px;
-        border: 1px solid #ccc;
-        background: #EDE7FF; /* pastel lavender */
-    }
+  .wrapper {
+    width: 100%;
+    max-width: 900px;
+  }
 
-    button {
-        padding: 10px 15px;
-        background: #DFFCF0; /* pastel mint */
-        border: none;
-        border-radius: 6px;
-        cursor: pointer;
-        margin: 5px;
-        font-weight: bold;
-    }
+  h1 {
+    text-align: center;
+    color: #4b4b4b;
+    margin-bottom: 24px;
+  }
 
-    button:hover {
-        background: #C8F5E4;
-    }
+  section {
+    background: white;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 20px 22px;
+    margin-bottom: 24px;
+  }
 
-    .tab-btn {
-        background: #FFEFE2; /* pastel peach */
-        margin-right: 5px;
-    }
+  section h2 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    color: #444;
+  }
 
-    .tab-btn.active {
-        background: #E3F2FD; /* pastel blue */
-    }
+  input[type="text"] {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: 1px solid #d0cde1;
+    background: var(--blue);
+    outline: none;
+    font-size: 15px;
+  }
 
-    .tab-content {
-        display: none;
-        background: #E3F2FD;
-        padding: 10px;
-        border-radius: 6px;
-        margin-top: 10px;
-    }
+  input[type="text"]:focus {
+    border-color: #9c8fe5;
+    box-shadow: 0 0 0 2px rgba(156,143,229,0.25);
+  }
 
-    .tab-content.active {
-        display: block;
-    }
+  .btn {
+    display: inline-block;
+    padding: 9px 16px;
+    border-radius: 999px;
+    border: none;
+    cursor: pointer;
+    background: var(--mint);
+    color: #333;
+    font-weight: 600;
+    margin-top: 10px;
+    transition: transform 0.08s ease, box-shadow 0.08s ease, background 0.15s ease;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  }
+
+  .btn:hover {
+    background: #c4f3e3;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+  }
+
+  .result {
+    margin-top: 10px;
+    font-size: 15px;
+    color: #333;
+    white-space: pre-wrap;
+  }
+
+  /* Calculator */
+  .calc-display {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: 1px solid #d0cde1;
+    background: var(--blue);
+    font-size: 18px;
+    margin-bottom: 10px;
+    outline: none;
+  }
+
+  .calc-row {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+  }
+
+  .calc-btn {
+    padding: 12px 0;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    background: var(--mint);
+    font-weight: 600;
+    font-size: 14px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    transition: transform 0.08s ease, box-shadow 0.08s ease, background 0.15s ease;
+  }
+
+  .calc-btn.op {
+    background: #E0F2FE; /* pastel blue */
+  }
+
+  .calc-btn.func {
+    background: #FDE7FF; /* pastel lilac-pink */
+  }
+
+  .calc-btn.equal {
+    background: #FBCFE8; /* stronger pink */
+  }
+
+  .calc-btn.clear {
+    background: #FEE2E2; /* soft red */
+  }
+
+  .calc-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+  }
+
+  .mode-toggle {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 14px;
+    border-radius: 999px;
+    border: none;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  }
+
+  .mode-deg {
+    background: #BFDBFE; /* blue */
+    color: #1e3a8a;
+  }
+
+  .mode-rad {
+    background: #DDD6FE; /* lavender */
+    color: #4c1d95;
+  }
+
+  /* Formula book */
+  .tabs {
+    margin-bottom: 10px;
+  }
+
+  .tab-btn {
+    padding: 7px 14px;
+    border-radius: 999px;
+    border: none;
+    cursor: pointer;
+    background: #FFEFE2;
+    margin-right: 6px;
+    margin-bottom: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #555;
+  }
+
+  .tab-btn.active {
+    background: #E0F2FE;
+    color: #1e3a8a;
+  }
+
+  .tab-content {
+    display: none;
+    background: var(--blue);
+    border-radius: 10px;
+    padding: 12px 14px;
+    font-size: 14px;
+  }
+
+  .tab-content.active {
+    display: block;
+  }
+
+  .formula-category h3 {
+    margin-top: 0;
+    margin-bottom: 6px;
+  }
+
+  .formula-category p {
+    margin: 3px 0;
+  }
 </style>
 </head>
 
 <body>
+<div class="wrapper">
+  <h1>Problem Solver</h1>
 
-<!-- SINGLE EQUATION SOLVER -->
-<section>
-  <h2>Single Equation Solver</h2>
-  <input id="eqInput" placeholder="Example: x^2 - 5x + 6 = 0">
-  <button onclick="solveSingleEquation()">Solve</button>
-  <div id="eqResult"></div>
-  <pre id="eqSteps"></pre>
-</section>
+  <!-- SINGLE / QUADRATIC EQUATION SOLVER -->
+  <section>
+    <h2>Single / Quadratic Equation Solver</h2>
+    <input type="text" id="eqInput" placeholder="Example: 2x+3=7 or x^2 - 5x + 6 = 0">
+    <button class="btn" onclick="solveSingleEquation()">Solve</button>
+    <div id="eqResult" class="result"></div>
+  </section>
 
-<!-- SYSTEM SOLVER -->
-<section>
-  <h2>System of Equations</h2>
-  <input id="sysEq1" placeholder="Example: 2x + 3y = 7">
-  <input id="sysEq2" placeholder="Example: x - y = 1">
-  <button onclick="solveSystem()">Solve System</button>
-  <div id="sysResult"></div>
-</section>
+  <!-- SYSTEM SOLVER -->
+  <section>
+    <h2>System of Equations (2×2)</h2>
+    <input type="text" id="sysEq1" placeholder="Example: 2x + 3y = 7">
+    <input type="text" id="sysEq2" placeholder="Example: x - y = 1">
+    <button class="btn" onclick="solveSystem()">Solve System</button>
+    <div id="sysResult" class="result"></div>
+  </section>
 
-<!-- CALCULATOR -->
-<section>
-  <h2>Calculator</h2>
-  <input id="calcInput">
+  <!-- SCIENTIFIC CALCULATOR -->
+  <section>
+    <h2>Scientific Calculator</h2>
+    <button id="modeToggle" class="mode-toggle mode-deg" onclick="toggleMode()">Mode: DEG</button>
+    <input id="calcInput" class="calc-display" readonly>
 
-  <!-- FULL NUMBER PAD 0–9 -->
-  <div>
-    <button onclick="pressCalc('7')">7</button>
-    <button onclick="pressCalc('8')">8</button>
-    <button onclick="pressCalc('9')">9</button>
-    <button onclick="pressCalc('/')">/</button>
+    <div class="calc-row">
+      <button class="calc-btn func" onclick="applyFunc('sin')">sin</button>
+      <button class="calc-btn func" onclick="applyFunc('cos')">cos</button>
+      <button class="calc-btn func" onclick="applyFunc('tan')">tan</button>
+      <button class="calc-btn func" onclick="applyFunc('sqrt')">√</button>
+      <button class="calc-btn func" onclick="applyFunc('square')">x²</button>
 
-    <button onclick="pressCalc('4')">4</button>
-    <button onclick="pressCalc('5')">5</button>
-    <button onclick="pressCalc('6')">6</button>
-    <button onclick="pressCalc('*')">*</button>
+      <button class="calc-btn" onclick="pressCalc('7')">7</button>
+      <button class="calc-btn" onclick="pressCalc('8')">8</button>
+      <button class="calc-btn" onclick="pressCalc('9')">9</button>
+      <button class="calc-btn op" onclick="pressCalc('/')">÷</button>
+      <button class="calc-btn func" onclick="applyFunc('percent')">%</button>
 
-    <button onclick="pressCalc('1')">1</button>
-    <button onclick="pressCalc('2')">2</button>
-    <button onclick="pressCalc('3')">3</button>
-    <button onclick="pressCalc('-')">-</button>
+      <button class="calc-btn" onclick="pressCalc('4')">4</button>
+      <button class="calc-btn" onclick="pressCalc('5')">5</button>
+      <button class="calc-btn" onclick="pressCalc('6')">6</button>
+      <button class="calc-btn op" onclick="pressCalc('*')">×</button>
+      <button class="calc-btn" onclick="pressCalc('(')">(</button>
 
-    <button onclick="pressCalc('0')">0</button>
-    <button onclick="pressCalc('.')">.</button>
-    <button onclick="solveCalc()">=</button>
-    <button onclick="pressCalc('+')">+</button>
+      <button class="calc-btn" onclick="pressCalc('1')">1</button>
+      <button class="calc-btn" onclick="pressCalc('2')">2</button>
+      <button class="calc-btn" onclick="pressCalc('3')">3</button>
+      <button class="calc-btn op" onclick="pressCalc('-')">−</button>
+      <button class="calc-btn" onclick="pressCalc(')')">)</button>
 
-    <button onclick="clearCalc()">C</button>
-  </div>
+      <button class="calc-btn" onclick="pressCalc('0')">0</button>
+      <button class="calc-btn" onclick="pressCalc('.')">.</button>
+      <button class="calc-btn equal" onclick="solveCalc()">=</button>
+      <button class="calc-btn op" onclick="pressCalc('+')">+</button>
+      <button class="calc-btn clear" onclick="clearCalc()">C</button>
+    </div>
 
-  <div id="calcResult"></div>
-</section>
+    <div id="calcResult" class="result"></div>
+  </section>
 
-<!-- FORMULA BOOK -->
-<section>
-  <h2>Formula Book</h2>
-  <button class="tab-btn" data-tab="algebra">Algebra</button>
-  <button class="tab-btn" data-tab="geometry">Geometry</button>
-  <button class="tab-btn" data-tab="physics">Physics</button>
-  <button class="tab-btn" data-tab="chemistry">Chemistry</button>
-<div id="tab-algebra" class="tab-content">
-  <h3>Algebra</h3>
-  <p><b>Quadratic Formula:</b> x = (-b ± √(b² - 4ac)) / 2a</p>
-  <p><b>Slope Formula:</b> m = (y₂ - y₁) / (x₂ - x₁)</p>
-  <p><b>Point-Slope Form:</b> y - y₁ = m(x - x₁)</p>
+  <!-- FORMULA BOOK -->
+  <section>
+    <h2>Formula Book</h2>
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="algebra">Algebra</button>
+      <button class="tab-btn" data-tab="geometry">Geometry</button>
+      <button class="tab-btn" data-tab="physics">Physics</button>
+      <button class="tab-btn" data-tab="chemistry">Chemistry</button>
+    </div>
+
+    <div id="tab-algebra" class="tab-content active">
+      <div class="formula-category">
+        <h3>Algebra</h3>
+        <p><b>Quadratic Formula:</b> x = (-b ± √(b² - 4ac)) / (2a)</p>
+        <p><b>Slope:</b> m = (y₂ - y₁) / (x₂ - x₁)</p>
+        <p><b>Point-Slope Form:</b> y - y₁ = m(x - x₁)</p>
+        <p><b>Standard Form (Line):</b> Ax + By = C</p>
+        <p><b>Exponential:</b> y = a·bˣ</p>
+      </div>
+    </div>
+
+    <div id="tab-geometry" class="tab-content">
+      <div class="formula-category">
+        <h3>Geometry</h3>
+        <p><b>Area of Circle:</b> A = πr²</p>
+        <p><b>Circumference of Circle:</b> C = 2πr</p>
+        <p><b>Area of Rectangle:</b> A = l·w</p>
+        <p><b>Perimeter of Rectangle:</b> P = 2(l + w)</p>
+        <p><b>Pythagorean Theorem:</b> a² + b² = c²</p>
+        <p><b>Area of Triangle:</b> A = ½bh</p>
+      </div>
+    </div>
+
+    <div id="tab-physics" class="tab-content">
+      <div class="formula-category">
+        <h3>Physics</h3>
+        <p><b>Newton's 2nd Law:</b> F = ma</p>
+        <p><b>Work:</b> W = Fd cos(θ)</p>
+        <p><b>Kinetic Energy:</b> KE = ½mv²</p>
+        <p><b>Potential Energy:</b> PE = mgh</p>
+        <p><b>Ohm's Law:</b> V = IR</p>
+        <p><b>Wave Speed:</b> v = fλ</p>
+      </div>
+    </div>
+
+    <div id="tab-chemistry" class="tab-content">
+      <div class="formula-category">
+        <h3>Chemistry</h3>
+        <p><b>Ideal Gas Law:</b> PV = nRT</p>
+        <p><b>Molarity:</b> M = n / V</p>
+        <p><b>Density:</b> ρ = m / V</p>
+        <p><b>Percent Yield:</b> % = (actual / theoretical) × 100</p>
+        <p><b>pH:</b> pH = −log[H⁺]</p>
+      </div>
+    </div>
+  </section>
 </div>
-
-<div id="tab-geometry" class="tab-content">
-  <h3>Geometry</h3>
-  <p><b>Area of Circle:</b> A = πr²</p>
-  <p><b>Perimeter of Rectangle:</b> P = 2(l + w)</p>
-  <p><b>Pythagorean Theorem:</b> a² + b² = c²</p>
-</div>
-
-<div id="tab-physics" class="tab-content">
-  <h3>Physics</h3>
-  <p><b>Force:</b> F = ma</p>
-  <p><b>Speed:</b> v = d / t</p>
-  <p><b>Ohm’s Law:</b> V = IR</p>
-</div>
-
-<div id="tab-chemistry" class="tab-content">
-  <h3>Chemistry</h3>
-  <p><b>Ideal Gas Law:</b> PV = nRT</p>
-  <p><b>Molarity:</b> M = mol / L</p>
-  <p><b>Density:</b> ρ = m / V</p>
-</div>
-      
-</section>
 
 <script>
-/* ---------------- SINGLE EQUATION SOLVER ---------------- */
-function solveSingleEquation() {
-  const raw = document.getElementById("eqInput").value.replace(/\s+/g, "");
-  const [left, right] = raw.split("=");
+  /* ---------- SINGLE / QUADRATIC EQUATION SOLVER ---------- */
+  function solveSingleEquation() {
+    const raw = document.getElementById("eqInput").value.replace(/\s+/g, "");
+    const out = document.getElementById("eqResult");
 
-  if (!right) {
-    document.getElementById("eqResult").innerText = "Use format: equation = value";
-    return;
-  }
-
-  try {
-    const expr = math.simplify(`${left}-(${right})`);
-    const poly = math.polyCoefficients(expr, "x");
-
-    if (!poly) {
-      document.getElementById("eqResult").innerText = "Could not interpret equation.";
+    if (!raw.includes("=")) {
+      out.textContent = "Please use the format: expression = value";
       return;
     }
 
-    const roots = math.roots(poly);
+    const [left, right] = raw.split("=");
+    try {
+      const expr = math.simplify(`${left}-(${right})`);
+      const poly = math.polyCoefficients(expr, "x");
 
-    document.getElementById("eqResult").innerText = "x = " + roots.join(", ");
-    document.getElementById("eqSteps").innerText = "Solved as polynomial in x.";
-  } catch 
+      if (poly && poly.length > 1) {
+        const roots = math.roots(poly);
+        out.textContent = "Solutions for x: " + roots.map(r => r.toString()).join(", ");
+      } else {
+        // Try numeric solve as fallback
+        const f = x => expr.evaluate({ x });
+        const guess = 0;
+        const sol = math.solve(f, guess);
+        out.textContent = "Solution for x ≈ " + sol.toString();
+      }
+    } catch (e) {
+      out.textContent = "Could not solve this equation. Check your input.";
+    }
   }
-}
 
-/* ---------------- SYSTEM SOLVER ---------------- */
-function solveSystem() {
-  try {
+  /* ---------- SYSTEM SOLVER ---------- */
+  function solveSystem() {
     const eq1 = document.getElementById("sysEq1").value.replace(/\s+/g, "");
     const eq2 = document.getElementById("sysEq2").value.replace(/\s+/g, "");
+    const out = document.getElementById("sysResult");
 
-    const [L1, R1] = eq1.split("=");
-    const [L2, R2] = eq2.split("=");
+    if (!eq1.includes("=") || !eq2.includes("=")) {
+      out.textContent = "Use the format: ax+by=c";
+      return;
+    }
 
-    const e1 = math.simplify(`${L1}-(${R1})`);
-    const e2 = math.simplify(`${L2}-(${R2})`);
+    try {
+      const [L1, R1] = eq1.split("=");
+      const [L2, R2] = eq2.split("=");
+      const e1 = math.simplify(`${L1}-(${R1})`);
+      const e2 = math.simplify(`${L2}-(${R2})`);
 
-    const sys = [
-      math.parse(e1.toString()),
-      math.parse(e2.toString())
-    ];
+      const sys = [
+        math.parse(e1.toString()),
+        math.parse(e2.toString())
+      ];
 
-    const sol = math.solve(sys, ["x", "y"]);
-
-    document.getElementById("sysResult").innerText =
-      `x = ${sol.x}, y = ${sol.y}`;
-  } catch {
-    document.getElementById 
+      const sol = math.solve(sys, ["x", "y"]);
+      out.textContent = `x = ${sol.x.toString()},  y = ${sol.y.toString()}`;
+    } catch (e) {
+      out.textContent = "Could not solve this system. Check that it's linear in x and y.";
+    }
   }
-}
-    
+
+  /* ---------- SCIENTIFIC CALCULATOR ---------- */
+  let angleMode = "DEG"; // or "RAD"
+
+  function toggleMode() {
+    angleMode = angleMode === "DEG" ? "RAD" : "DEG";
+    const btn = document.getElementById("modeToggle");
+    if (angleMode === "DEG") {
+      btn.textContent = "Mode: DEG";
+      btn.classList.remove("mode-rad");
+      btn.classList.add("mode-deg");
+    } else {
+      btn.textContent = "Mode: RAD";
+      btn.classList.remove("mode-deg");
+      btn.classList.add("mode-rad");
+    }
   }
 
-
-/* ---------------- CALCULATOR ---------------- */
-function pressCalc(v) {
-  document.getElementById("calcInput").value += v;
-}
-function solveCalc() {
-  try {
-    const r = math.evaluate(document.getElementById("calcInput").value);
-    document.getElementById("calcResult").innerText = r;
-  } catch {
-    document.getElementById("calcResult").innerText = "Error";
+  function pressCalc(v) {
+    const inp = document.getElementById("calcInput");
+    inp.value += v;
   }
-}
-function clearCalc() {
-  document.getElementById("calcInput").value = "";
-  document.getElementById("calcResult").innerText = "";
-}
 
-/* ---------------- FORMULA BOOK TABS ---------------- */
-const tabButtons = document.querySelectorAll(".tab-btn");
-const tabContents = {
-  algebra: document.getElementById("tab-algebra"),
-  geometry: document.getElementById("tab-geometry"),
-  physics: document.getElementById("tab-physics"),
-  chemistry: document.getElementById("tab-chemistry")
-};
+  function clearCalc() {
+    document.getElementById("calcInput").value = "";
+    document.getElementById("calcResult").textContent = "";
+  }
 
-tabButtons.forEach(btn => {
-  btn.addEventListener("click", () => {
-    const tab = btn.dataset.tab;
-    tabButtons.forEach(b => b.classList.remove("active"));
-    Object.values(tabContents).forEach(c => c.classList.remove("active"));
-    btn.classList.add("active");
-    tabContents[tab].classList.add("active");
+  function solveCalc() {
+    const inp = document.getElementById("calcInput");
+    const out = document.getElementById("calcResult");
+    try {
+      const expr = inp.value;
+      const val = math.evaluate(expr);
+      inp.value = val.toString();
+      out.textContent = "";
+    } catch (e) {
+      out.textContent = "Error in expression.";
+    }
+  }
+
+  function getCurrentValue() {
+    const inp = document.getElementById("calcInput");
+    let valStr = inp.value.trim();
+    if (!valStr) return null;
+    try {
+      return math.evaluate(valStr);
+    } catch {
+      return null;
+    }
+  }
+
+  function applyFunc(type) {
+    const inp = document.getElementById("calcInput");
+    const out = document.getElementById("calcResult");
+    const current = getCurrentValue();
+
+    if (current === null) {
+      out.textContent = "Enter a valid number or expression first.";
+      return;
+    }
+
+    try {
+      let result;
+      if (type === "sin" || type === "cos" || type === "tan") {
+        let x = current;
+        if (angleMode === "DEG") {
+          x = math.multiply(current, math.pi / 180);
+        }
+        if (type === "sin") result = math.sin(x);
+        if (type === "cos") result = math.cos(x);
+        if (type === "tan") result = math.tan(x);
+      } else if (type === "sqrt") {
+        result = math.sqrt(current); // supports complex
+      } else if (type === "square") {
+        result = math.pow(current, 2);
+      } else if (type === "percent") {
+        result = math.divide(current, 100);
+      } else {
+        return;
+      }
+
+      inp.value = result.toString();
+      out.textContent = "";
+    } catch (e) {
+      out.textContent = "Error applying function.";
+    }
+  }
+
+  /* ---------- FORMULA BOOK TABS ---------- */
+  const tabButtons = document.querySelectorAll(".tab-btn");
+  const tabContents = {
+    algebra: document.getElementById("tab-algebra"),
+    geometry: document.getElementById("tab-geometry"),
+    physics: document.getElementById("tab-physics"),
+    chemistry: document.getElementById("tab-chemistry")
+  };
+
+  tabButtons.forEach(btn => {
+    btn.addEventListener("click", () => {
+      const tab = btn.dataset.tab;
+      tabButtons.forEach(b => b.classList.remove("active"));
+      Object.values(tabContents).forEach(c => c.classList.remove("active"));
+      btn.classList.add("active");
+      tabContents[tab].classList.add("active");
+    });
   });
-});
 </script>
-
 </body>
 </html>
