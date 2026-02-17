@@ -7,6 +7,71 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.11.0/math.min.js"></script>
 
 <style>
+ /* Unified Solver Styles */
+#unifiedSolver textarea {
+  width: 100%;
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid #d0cde1;
+  background: var(--blue);
+  font-size: 15px;
+  resize: vertical;
+  outline: none;
+}
+
+#unifiedChat {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* User bubble */
+.user-bubble {
+  align-self: flex-end;
+  background: #BFDBFE; /* baby blue */
+  color: #1e3a8a;
+  padding: 12px 16px;
+  border-radius: 16px;
+  max-width: 80%;
+  box-shadow: var(--shadow);
+  white-space: pre-wrap;
+}
+
+/* Solver bubble */
+.solver-bubble {
+  align-self: flex-start;
+  background: #DDD6FE; /* lavender */
+  color: #4c1d95;
+  padding: 12px 16px;
+  border-radius: 16px;
+  max-width: 80%;
+  box-shadow: var(--shadow);
+  white-space: pre-wrap;
+  position: relative;
+}
+
+/* Steps inside solver bubble */
+.steps {
+  margin-top: 10px;
+  padding: 10px;
+  background: white;
+  border-radius: 10px;
+  font-size: 14px;
+  color: #333;
+  box-shadow: var(--shadow);
+}
+
+.show-steps-btn {
+  margin-top: 8px;
+  background: #E0F2FE;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+}
   :root {
     --lavender: #EDE7FF;
     --pink: #FCE7F3;
