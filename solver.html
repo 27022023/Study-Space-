@@ -72,16 +72,36 @@
 <script>
 
 /* SYSTEM OF EQUATIONS */
-function solveSystem() {
+function solveSingleEquation() {
+  const raw = document.getElementById("eqInput").value.replace(/\s+/g, "");
+  const [left, right] = raw.split("=");
+
+  if (!right) {
+    document.getElementById("eqResult").innerText = "Use format: equation = value";
+    return;
+  }
+
   try {
-    const eq1 = math.parse(document.getElementById("sysEq1").value);
-    const eq2 = math.parse(document.getElementById("sysEq2").value);
-    const sol = math.solve([eq1, eq2], ["x", "y"]);
-    document.getElementById("sysResult").innerText = JSON.stringify(sol);
-  } catch {
-    document.getElementById("sysResult").innerText = "Invalid system.";
+    // Move everything to left side: left - right = 0
+    const expr = math.simplify(`${left}-(${right})`);
+    const poly = math.polyCoefficients(expr, "x");
+
+    if (!poly) {
+      document.getElementById("eqResult").innerText = "Could not interpret equation.";
+      return;
+    }
+
+    // Solve polynomial
+    const roots = math.roots(poly);
+
+    document.getElementById("eqResult").innerText = "x = " + roots.join(", ");
+    document.getElementById("eqSteps").innerText = "Solved as polynomial in x.";
+  } catch (e) {
+    document.getElementById("eqResult").innerText = "Invalid equation.";
+    document.getElementById("eqSteps").innerText = "";
   }
 }
+ 
 
 /* SINGLE EQUATION SOLVER */
 function solveSingleEquation() {
