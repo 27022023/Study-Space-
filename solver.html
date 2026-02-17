@@ -558,24 +558,79 @@
             sidebar.classList.toggle("open");
         });
 
-        // ---------- SYSTEM OF EQUATIONS (x, y) ----------
-        function parseTwoVarEquation(eq) {
-            // Expect something like "2x+3y=7" or "x-y=1"
-            let [left, right] = eq.split("=");
-            if (right === undefined) throw new Error("Equation must contain =");
-            right = parseFloat(right.replace(",", "."));
-            if (isNaN(right)) throw new Error("Right side must be a number");
+// ---------- SYSTEM OF EQUATIONS (x, y) ----------
+function parseTwoVarEquation(eq) {
+    // Expect something like "2x+3y=7" or "x-y=1"
+    let [left, right] = eq.split("=");
+    if (right === undefined) throw new Error("Equation must contain =");
+    right = parseFloat(right.replace(",", "."));
+    if (isNaN(right)) throw new Error("Right side must be a number");
 
-            left = left.replace(/\s+/g, "");
-            left = left.replace(/-/g, "+-");
-            const parts = left.split("+").filter(p => p);
+    left = left.replace(/\s+/g, "");
+    left = left.replace(/-/g, "+-");
+    const parts = left.split("+").filter(p => p);
 
-            let ax = 0, by = 0, c = 0;
+    let ax = 0, by = 0, c = 0;
 
-            for (let term of parts) {
-                if (term.includes("x")) {
-                    let coeff = term.replace("x", "");
-                    if (coeff ===
+    for (let term of parts) {
+        if (term.includes("x")) {
+            let coeff = term.replace("x", "");
+            if (coeff === "" || coeff === "+") coeff = 1;
+            else if (coeff === "-") coeff = -1;
+            else coeff = parseFloat(coeff.replace(",", "."));
+            if (isNaN(coeff)) throw new Error("Invalid x term");
+            ax += coeff;
+
+        } else if (term.includes("y")) {
+            let coeff = term.replace("y", "");
+            if (coeff === "" || coeff === "+") coeff = 1;
+            else if (coeff === "-") coeff = -1;
+            else coeff = parseFloat(coeff.replace(",", "."));
+            if (isNaN(coeff)) throw new Error("Invalid y term");
+            by += coeff;
+
+        } else {
+            let val = parseFloat(term.replace(",", "."));
+            if (isNaN(val)) throw new Error("Invalid constant term");
+            c += val;
+        }
+    }
+
+    // Move constants to right side: ax + by + c = right -> ax + by = right - c
+    const newC = right - c;
+    return { a: ax, b: by, c: newC };
+}
+
+function solveSystem() {
+    const eq1 = document.getElementById("sysEq1").value;
+    const eq2 = document.getElementById("sysEq2").value;
+    const out = document.getElementById("sysResult");
+
+    if (!eq1 || !eq2) {
+        out.innerText = "Please enter both equations.";
+        return;
+    }
+
+    try {
+        const e1 = parseTwoVarEquation(eq1);
+        const e2 = parseTwoVarEquation(eq2);
+
+        const det = e1.a * e2.b - e2.a * e1.b;
+
+        if (Math.abs(det) < 1e-10) {
+            out.innerText = "No unique solution (determinant is zero).";
+            return;
+        }
+
+        const x = (e1.c * e2.b - e2.c * e1.b) / det;
+        const y = (e1.a * e2.c - e2.a * e1.c) / det;
+
+        out.innerText = `x = ${x.toFixed(3)},  y = ${y.toFixed(3)}`;
+    } catch (err) {
+        out.innerText = "Could not parse the system. Use forms like 2x+3y=7 and x-y=1.";
+    }
+}
+                        
 <html>
 <head>
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
