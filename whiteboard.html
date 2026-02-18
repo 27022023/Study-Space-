@@ -1,13 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-<link rel="manifest" href="/site.webmanifest"
-    <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#ffffff"> 
-    <meta charset="UTF-8">
+<meta charset="UTF-8">
 <title>Whiteboard</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -26,11 +20,12 @@
         background: #f0f0f0;
         border-bottom: 1px solid #ccc;
         align-items: center;
+        flex-wrap: wrap;
     }
 
     #whiteboard {
         position: absolute;
-        top: 60px;
+        top: 70px;
         left: 0;
         right: 0;
         bottom: 0;
@@ -50,6 +45,23 @@
         background: #ccc;
     }
 
+    #palette {
+        display: flex;
+        gap: 6px;
+    }
+
+    .swatch {
+        width: 22px;
+        height: 22px;
+        border-radius: 4px;
+        cursor: pointer;
+        border: 1px solid #aaa;
+    }
+
+    .swatch:hover {
+        transform: scale(1.1);
+    }
+
     #textInput {
         position: absolute;
         display: none;
@@ -57,28 +69,71 @@
         border: 1px solid #000;
         background: white;
     }
+
+    .size-btn {
+        padding: 4px 10px;
+        background: #eee;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    .size-btn:hover {
+        background: #ddd;
+    }
 </style>
 </head>
 
 <body>
 
 <div id="toolbar">
+
+    <!-- Drawing tools -->
     <div class="tool-btn" onclick="setMode('draw')">✏️ Draw</div>
+    <div class="tool-btn" onclick="setMode('highlight')">🖍️ Highlighter</div>
     <div class="tool-btn" onclick="setMode('erase')">🧽 Erase</div>
 
-    <label>Size:
-        <input type="range" id="size" min="2" max="40" value="5">
-    </label>
-
+    <!-- Colors -->
     <input type="color" id="color" value="#000000">
 
+    <div id="palette">
+        <div class="swatch" data-color="#ffd6e8"></div>
+        <div class="swatch" data-color="#f9a8d4"></div>
+        <div class="swatch" data-color="#dbeafe"></div>
+        <div class="swatch" data-color="#c7d2fe"></div>
+        <div class="swatch" data-color="#fef3c7"></div>
+    </div>
+
+    <!-- Shapes -->
+    <div class="tool-btn" onclick="setMode('shape-square')">⬜ Square</div>
+    <div class="tool-btn" onclick="setMode('shape-rect')">▭ Rectangle</div>
+    <div class="tool-btn" onclick="setMode('shape-circle')">⚪ Circle</div>
+    <div class="tool-btn" onclick="setMode('shape-line')">➖ Line</div>
+    <div class="tool-btn" onclick="setMode('shape-arrow')">➡️ Arrow</div>
+    <div class="tool-btn" onclick="setMode('shape-triangle')">🔺 Triangle</div>
+    <div class="tool-btn" onclick="setMode('shape-heart')">❤️ Heart</div>
+    <div class="tool-btn" onclick="setMode('shape-star')">⭐ Star</div>
+    <div class="tool-btn" onclick="setMode('shape-cloud')">☁️ Cloud</div>
+    <div class="tool-btn" onclick="setMode('shape-bubble')">💬 Bubble</div>
+
+    <!-- Shape size -->
+    <div class="size-btn" onclick="shapeSize='small'">S</div>
+    <div class="size-btn" onclick="shapeSize='medium'">M</div>
+    <div class="size-btn" onclick="shapeSize='large'">L</div>
+
+    <!-- Fill toggle -->
+    <div class="tool-btn" onclick="toggleFill()">Fill: <span id='fillState'>Off</span></div>
+
+    <!-- Text -->
     <div class="tool-btn" onclick="setMode('text')">🔤 Text</div>
 
+    <!-- Image -->
     <input type="file" id="imgUpload" accept="image/*" style="display:none" onchange="addImage(event)">
     <div class="tool-btn" onclick="document.getElementById('imgUpload').click()">🖼️ Image</div>
 
+    <!-- Save / Clear -->
     <div class="tool-btn" onclick="saveBoard()">💾 Save</div>
     <div class="tool-btn" onclick="clearBoard()">🗑️ Clear</div>
+
 </div>
 
 <canvas id="whiteboard"></canvas>
@@ -87,13 +142,27 @@
 <script>
 const canvas = document.getElementById("whiteboard");
 const ctx = canvas.getContext("2d");
+
 let mode = "draw";
 let drawing = false;
 let lastX = 0, lastY = 0;
 
+let shapeSize = "medium";
+let fillShapes = false;
+
+function toggleFill() {
+    fillShapes = !fillShapes;
+    document.getElementById("fillState").innerText = fillShapes ? "On" : "Off";
+}
+
+function getShapeSize() {
+    return shapeSize === "small" ? 40 :
+           shapeSize === "medium" ? 80 : 140;
+}
+
 function resizeCanvas() {
     canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight - 60;
+    canvas.height = window.innerHeight - 70;
     loadSaved();
 }
 resizeCanvas();
@@ -104,24 +173,41 @@ function setMode(m) {
 }
 
 canvas.addEventListener("pointerdown", e => {
+    if (mode.startsWith("shape-")) {
+        placeShape(e);
+        return;
+    }
+
     if (mode === "text") {
         placeTextInput(e);
         return;
     }
+
     drawing = true;
     [lastX, lastY] = [e.offsetX, e.offsetY];
 });
 
 canvas.addEventListener("pointermove", e => {
-    if (!drawing || mode === "text") return;
+    if (!drawing || mode === "text" || mode.startsWith("shape-")) return;
 
-    ctx.lineWidth = document.getElementById("size").value;
     ctx.lineCap = "round";
 
     if (mode === "draw") {
+        ctx.globalAlpha = 1.0;
         ctx.strokeStyle = document.getElementById("color").value;
-    } else if (mode === "erase") {
+        ctx.lineWidth = 5;
+    }
+
+    if (mode === "highlight") {
+        ctx.globalAlpha = 0.35;
+        ctx.strokeStyle = document.getElementById("color").value;
+        ctx.lineWidth = 20;
+    }
+
+    if (mode === "erase") {
+        ctx.globalAlpha = 1.0;
         ctx.strokeStyle = "#ffffff";
+        ctx.lineWidth = 30;
     }
 
     ctx.beginPath();
@@ -134,6 +220,7 @@ canvas.addEventListener("pointermove", e => {
 
 canvas.addEventListener("pointerup", () => {
     drawing = false;
+    ctx.globalAlpha = 1.0;
     saveToLocal();
 });
 
@@ -151,10 +238,103 @@ function finishText(e) {
         const input = document.getElementById("textInput");
         ctx.font = "20px Arial";
         ctx.fillStyle = document.getElementById("color").value;
-        ctx.fillText(input.value, parseInt(input.style.left), parseInt(input.style.top) - 60);
+        ctx.fillText(input.value, parseInt(input.style.left), parseInt(input.style.top) - 70);
         input.style.display = "none";
         saveToLocal();
     }
+}
+
+function placeShape(e) {
+    const x = e.offsetX;
+    const y = e.offsetY;
+    const size = getShapeSize();
+    const color = document.getElementById("color").value;
+
+    ctx.strokeStyle = color;
+    ctx.fillStyle = color;
+    ctx.lineWidth = 3;
+
+    ctx.beginPath();
+
+    switch (mode) {
+        case "shape-square":
+            if (fillShapes) ctx.fillRect(x, y, size, size);
+            else ctx.strokeRect(x, y, size, size);
+            break;
+
+        case "shape-rect":
+            if (fillShapes) ctx.fillRect(x, y, size * 1.5, size);
+            else ctx.strokeRect(x, y, size * 1.5, size);
+            break;
+
+        case "shape-circle":
+            ctx.arc(x, y, size / 2, 0, Math.PI * 2);
+            fillShapes ? ctx.fill() : ctx.stroke();
+            break;
+
+        case "shape-line":
+            ctx.moveTo(x, y);
+            ctx.lineTo(x + size, y);
+            ctx.stroke();
+            break;
+
+        case "shape-arrow":
+            ctx.moveTo(x, y);
+            ctx.lineTo(x + size, y);
+            ctx.lineTo(x + size - 15, y - 10);
+            ctx.moveTo(x + size, y);
+            ctx.lineTo(x + size - 15, y + 10);
+            ctx.stroke();
+            break;
+
+        case "shape-triangle":
+            ctx.moveTo(x, y);
+            ctx.lineTo(x + size, y);
+            ctx.lineTo(x + size / 2, y - size);
+            ctx.closePath();
+            fillShapes ? ctx.fill() : ctx.stroke();
+            break;
+
+        case "shape-heart":
+            ctx.moveTo(x, y);
+            ctx.bezierCurveTo(x - size/2, y - size/2, x - size, y + size/3, x, y + size);
+            ctx.bezierCurveTo(x + size, y + size/3, x + size/2, y - size/2, x, y);
+            fillShapes ? ctx.fill() : ctx.stroke();
+            break;
+
+        case "shape-star":
+            for (let i = 0; i < 5; i++) {
+                ctx.lineTo(
+                    x + size * Math.cos((18 + i * 72) * Math.PI / 180),
+                    y - size * Math.sin((18 + i * 72) * Math.PI / 180)
+                );
+                ctx.lineTo(
+                    x + (size / 2) * Math.cos((54 + i * 72) * Math.PI / 180),
+                    y - (size / 2) * Math.sin((54 + i * 72) * Math.PI / 180)
+                );
+            }
+            ctx.closePath();
+            fillShapes ? ctx.fill() : ctx.stroke();
+            break;
+
+        case "shape-cloud":
+            ctx.arc(x, y, size/3, Math.PI * 0.5, Math.PI * 1.5);
+            ctx.arc(x + size/3, y - size/3, size/3, Math.PI, Math.PI * 2);
+            ctx.arc(x + size*0.7, y, size/3, Math.PI * 1.5, Math.PI * 0.5);
+            ctx.closePath();
+            fillShapes ? ctx.fill() : ctx.stroke();
+            break;
+
+        case "shape-bubble":
+            ctx.rect(x, y, size, size * 0.7);
+            ctx.moveTo(x + size * 0.3, y + size * 0.7);
+            ctx.lineTo(x + size * 0.2, y + size * 0.9);
+            ctx.lineTo(x + size * 0.4, y + size * 0.7);
+            fillShapes ? ctx.fill() : ctx.stroke();
+            break;
+    }
+
+    saveToLocal();
 }
 
 function addImage(event) {
@@ -192,12 +372,14 @@ function loadSaved() {
         img.src = data;
     }
 }
+
+document.querySelectorAll(".swatch").forEach(btn => {
+    btn.style.background = btn.dataset.color;
+    btn.onclick = () => {
+        document.getElementById("color").value = btn.dataset.color;
+    };
+});
 </script>
 
 </body>
-<script>
-if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("service-worker.js");
-}
-</script>
 </html>
