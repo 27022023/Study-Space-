@@ -2,84 +2,167 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Language Learning Hub</title>
+<title>Language Learning Lab</title>
+
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:system-ui;background:#fdf7ff;min-height:100vh;display:flex;justify-content:center;padding:24px;color:#1f2933}
-.app{width:100%;max-width:900px;background:#fff;border-radius:24px;box-shadow:0 12px 30px rgba(0,0,0,0.12);overflow:hidden;border:1px solid rgba(148,163,184,0.35)}
-.header{padding:20px 24px;background:linear-gradient(135deg,#f9a8d4,#a5b4fc,#6ee7b7)}
-.header h1{font-size:26px;margin-bottom:4px}
-.tag{font-size:11px;padding:4px 10px;border-radius:999px;background:rgba(255,255,255,0.7);border:1px solid rgba(255,255,255,0.9);margin-right:6px}
-.section{padding:20px 24px;border-top:1px solid #e5e7eb}
-.section-title{font-size:18px;margin-bottom:8px}
-.section-sub{font-size:12px;color:#6b7280;margin-bottom:16px}
-.translator,.notebook{border-radius:18px;padding:16px;border:1px solid rgba(148,163,184,0.5)}
-.translator{background:linear-gradient(135deg,#fef3ff,#e0f2fe)}
-.notebook{background:linear-gradient(135deg,#e0f2fe,#fef3c7)}
-select,textarea,input{border-radius:12px;border:1px solid #cbd5e1;padding:8px;font-size:13px;background:#ffffffdd}
-textarea{width:100%;min-height:90px;resize:vertical}
-.btn{border:none;border-radius:999px;padding:8px 16px;font-size:13px;font-weight:600;cursor:pointer}
-.btn-primary{background:linear-gradient(135deg,#6366f1,#ec4899);color:#fff}
-.btn-ghost{background:#fff;color:#4b5563;border:1px solid #e5e7eb}
-.notebook-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px}
-.note-card{background:#fef9c3;border-radius:14px;padding:10px;box-shadow:0 4px 10px rgba(0,0,0,0.08);border:1px solid rgba(250,204,21,0.7);position:relative;font-size:13px}
-.note-delete{position:absolute;top:6px;right:6px;border:none;background:#fff;border-radius:999px;font-size:11px;padding:2px 6px;cursor:pointer;color:#b91c1c}
-.empty{font-size:12px;color:#6b7280;font-style:italic}
-@media(max-width:700px){body{padding:12px}.app{border-radius:18px}}
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  font-family:system-ui;
+  background:linear-gradient(135deg,#ffeaf5,#ffd6e8);
+  min-height:100vh;
+  padding:30px;
+  display:flex;
+  justify-content:center;
+  color:#111827;
+}
+
+.app{
+  width:100%;
+  max-width:800px;
+  background:#ffffffcc;
+  border-radius:24px;
+  padding:24px;
+  box-shadow:0 12px 30px rgba(0,0,0,.12);
+  border:1px solid rgba(148,163,184,.35);
+  backdrop-filter:blur(6px);
+}
+
+.section-title{
+  font-size:20px;
+  margin-bottom:6px;
+}
+
+.section-sub{
+  font-size:12px;
+  color:#6b7280;
+  margin-bottom:14px;
+}
+
+input,select,button{
+  font-family:inherit;
+  font-size:14px;
+}
+
+input,select{
+  padding:8px 12px;
+  border-radius:999px;
+  border:1px solid #cbd5e1;
+  background:#ffffffdd;
+}
+
+button{
+  border:none;
+  border-radius:999px;
+  padding:8px 14px;
+  font-weight:600;
+  cursor:pointer;
+}
+
+.btn-primary{
+  background:linear-gradient(135deg,#ec4899,#a855f7);
+  color:#fff;
+}
+
+.btn-ghost{
+  background:#fff;
+  border:1px solid #e5e7eb;
+  color:#4b5563;
+}
+
+.output-box{
+  margin-top:15px;
+  padding:18px;
+  border-radius:18px;
+  background:#fff;
+  border:1px solid #fbcfe8;
+}
+
+.translated-wrapper{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  font-size:22px;
+  font-weight:600;
+}
+
+.speak-btn{
+  background:none;
+  border:none;
+  cursor:pointer;
+  font-size:20px;
+  opacity:.7;
+  padding:0;
+}
+.speak-btn:hover{opacity:1}
+
+.notebook{
+  margin-top:20px;
+  padding:18px;
+  border-radius:18px;
+  background:#fff;
+  border:1px solid #fbcfe8;
+}
+
+.notebook-list{
+  margin-top:10px;
+}
+
+.note-item{
+  padding:10px;
+  border-radius:12px;
+  background:#fdf2f8;
+  border:1px solid #fbcfe8;
+  margin-bottom:8px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.empty{
+  font-size:12px;
+  color:#9ca3af;
+  margin-top:10px;
+}
 </style>
 </head>
+
 <body>
 <div class="app">
 
-<div class="header">
-  <h1>Language Learning Space</h1>
-  <span class="tag">Translator</span>
-  <span class="tag">Notebook</span>
-  <span class="tag">7 Languages (EN · ES · DE · FR · IT · EL · ZH)</span>
-</div>
-
+<!-- TRANSLATOR -->
 <div class="section">
   <div class="section-title">Translator</div>
-  <div class="section-sub">Translate simple words across 7 languages.</div>
+  <div class="section-sub">Translate between 7 languages.</div>
 
-  <div class="translator">
-    <div style="display:flex;gap:10px;margin-bottom:10px;flex-wrap:wrap">
-      <div>From:
-        <select id="fromLang">
-          <option value="en">English</option>
-          <option value="es">Spanish</option>
-          <option value="de">German</option>
-          <option value="fr">French</option>
-          <option value="it">Italian</option>
-          <option value="el">Greek</option>
-          <option value="zh">Mandarin</option>
-        </select>
-      </div>
-      <div>To:
-        <select id="toLang">
-          <option value="es">Spanish</option>
-          <option value="en">English</option>
-          <option value="de">German</option>
-          <option value="fr">French</option>
-          <option value="it">Italian</option>
-          <option value="el">Greek</option>
-          <option value="zh">Mandarin</option>
-        </select>
-      </div>
-    </div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
+    <input id="inputText" placeholder="Enter a word…" style="flex:1;min-width:200px">
+    <select id="languageSelect">
+      <option>English</option>
+      <option>Spanish</option>
+      <option>German</option>
+      <option>French</option>
+      <option>Italian</option>
+      <option>Greek</option>
+      <option>Mandarin</option>
+    </select>
+  </div>
 
-    <div style="display:flex;gap:12px;flex-wrap:wrap">
-      <div style="flex:1"><textarea id="inputText" placeholder="Type a word…"></textarea></div>
-      <div style="flex:1"><textarea id="outputText" placeholder="Translation…" readonly></textarea></div>
-    </div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap">
+    <button class="btn btn-primary" id="translateBtn">Translate</button>
+    <button class="btn btn-ghost" id="swapBtn">Swap</button>
+  </div>
 
-    <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap">
-      <button class="btn btn-primary" id="translateBtn">Translate</button>
-      <button class="btn btn-ghost" id="swapBtn">Swap</button>
+  <div id="outputArea" class="output-box" style="display:none">
+    <div class="section-sub">Translation:</div>
+
+    <div class="translated-wrapper">
+      <span id="outputText"></span>
+      <button class="speak-btn" id="speakBtn">🔊</button>
     </div>
   </div>
 </div>
 
+<!-- NOTEBOOK -->
 <div class="section">
   <div class="section-title">Words I Learned</div>
   <div class="section-sub">Saved in your browser automatically.</div>
@@ -112,190 +195,115 @@ textarea{width:100%;min-height:90px;resize:vertical}
 </div>
 
 <script>
-// compact multilingual dictionary (EN, ES, DE, FR, IT, EL, ZH)
-const vocab={
-"hello":{en:"hello",es:"hola",de:"hallo",fr:"bonjour",it:"ciao",el:"γεια",zh:"你好"},
-"hi":{en:"hi",es:"hola",de:"hi",fr:"salut",it:"ciao",el:"γεια",zh:"嗨"},
-"bye":{en:"bye",es:"adiós",de:"tschüss",fr:"au revoir",it:"ciao",el:"αντίο",zh:"再见"},
-"goodbye":{en:"goodbye",es:"adiós",de:"auf wiedersehen",fr:"au revoir",it:"arrivederci",el:"αντίο",zh:"再见"},
-"please":{en:"please",es:"por favor",de:"bitte",fr:"s'il vous plaît",it:"per favore",el:"παρακαλώ",zh:"请"},
-"thanks":{en:"thanks",es:"gracias",de:"danke",fr:"merci",it:"grazie",el:"ευχαριστώ",zh:"谢谢"},
-"thank you":{en:"thank you",es:"gracias",de:"danke",fr:"merci",it:"grazie",el:"ευχαριστώ",zh:"谢谢"},
-"yes":{en:"yes",es:"sí",de:"ja",fr:"oui",it:"sì",el:"ναι",zh:"是"},
-"no":{en:"no",es:"no",de:"nein",fr:"non",it:"no",el:"όχι",zh:"不"},
-"sorry":{en:"sorry",es:"perdón",de:"entschuldigung",fr:"désolé",it:"mi dispiace",el:"συγγνώμη",zh:"对不起"},
-
-"friend":{en:"friend",es:"amigo",de:"freund",fr:"ami",it:"amico",el:"φίλος",zh:"朋友"},
-"family":{en:"family",es:"familia",de:"familie",fr:"famille",it:"famiglia",el:"οικογένεια",zh:"家庭"},
-"mother":{en:"mother",es:"madre",de:"mutter",fr:"mère",it:"madre",el:"μητέρα",zh:"妈妈"},
-"father":{en:"father",es:"padre",de:"vater",fr:"père",it:"padre",el:"πατέρας",zh:"爸爸"},
-"brother":{en:"brother",es:"hermano",de:"bruder",fr:"frère",it:"fratello",el:"αδελφός",zh:"哥哥"},
-"sister":{en:"sister",es:"hermana",de:"schwester",fr:"soeur",it:"sorella",el:"αδελφή",zh:"姐姐"},
-"girl":{en:"girl",es:"niña",de:"mädchen",fr:"fille",it:"ragazza",el:"κορίτσι",zh:"女孩"},
-"boy":{en:"boy",es:"niño",de:"junge",fr:"garçon",it:"ragazzo",el:"αγόρι",zh:"男孩"},
-"teacher":{en:"teacher",es:"maestro",de:"lehrer",fr:"professeur",it:"insegnante",el:"δασκάλος",zh:"老师"},
-"student":{en:"student",es:"estudiante",de:"student",fr:"étudiant",it:"studente",el:"μαθητής",zh:"学生"},
-
-"happy":{en:"happy",es:"feliz",de:"glücklich",fr:"heureux",it:"felice",el:"χαρούμενος",zh:"开心"},
-"sad":{en:"sad",es:"triste",de:"traurig",fr:"triste",it:"triste",el:"λυπημένος",zh:"难过"},
-"tired":{en:"tired",es:"cansado",de:"müde",fr:"fatigué",it:"stanco",el:"κουρασμένος",zh:"累"},
-"angry":{en:"angry",es:"enojado",de:"wütend",fr:"fâché",it:"arrabbiato",el:"θυμωμένος",zh:"生气"},
-"love":{en:"love",es:"amor",de:"liebe",fr:"amour",it:"amore",el:"αγάπη",zh:"爱"},
-"beautiful":{en:"beautiful",es:"hermoso",de:"schön",fr:"beau",it:"bello",el:"όμορφος",zh:"漂亮"},
-"funny":{en:"funny",es:"gracioso",de:"lustig",fr:"drôle",it:"divertente",el:"αστείος",zh:"好笑"},
-
-"morning":{en:"morning",es:"mañana",de:"morgen",fr:"matin",it:"mattina",el:"πρωί",zh:"早上"},
-"afternoon":{en:"afternoon",es:"tarde",de:"nachmittag",fr:"après-midi",it:"pomeriggio",el:"απόγευμα",zh:"下午"},
-"evening":{en:"evening",es:"noche",de:"abend",fr:"soir",it:"sera",el:"βράδυ",zh:"傍晚"},
-"night":{en:"night",es:"noche",de:"nacht",fr:"nuit",it:"notte",el:"νύχτα",zh:"夜晚"},
-"today":{en:"today",es:"hoy",de:"heute",fr:"aujourd'hui",it:"oggi",el:"σήμερα",zh:"今天"},
-"tomorrow":{en:"tomorrow",es:"mañana",de:"morgen",fr:"demain",it:"domani",el:"αύριο",zh:"明天"},
-"yesterday":{en:"yesterday",es:"ayer",de:"gestern",fr:"hier",it:"ieri",el:"χθες",zh:"昨天"},
-
-"house":{en:"house",es:"casa",de:"haus",fr:"maison",it:"casa",el:"σπίτι",zh:"房子"},
-"home":{en:"home",es:"hogar",de:"heim",fr:"maison",it:"casa",el:"σπίτι",zh:"家"},
-"school":{en:"school",es:"escuela",de:"schule",fr:"école",it:"scuola",el:"σχολείο",zh:"学校"},
-"city":{en:"city",es:"ciudad",de:"stadt",fr:"ville",it:"città",el:"πόλη",zh:"城市"},
-"street":{en:"street",es:"calle",de:"straße",fr:"rue",it:"strada",el:"δρόμος",zh:"街道"},
-"car":{en:"car",es:"coche",de:"auto",fr:"voiture",it:"macchina",el:"αυτοκίνητο",zh:"汽车"},
-"bus":{en:"bus",es:"autobús",de:"bus",fr:"bus",it:"autobus",el:"λεωφορείο",zh:"公交车"},
-"train":{en:"train",es:"tren",de:"zug",fr:"train",it:"treno",el:"τρένο",zh:"火车"},
-"book":{en:"book",es:"libro",de:"buch",fr:"livre",it:"libro",el:"βιβλίο",zh:"书"},
-"phone":{en:"phone",es:"teléfono",de:"telefon",fr:"téléphone",it:"telefono",el:"τηλέφωνο",zh:"手机"},
-"computer":{en:"computer",es:"computadora",de:"computer",fr:"ordinateur",it:"computer",el:"υπολογιστής",zh:"电脑"},
-
-"water":{en:"water",es:"agua",de:"wasser",fr:"eau",it:"acqua",el:"νερό",zh:"水"},
-"food":{en:"food",es:"comida",de:"essen",fr:"nourriture",it:"cibo",el:"φαγητό",zh:"食物"},
-"sun":{en:"sun",es:"sol",de:"sonne",fr:"soleil",it:"sole",el:"ήλιος",zh:"太阳"},
-"moon":{en:"moon",es:"luna",de:"mond",fr:"lune",it:"luna",el:"φεγγάρι",zh:"月亮"},
-"star":{en:"star",es:"estrella",de:"stern",fr:"étoile",it:"stella",el:"αστέρι",zh:"星星"},
-"flower":{en:"flower",es:"flor",de:"blume",fr:"fleur",it:"fiore",el:"λουλούδι",zh:"花"},
-"tree":{en:"tree",es:"árbol",de:"baum",fr:"arbre",it:"albero",el:"δέντρο",zh:"树"},
-
-"cat":{en:"cat",es:"gato",de:"katze",fr:"chat",it:"gatto",el:"γάτα",zh:"猫"},
-"dog":{en:"dog",es:"perro",de:"hund",fr:"chien",it:"cane",el:"σκύλος",zh:"狗"},
-"bird":{en:"bird",es:"pájaro",de:"vogel",fr:"oiseau",it:"uccello",el:"πουλί",zh:"鸟"},
-"fish":{en:"fish",es:"pez",de:"fisch",fr:"poisson",it:"pesce",el:"ψάρι",zh:"鱼"},
-
-"go":{en:"go",es:"ir",de:"gehen",fr:"aller",it:"andare",el:"πηγαίνω",zh:"去"},
-"come":{en:"come",es:"venir",de:"kommen",fr:"venir",it:"venire",el:"έρχομαι",zh:"来"},
-"eat":{en:"eat",es:"comer",de:"essen",fr:"manger",it:"mangiare",el:"τρώω",zh:"吃"},
-"drink":{en:"drink",es:"beber",de:"trinken",fr:"boire",it:"bere",el:"πίνω",zh:"喝"},
-"sleep":{en:"sleep",es:"dormir",de:"schlafen",fr:"dormir",it:"dormire",el:"κοιμάμαι",zh:"睡觉"},
-"read":{en:"read",es:"leer",de:"lesen",fr:"lire",it:"leggere",el:"διαβάζω",zh:"读"},
-"write":{en:"write",es:"escribir",de:"schreiben",fr:"écrire",it:"scrivere",el:"γράφω",zh:"写"},
-"play":{en:"play",es:"jugar",de:"spielen",fr:"jouer",it:"giocare",el:"παίζω",zh:"玩"},
-"study":{en:"study",es:"estudiar",de:"studieren",fr:"étudier",it:"studiare",el:"μελετώ",zh:"学习"},
-
-"big":{en:"big",es:"grande",de:"groß",fr:"grand",it:"grande",el:"μεγάλος",zh:"大"},
-"small":{en:"small",es:"pequeño",de:"klein",fr:"petit",it:"piccolo",el:"μικρός",zh:"小"},
-"new":{en:"new",es:"nuevo",de:"neu",fr:"nouveau",it:"nuovo",el:"νέος",zh:"新"},
-"old":{en:"old",es:"viejo",de:"alt",fr:"vieux",it:"vecchio",el:"παλιός",zh:"旧"},
-"hot":{en:"hot",es:"caliente",de:"heiß",fr:"chaud",it:"caldo",el:"ζεστός",zh:"热"},
-"cold":{en:"cold",es:"frío",de:"kalt",fr:"froid",it:"freddo",el:"κρύος",zh:"冷"},
-"good":{en:"good",es:"bueno",de:"gut",fr:"bon",it:"buono",el:"καλός",zh:"好"},
-"bad":{en:"bad",es:"malo",de:"schlecht",fr:"mauvais",it:"cattivo",el:"κακός",zh:"坏"},
-
-"and":{en:"and",es:"y",de:"und",fr:"et",it:"e",el:"και",zh:"和"},
-"or":{en:"or",es:"o",de:"oder",fr:"ou",it:"o",el:"ή",zh:"或"},
-"with":{en:"with",es:"con",de:"mit",fr:"avec",it:"con",el:"με",zh:"和"},
-"without":{en:"without",es:"sin",de:"ohne",fr:"sans",it:"senza",el:"χωρίς",zh:"没有"},
-"for":{en:"for",es:"para",de:"für",fr:"pour",it:"per",el:"για",zh:"为"},
-"in":{en:"in",es:"en",de:"in",fr:"dans",it:"in",el:"σε",zh:"在"},
-"on":{en:"on",es:"sobre",de:"auf",fr:"sur",it:"su",el:"πάνω",zh:"在…上"},
-"under":{en:"under",es:"debajo",de:"unter",fr:"sous",it:"sotto",el:"κάτω",zh:"在…下"}
-};
-
-// translator logic
-const fromLang=document.getElementById("fromLang"),
-      toLang=document.getElementById("toLang"),
-      inputText=document.getElementById("inputText"),
-      outputText=document.getElementById("outputText");
-
-document.getElementById("translateBtn").onclick=()=>{
-  const from=fromLang.value,to=toLang.value;
-  const text=inputText.value.trim().toLowerCase();
-  if(!text){outputText.value="Type something first.";return;}
-  if(from===to){outputText.value=inputText.value;return;}
-  let match=null;
-  for(const key in vocab){
-    const e=vocab[key];
-    if(e[from] && e[from].toLowerCase()===text){match=e;break;}
-    if(key===text && e[from]){match=e;break;}
-  }
-  outputText.value=match && match[to] ? match[to] : "(No simple match in this mini dictionary.)";
-};
-
-document.getElementById("swapBtn").onclick=()=>{
-  const t=fromLang.value;fromLang.value=toLang.value;toLang.value=t;
-  const x=inputText.value;inputText.value=outputText.value;outputText.value=x;
-};
-
-// notebook logic
-const noteWord=document.getElementById("noteWord"),
-      noteMeaning=document.getElementById("noteMeaning"),
-      noteLang=document.getElementById("noteLang"),
-      addNoteBtn=document.getElementById("addNoteBtn"),
-      clearAllBtn=document.getElementById("clearAllBtn"),
-      notesContainer=document.getElementById("notesContainer"),
-      emptyState=document.getElementById("emptyState");
-
-const STORAGE_KEY="language_notebook_v1";
-let notes=[];
-
-function loadNotes(){
-  try{notes=JSON.parse(localStorage.getItem(STORAGE_KEY))||[]}catch{notes=[];}
-  renderNotes();
+// ----------------------
+// LANGUAGE VOICE CODES
+// ----------------------
+function getVoiceCode(lang){
+  return {
+    English:"en-US",
+    Spanish:"es-ES",
+    German:"de-DE",
+    French:"fr-FR",
+    Italian:"it-IT",
+    Greek:"el-GR",
+    Mandarin:"zh-CN"
+  }[lang] || "en-US";
 }
-function saveNotes(){localStorage.setItem(STORAGE_KEY,JSON.stringify(notes));}
+
+// ----------------------
+// SPEAKER FUNCTION
+// ----------------------
+function speak(text, lang){
+  const utter=new SpeechSynthesisUtterance(text);
+  utter.lang=lang;
+  speechSynthesis.speak(utter);
+}
+
+// ----------------------
+// TRANSLATOR (placeholder demo)
+// ----------------------
+document.getElementById("translateBtn").onclick = () => {
+  const word = document.getElementById("inputText").value.trim();
+  const lang = document.getElementById("languageSelect").value;
+
+  if(!word) return;
+
+  // Placeholder translation (you can replace with your real dictionary)
+  const translated = word + " (" + lang + ")";
+
+  document.getElementById("outputText").textContent = translated;
+  document.getElementById("outputArea").style.display = "block";
+
+  document.getElementById("speakBtn").onclick = () =>
+    speak(translated, getVoiceCode(lang));
+};
+
+// ----------------------
+// NOTEBOOK STORAGE
+// ----------------------
+let notes = JSON.parse(localStorage.getItem("notes") || "[]");
+
+function saveNotes(){
+  localStorage.setItem("notes", JSON.stringify(notes));
+}
+
 function renderNotes(){
-  notesContainer.innerHTML="";
-  if(!notes.length){emptyState.style.display="block";return;}
-  emptyState.style.display="none";
+  const container = document.getElementById("notesContainer");
+  const empty = document.getElementById("emptyState");
+
+  container.innerHTML = "";
+
+  if(notes.length === 0){
+    empty.style.display = "block";
+    return;
+  }
+
+  empty.style.display = "none";
+
   notes.forEach((n,i)=>{
-    const c=document.createElement("div");
-    c.className="note-card";
-    c.innerHTML=`
-      <div style="font-size:11px;text-transform:uppercase;letter-spacing:.06em">${n.lang}</div>
-      <div style="font-weight:600">${n.word}</div>
-      <div style="font-size:12px;color:#4b5563">${n.meaning}</div>
-      <button class="note-delete" data-i="${i}">×</button>`;
-    notesContainer.appendChild(c);
-  });
-  document.querySelectorAll(".note-delete").forEach(btn=>{
-    btn.onclick=()=>{
-      const i=parseInt(btn.getAttribute("data-i"),10);
-      notes.splice(i,1);
-      saveNotes();
-      renderNotes();
-    };
+    const item=document.createElement("div");
+    item.className="note-item";
+    item.innerHTML=`
+      <div>
+        <strong>${n.word}</strong> — ${n.meaning}
+        <div style="font-size:12px;color:#6b7280">${n.lang}</div>
+      </div>
+      <button class="btn-ghost" onclick="deleteNote(${i})">×</button>
+    `;
+    container.appendChild(item);
   });
 }
 
-addNoteBtn.onclick=()=>{
-  const w=noteWord.value.trim();
-  const m=noteMeaning.value.trim();
-  const l=noteLang.value;
-  if(!w){noteWord.focus();return;}
-  notes.push({word:w,meaning:m||"(no note)",lang:l});
+function deleteNote(i){
+  notes.splice(i,1);
   saveNotes();
   renderNotes();
-  noteWord.value="";
-  noteMeaning.value="";
-  noteWord.focus();
+}
+
+document.getElementById("addNoteBtn").onclick = () => {
+  const w=document.getElementById("noteWord").value.trim();
+  const m=document.getElementById("noteMeaning").value.trim();
+  const l=document.getElementById("noteLang").value;
+
+  if(!w || !m) return;
+
+  notes.push({word:w,meaning:m,lang:l});
+  saveNotes();
+  renderNotes();
+
+  document.getElementById("noteWord").value="";
+  document.getElementById("noteMeaning").value="";
 };
 
-clearAllBtn.onclick=()=>{
-  if(!notes.length)return;
-  if(confirm("Clear all saved words?")){
-    notes=[];
-    saveNotes();
-    renderNotes();
-  }
+document.getElementById("clearAllBtn").onclick = () => {
+  if(!confirm("Clear all saved words?")) return;
+  notes=[];
+  saveNotes();
+  renderNotes();
 };
 
-loadNotes();
+renderNotes();
 </script>
+
 </body>
 </html>
-    
