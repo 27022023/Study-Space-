@@ -230,3 +230,156 @@ button:hover {
     from { transform: translateY(-20px); }
     to { transform: translateY(100vh); opacity: 0; }
 }
+/* ------------------ TIMER LOGIC ------------------ */
+
+let totalSeconds = 30 * 60;
+let remainingSeconds = totalSeconds;
+let timerInterval = null;
+
+const display = document.getElementById("timerDisplay");
+const progress = document.querySelector(".timer-progress");
+const motivationText = document.getElementById("motivationText");
+
+const messages = [
+    "Progress over perfection",
+    "You’re doing enough",
+    "Small steps count",
+    "Let’s make this session gentle",
+    "You showed up — that matters",
+    "One moment at a time"
+];
+
+function updateDisplay() {
+    let m = Math.floor(remainingSeconds / 60);
+    let s = remainingSeconds % 60;
+    display.textContent = `${m}:${s.toString().padStart(2, "0")}`;
+}
+
+function updateRing() {
+    const circumference = 690;
+    const offset = circumference - (remainingSeconds / totalSeconds) * circumference;
+    progress.style.strokeDashoffset = offset;
+}
+
+function startTimer() {
+    if (timerInterval) return;
+
+    motivationText.textContent = messages[Math.floor(Math.random() * messages.length)];
+
+    timerInterval = setInterval(() => {
+        remainingSeconds--;
+        updateDisplay();
+        updateRing();
+
+        if (remainingSeconds <= 0) {
+            clearInterval(timerInterval);
+            timerInterval = null;
+            remainingSeconds = 0;
+            updateDisplay();
+            updateRing();
+            launchGlitter();
+        }
+    }, 1000);
+}
+
+function pauseTimer() {
+    clearInterval(timerInterval);
+    timerInterval = null;
+}
+
+function resetTimer() {
+    pauseTimer();
+    remainingSeconds = totalSeconds;
+    updateDisplay();
+    updateRing();
+}
+
+/* Buttons */
+document.getElementById("startBtn").onclick = startTimer;
+document.getElementById("pauseBtn").onclick = pauseTimer;
+document.getElementById("resetBtn").onclick = resetTimer;
+
+/* Duration buttons */
+document.querySelectorAll(".duration-select button").forEach(btn => {
+    btn.onclick = () => {
+        totalSeconds = btn.dataset.time * 60;
+        remainingSeconds = totalSeconds;
+        updateDisplay();
+        updateRing();
+        localStorage.setItem("savedDuration", totalSeconds);
+    };
+});
+
+/* Load saved duration */
+if (localStorage.getItem("savedDuration")) {
+    totalSeconds = parseInt(localStorage.getItem("savedDuration"));
+    remainingSeconds = totalSeconds;
+    updateDisplay();
+    updateRing();
+}
+
+/* ------------------ GLITTER EFFECT ------------------ */
+
+function launchGlitter() {
+    const glitterContainer = document.createElement("div");
+    glitterContainer.classList.add("glitter");
+    document.body.appendChild(glitterContainer);
+
+    for (let i = 0; i < 40; i++) {
+        const sparkle = document.createElement("div");
+        sparkle.classList.add(Math.random() > 0.5 ? "sparkle" : "star");
+        sparkle.style.left = Math.random() * 100 + "vw";
+        sparkle.style.animationDuration = 2 + Math.random() * 2 + "s";
+        glitterContainer.appendChild(sparkle);
+    }
+
+    setTimeout(() => glitterContainer.remove(), 4000);
+}
+
+/* ------------------ CALENDAR ------------------ */
+
+const calendar = document.getElementById("calendar");
+
+function generateCalendar() {
+    calendar.innerHTML = "";
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = now.getMonth();
+    const days = new Date(year, month + 1, 0).getDate();
+
+    const saved = JSON.parse(localStorage.getItem("calendar-" + month)) || {};
+
+    for (let d = 1; d <= days; d++) {
+        const day = document.createElement("div");
+        day.classList.add("calendar-day");
+        day.textContent = saved[d] || d;
+
+        day.onclick = () => {
+            const emoji = prompt("Choose an emoji for today:");
+            if (emoji) {
+                saved[d] = emoji;
+                day.textContent = emoji;
+                localStorage.setItem("calendar-" + month, JSON.stringify(saved));
+            }
+        };
+
+        calendar.appendChild(day);
+    }
+}
+
+generateCalendar();
+
+/* ------------------ THEME SWITCHER ------------------ */
+
+document.querySelectorAll(".theme-selector button").forEach(btn => {
+    btn.onclick = () => {
+        document.body.className = "theme-" + btn.dataset.theme;
+        localStorage.setItem("theme", btn.dataset.theme);
+    };
+});
+
+/* Load saved theme */
+if (localStorage.getItem("theme")) {
+    document.body.className = "theme-" + localStorage.getItem("theme");
+}
+        
