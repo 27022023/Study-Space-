@@ -1,96 +1,139 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>Nova – Study Assistant</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.8.0/math.min.js"></script>
 <style>
-*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#f7f4ff;color:#111827;height:100vh;display:flex;flex-direction:column}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui;background:#f7f4ff;color:#111;height:100vh;display:flex;flex-direction:column}
 .nova-app{display:flex;flex-direction:column;height:100vh}
-.nova-header{background:linear-gradient(135deg,#bfdbfe,#e9d5ff);padding:16px 24px;box-shadow:0 2px 6px rgba(0,0,0,.12);display:flex;align-items:center;justify-content:space-between}
-.nova-title{display:flex;flex-direction:column}.nova-title h1{margin:0;font-size:26px}.nova-title span{font-size:13px;color:#374151}
+.nova-header{background:linear-gradient(135deg,#bfdbfe,#e9d5ff);padding:16px 24px;box-shadow:0 2px 6px rgba(0,0,0,.12);display:flex;justify-content:space-between}
+.nova-title h1{margin:0;font-size:26px}.nova-title span{font-size:13px;color:#374151}
 .nova-tag{padding:6px 12px;border-radius:999px;background:rgba(15,118,110,.08);color:#0f766e;font-size:12px;font-weight:600}
 .nova-main{flex:1;display:flex;justify-content:center;padding:16px}
 .nova-chat-wrapper{width:100%;max-width:900px;background:#fdfaf3;border-radius:18px;box-shadow:0 8px 20px rgba(0,0,0,.12);display:flex;flex-direction:column;overflow:hidden;border:1px solid #e5e7eb;position:relative}
-.nova-chat-wrapper::before{content:"";position:absolute;inset:0;background-image:linear-gradient(to bottom,rgba(209,213,219,.35) 1px,transparent 1px);background-size:100% 32px;pointer-events:none;opacity:.5}
-.nova-chat{position:relative;padding:16px 18px 8px;overflow-y:auto;flex:1;z-index:1}
-.nova-message{max-width:80%;padding:10px 12px;border-radius:12px;margin-bottom:10px;box-shadow:0 3px 8px rgba(0,0,0,.12);animation:fadeIn .2s ease-out;font-size:14px;line-height:1.4}
+.nova-chat-wrapper::before{content:"";position:absolute;inset:0;background-image:linear-gradient(to bottom,rgba(209,213,219,.35) 1px,transparent 1px);background-size:100% 32px;opacity:.5;pointer-events:none}
+.nova-chat{padding:16px 18px 8px;overflow-y:auto;flex:1;z-index:1}
+.nova-message{max-width:80%;padding:10px 12px;border-radius:12px;margin-bottom:10px;box-shadow:0 3px 8px rgba(0,0,0,.12);font-size:14px;line-height:1.4}
 .nova-message.nova{background:#ede9fe;border:1px solid #c4b5fd;align-self:flex-start}
 .nova-message.user{background:#dbeafe;border:1px solid #93c5fd;align-self:flex-end}
-.label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;color:#4b5563}
-.nova-message.nova .label{color:#6d28d9}.nova-message.user .label{color:#1d4ed8;text-align:right}
-.nova-message p{margin:0;white-space:pre-wrap}
-.nova-footer{padding:10px 14px 14px;background:#f3f4f6;border-top:1px solid #e5e7eb;z-index:2}
+.label{font-size:11px;font-weight:600;margin-bottom:4px}
+.nova-footer{padding:10px 14px 14px;background:#f3f4f6;border-top:1px solid #e5e7eb}
 .nova-input-row{display:flex;gap:8px}
-.nova-input-row input{flex:1;padding:10px 12px;border-radius:999px;border:1px solid #d1d5db;font-size:14px;background:#f9fafb}
-.nova-input-row input:focus{border-color:#818cf8;box-shadow:0 0 0 2px rgba(129,140,248,.3);background:#fff}
-.nova-input-row button{padding:10px 18px;border-radius:999px;border:none;background:linear-gradient(135deg,#6366f1,#ec4899);color:#fff;font-weight:600;font-size:14px;cursor:pointer;box-shadow:0 4px 10px rgba(79,70,229,.4)}
+.nova-input-row input{flex:1;padding:10px 12px;border-radius:999px;border:1px solid #d1d5db;font-size:14px}
+.nova-input-row button{padding:10px 18px;border-radius:999px;border:none;background:linear-gradient(135deg,#6366f1,#ec4899);color:#fff;font-weight:600;cursor:pointer}
 .nova-hint{margin-top:6px;font-size:11px;color:#6b7280}
-@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
-@media(max-width:700px){.nova-chat-wrapper{border-radius:0;max-width:100%;height:calc(100vh - 64px)}.nova-main{padding:0}}
 </style></head>
+
 <body>
 <div class="nova-app">
-<header class="nova-header"><div class="nova-title"><h1>Nova</h1><span>High‑energy STEM study assistant</span></div><div class="nova-tag">Study Sphere · STEM · Step‑by‑step</div></header>
-<main class="nova-main"><div class="nova-chat-wrapper"><div id="novaChat" class="nova-chat"></div>
-<div class="nova-footer"><div class="nova-input-row"><input id="novaInput" placeholder="Ask Nova a STEM question…"><button onclick="handleNovaSend()">Send</button></div>
-<div class="nova-hint">Try: “solve 2x+5=11”, “find v if s=20m,t=4s”, “pH of 0.01M HCl”.</div></div></div></main></div>
+<header class="nova-header">
+  <div class="nova-title"><h1>Nova</h1><span>High‑energy STEM study assistant</span></div>
+  <div class="nova-tag">Study Sphere · STEM · Step‑by‑step</div>
+</header>
+
+<main class="nova-main">
+  <div class="nova-chat-wrapper">
+    <div id="novaChat" class="nova-chat"></div>
+
+    <div class="nova-footer">
+      <div class="nova-input-row">
+        <input id="novaInput" placeholder="Ask Nova a STEM question…">
+        <button onclick="handleNovaSend()">Send</button>
+      </div>
+      <div class="nova-hint">Try: “solve 2x+5=11”, “find v if s=20,t=4”, “pH of 0.01M HCl”.</div>
+    </div>
+  </div>
+</main>
+</div>
 
 <script>
-const chatEl=document.getElementById("novaChat"),inputEl=document.getElementById("novaInput");
-const motivationalPhrases=[
+const chat=document.getElementById("novaChat"),input=document.getElementById("novaInput");
+
+const phrases=[
 "You're doing the hard part — showing up.","Every problem is a rep for your brain.","You're building momentum.","Most people never even try — you did.","Deep understanding beats fast guessing.","You're leveling up.","Let's crush this one step at a time.","You're smarter than you think.","You're not alone — I'm here.","You're turning effort into skill."
 ];
-const randomMotivation=()=>motivationalPhrases[Math.floor(Math.random()*motivationalPhrases.length)];
+const motivate=()=>phrases[Math.floor(Math.random()*phrases.length)];
 
-function addMessage(t,s="nova"){const m=document.createElement("div");m.className=`nova-message ${s}`;m.innerHTML=`<div class="label">${s==="nova"?"Nova":"You"}</div><p>${t}</p>`;chatEl.appendChild(m);chatEl.scrollTop=chatEl.scrollHeight}
+function addMsg(t,s="nova"){
+  chat.innerHTML+=`<div class="nova-message ${s}"><div class="label">${s==="nova"?"Nova":"You"}</div><p>${t}</p></div>`;
+  chat.scrollTop=chat.scrollHeight;
+}
 
-function handleNovaSend(){const t=inputEl.value.trim();if(!t)return;addMessage(t,"user");inputEl.value="";processNovaInput(t)}
+function handleNovaSend(){
+  const t=input.value.trim();
+  if(!t)return;
+  addMsg(t,"user");
+  input.value="";
+  process(t);
+}
 
-inputEl.addEventListener("keydown",e=>{if(e.key==="Enter")handleNovaSend()});
+input.addEventListener("keydown",e=>{if(e.key==="Enter")handleNovaSend()});
 
-function processNovaInput(raw){setTimeout(()=>addMessage(routeNova(raw.toLowerCase(),raw),"nova"),500)}
+function process(raw){
+  const t=raw.toLowerCase();
+  setTimeout(()=>addMsg(route(t,raw),"nova"),400);
+}
 
-function routeNova(text,raw){
-if(text.includes("hi")||text.includes("hello"))return"Hey, you showed up — what are we studying today?";
-if(text.includes("motivat"))return randomMotivation();
-if(text.includes("bio"))return handleBiology(raw);
-if(text.includes("ph")||text.includes("mole"))return handleChem(raw);
-if(text.includes("force")||text.includes("velocity")||text.includes("speed"))return handlePhysics(raw);
-if(text.includes("=")||text.includes("solve")||text.includes("deriv")||text.includes("simplify"))return handleMath(raw);
-return randomMotivation()+"\n\nTry: solve 2x+5=11";
+function route(t,raw){
+  if(t.includes("hi")||t.includes("hello"))return"Hey, you showed up — what are we studying today?";
+  if(t.includes("motivat"))return motivate();
+  if(t.includes("bio"))return bio(raw);
+  if(t.includes("ph")||t.includes("mole"))return chem(raw);
+  if(t.includes("force")||t.includes("velocity")||t.includes("speed"))return phys(raw);
+  if(t.includes("=")||t.includes("solve")||t.includes("deriv")||t.includes("simplify"))return mathSolve(raw);
+  return motivate()+"\n\nTry: solve 2x+5=11";
 }
 
 /* MATH */
-function handleMath(raw){
-try{
-if(raw.includes("=")){let[left,right]=raw.replace(/solve/i,"").split("=");let expr=`(${left})-(${right})`;let v=(left.match(/[a-z]/i)||right.match(/[a-z]/i)||["x"])[0];let sol=math.solve(math.parse(expr),v);return`Let's solve it.\n${v} = ${sol}\n\n${randomMotivation()}`}
-let result=math.evaluate(raw.replace("simplify",""));return`Result: ${result}\n\n${randomMotivation()}`
-}catch{return"That expression didn't work. Try: solve 2x+5=11"}
+function mathSolve(raw){
+  try{
+    if(raw.includes("=")){
+      let[left,right]=raw.replace(/solve/i,"").split("=");
+      let expr=`(${left})-(${right})`;
+      let v=(left.match(/[a-z]/i)||right.match(/[a-z]/i)||["x"])[0];
+      let sol=math.solve(math.parse(expr),v);
+      return`Let's solve it.\n${v} = ${sol}\n\n${motivate()}`;
+    }
+    let r=math.evaluate(raw.replace("simplify",""));
+    return`Result: ${r}\n\n${motivate()}`;
+  }catch{return"That expression didn't work. Try: solve 2x+5=11"}
 }
 
 /* PHYSICS */
-function handlePhysics(raw){
-let s=raw.match(/s=?([\d.]+)/i),t=raw.match(/t=?([\d.]+)/i);
-if(s&&t){let v=parseFloat(s[1])/parseFloat(t[1]);return`v = s/t = ${v.toFixed(2)} m/s\n\n${randomMotivation()}`}
-let m=raw.match(/m=?([\d.]+)/i),a=raw.match(/a=?([\d.]+)/i);
-if(m&&a){let F=parseFloat(m[1])*parseFloat(a[1]);return`F = m·a = ${F.toFixed(2)} N\n\n${randomMotivation()}`}
-return"Physics mode. Try: find v if s=20,t=4";
+function phys(raw){
+  let s=raw.match(/s=?([\d.]+)/i),t=raw.match(/t=?([\d.]+)/i);
+  if(s&&t){
+    let v=parseFloat(s[1])/parseFloat(t[1]);
+    return`v = s/t = ${v.toFixed(2)} m/s\n\n${motivate()}`;
+  }
+  let m=raw.match(/m=?([\d.]+)/i),a=raw.match(/a=?([\d.]+)/i);
+  if(m&&a){
+    let F=parseFloat(m[1])*parseFloat(a[1]);
+    return`F = m·a = ${F.toFixed(2)} N\n\n${motivate()}`;
+  }
+  return"Physics mode. Try: find v if s=20,t=4";
 }
 
 /* CHEMISTRY */
-function handleChem(raw){
-let c=raw.match(/([\d.]+)\s*m/i);
-if(raw.includes("ph")&&c){let pH=-Math.log10(parseFloat(c[1]));return`pH ≈ ${pH.toFixed(2)}\n\n${randomMotivation()}`}
-let m=raw.match(/m=?([\d.]+)/i),M=raw.match(/M=?([\d.]+)/i);
-if(m&&M){let n=parseFloat(m[1])/parseFloat(M[1]);return`n = m/M = ${n.toFixed(3)} mol\n\n${randomMotivation()}`}
-return"Chemistry mode. Try: pH of 0.01M HCl";
+function chem(raw){
+  let c=raw.match(/([\d.]+)\s*m/i);
+  if(raw.includes("ph")&&c){
+    let pH=-Math.log10(parseFloat(c[1]));
+    return`pH ≈ ${pH.toFixed(2)}\n\n${motivate()}`;
+  }
+  let m=raw.match(/m=?([\d.]+)/i),M=raw.match(/M=?([\d.]+)/i);
+  if(m&&M){
+    let n=parseFloat(m[1])/parseFloat(M[1]);
+    return`n = m/M = ${n.toFixed(3)} mol\n\n${motivate()}`;
+  }
+  return"Chemistry mode. Try: pH of 0.01M HCl";
 }
 
 /* BIOLOGY */
-function handleBiology(t){
-t=t.toLowerCase();
-if(t.includes("dna"))return"DNA: double helix, A-T, C-G.\n\n"+randomMotivation();
-if(t.includes("photo"))return"Photosynthesis: CO2+H2O→glucose+O2.\n\n"+randomMotivation();
-return"Biology mode. Try: explain DNA";
+function bio(t){
+  t=t.toLowerCase();
+  if(t.includes("dna"))return"DNA: double helix, A‑T, C‑G.\n\n"+motivate();
+  if(t.includes("photo"))return"Photosynthesis: CO₂ + H₂O → glucose + O₂.\n\n"+motivate();
+  return"Biology mode. Try: explain DNA";
 }
 
-window.onload=()=><addMessage("Hey, I’m Nova — your STEM study assistant.\nAsk me anything!", "nova");
+window.onload=()=>addMsg("Hey, I’m Nova — your STEM study assistant.\nAsk me anything!");
 </script>
 </body></html>
