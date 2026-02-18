@@ -174,8 +174,6 @@ button:hover {
     from { transform: translateY(-20px); }
     to { transform: translateY(100vh); opacity: 0; }
 }
-</style>
-</head>
 /* ---------- PAST MONTHS SECTION ---------- */
 
 .past-months {
@@ -197,7 +195,8 @@ button:hover {
     border: 1px solid #ddd;
     font-size: 1.1rem;
 }
-    
+  </style>
+  </head>
 <body class="theme-pastel">
 
 <header class="motivation">
@@ -399,6 +398,39 @@ document.querySelectorAll(".theme-selector button").forEach(btn => {
 if (localStorage.getItem("theme")) {
     document.body.className = "theme-" + localStorage.getItem("theme");
 }
+/* ------------------ PAST MONTHS STREAK ------------------ */
+
+function loadPastMonths() {
+    const container = document.getElementById("pastMonthsList");
+    container.innerHTML = "";
+
+    const monthNames = [
+        "January","February","March","April","May","June",
+        "July","August","September","October","November","December"
+    ];
+
+    const currentMonth = new Date().getMonth();
+
+    for (let m = 0; m < 12; m++) {
+        if (m === currentMonth) continue; // skip current month
+
+        const saved = JSON.parse(localStorage.getItem("calendar-" + m)) || {};
+
+        // Skip empty months
+        if (Object.keys(saved).length === 0) continue;
+
+        const monthDiv = document.createElement("div");
+        monthDiv.classList.add("past-month");
+
+        // Convert saved days into a row of emojis
+        const emojiRow = Object.values(saved).join(" ");
+
+        monthDiv.textContent = `${monthNames[m]}: ${emojiRow}`;
+        container.appendChild(monthDiv);
+    }
+}
+
+loadPastMonths();
 </script>
 
 </body>
