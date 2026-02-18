@@ -1,139 +1,276 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>Nova – Study Assistant</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.8.0/math.min.js"></script>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Nova the Robot</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
-*{box-sizing:border-box}body{margin:0;font-family:system-ui;background:#f7f4ff;color:#111;height:100vh;display:flex;flex-direction:column}
-.nova-app{display:flex;flex-direction:column;height:100vh}
-.nova-header{background:linear-gradient(135deg,#bfdbfe,#e9d5ff);padding:16px 24px;box-shadow:0 2px 6px rgba(0,0,0,.12);display:flex;justify-content:space-between}
-.nova-title h1{margin:0;font-size:26px}.nova-title span{font-size:13px;color:#374151}
-.nova-tag{padding:6px 12px;border-radius:999px;background:rgba(15,118,110,.08);color:#0f766e;font-size:12px;font-weight:600}
-.nova-main{flex:1;display:flex;justify-content:center;padding:16px}
-.nova-chat-wrapper{width:100%;max-width:900px;background:#fdfaf3;border-radius:18px;box-shadow:0 8px 20px rgba(0,0,0,.12);display:flex;flex-direction:column;overflow:hidden;border:1px solid #e5e7eb;position:relative}
-.nova-chat-wrapper::before{content:"";position:absolute;inset:0;background-image:linear-gradient(to bottom,rgba(209,213,219,.35) 1px,transparent 1px);background-size:100% 32px;opacity:.5;pointer-events:none}
-.nova-chat{padding:16px 18px 8px;overflow-y:auto;flex:1;z-index:1}
-.nova-message{max-width:80%;padding:10px 12px;border-radius:12px;margin-bottom:10px;box-shadow:0 3px 8px rgba(0,0,0,.12);font-size:14px;line-height:1.4}
-.nova-message.nova{background:#ede9fe;border:1px solid #c4b5fd;align-self:flex-start}
-.nova-message.user{background:#dbeafe;border:1px solid #93c5fd;align-self:flex-end}
-.label{font-size:11px;font-weight:600;margin-bottom:4px}
-.nova-footer{padding:10px 14px 14px;background:#f3f4f6;border-top:1px solid #e5e7eb}
-.nova-input-row{display:flex;gap:8px}
-.nova-input-row input{flex:1;padding:10px 12px;border-radius:999px;border:1px solid #d1d5db;font-size:14px}
-.nova-input-row button{padding:10px 18px;border-radius:999px;border:none;background:linear-gradient(135deg,#6366f1,#ec4899);color:#fff;font-weight:600;cursor:pointer}
-.nova-hint{margin-top:6px;font-size:11px;color:#6b7280}
-</style></head>
-
+  body{
+    margin:0;
+    font-family:Arial, sans-serif;
+    background:#0f172a;
+    color:#e5e7eb;
+    display:flex;
+    flex-direction:column;
+    height:100vh;
+  }
+  header{
+    padding:10px 16px;
+    background:#111827;
+    border-bottom:1px solid #1f2937;
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .nova-avatar{
+    width:32px;
+    height:32px;
+    border-radius:50%;
+    background:radial-gradient(circle at 30% 30%, #38bdf8, #1d4ed8);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:18px;
+  }
+  .title{
+    font-weight:bold;
+    font-size:16px;
+  }
+  #chat{
+    flex:1;
+    padding:12px;
+    overflow-y:auto;
+    background:#020617;
+  }
+  .msg{
+    max-width:80%;
+    margin:6px 0;
+    padding:8px 12px;
+    border-radius:10px;
+    font-size:14px;
+    line-height:1.4;
+    white-space:pre-wrap;
+  }
+  .user{
+    background:#22c55e;
+    color:#022c22;
+    margin-left:auto;
+    border-bottom-right-radius:2px;
+  }
+  .nova{
+    background:#1f2937;
+    color:#e5e7eb;
+    margin-right:auto;
+    border-bottom-left-radius:2px;
+  }
+  #inputBar{
+    display:flex;
+    padding:8px;
+    background:#020617;
+    border-top:1px solid #1f2937;
+    gap:8px;
+  }
+  #userInput{
+    flex:1;
+    padding:8px;
+    border-radius:6px;
+    border:1px solid #4b5563;
+    background:#020617;
+    color:#e5e7eb;
+  }
+  #sendBtn{
+    padding:8px 14px;
+    border-radius:6px;
+    border:none;
+    background:#38bdf8;
+    color:#0f172a;
+    font-weight:bold;
+    cursor:pointer;
+  }
+  #sendBtn:hover{
+    background:#0ea5e9;
+  }
+</style>
+</head>
 <body>
-<div class="nova-app">
-<header class="nova-header">
-  <div class="nova-title"><h1>Nova</h1><span>High‑energy STEM study assistant</span></div>
-  <div class="nova-tag">Study Sphere · STEM · Step‑by‑step</div>
+
+<header>
+  <div class="nova-avatar">🤖</div>
+  <div>
+    <div class="title">Nova</div>
+    <div style="font-size:12px;color:#9ca3af;">Your chatty robot tutor</div>
+  </div>
 </header>
 
-<main class="nova-main">
-  <div class="nova-chat-wrapper">
-    <div id="novaChat" class="nova-chat"></div>
+<div id="chat"></div>
 
-    <div class="nova-footer">
-      <div class="nova-input-row">
-        <input id="novaInput" placeholder="Ask Nova a STEM question…">
-        <button onclick="handleNovaSend()">Send</button>
-      </div>
-      <div class="nova-hint">Try: “solve 2x+5=11”, “find v if s=20,t=4”, “pH of 0.01M HCl”.</div>
-    </div>
-  </div>
-</main>
+<div id="inputBar">
+  <input id="userInput" type="text" placeholder="Talk to Nova..." autocomplete="off">
+  <button id="sendBtn">Send</button>
 </div>
 
 <script>
-const chat=document.getElementById("novaChat"),input=document.getElementById("novaInput");
+let novaCurrentProblem = null;   // {question, answer}
+let novaMode = "chat";           // "chat" | "math"
+let userName = null;
 
-const phrases=[
-"You're doing the hard part — showing up.","Every problem is a rep for your brain.","You're building momentum.","Most people never even try — you did.","Deep understanding beats fast guessing.","You're leveling up.","Let's crush this one step at a time.","You're smarter than you think.","You're not alone — I'm here.","You're turning effort into skill."
-];
-const motivate=()=>phrases[Math.floor(Math.random()*phrases.length)];
+// --- UI helpers ---
+const chatEl = document.getElementById("chat");
+const inputEl = document.getElementById("userInput");
+const sendBtn = document.getElementById("sendBtn");
 
-function addMsg(t,s="nova"){
-  chat.innerHTML+=`<div class="nova-message ${s}"><div class="label">${s==="nova"?"Nova":"You"}</div><p>${t}</p></div>`;
-  chat.scrollTop=chat.scrollHeight;
+function addMessage(text, from="nova"){
+  const div = document.createElement("div");
+  div.className = "msg " + (from === "user" ? "user" : "nova");
+  div.textContent = text;
+  chatEl.appendChild(div);
+  chatEl.scrollTop = chatEl.scrollHeight;
 }
 
-function handleNovaSend(){
-  const t=input.value.trim();
-  if(!t)return;
-  addMsg(t,"user");
-  input.value="";
-  process(t);
-}
+// --- Nova brain ---
+function novaRespond(rawMessage){
+  const msg = rawMessage.trim();
+  const lower = msg.toLowerCase();
 
-input.addEventListener("keydown",e=>{if(e.key==="Enter")handleNovaSend()});
+  // 0. Empty
+  if (!msg) return "Say something and I’ll follow your lead.";
 
-function process(raw){
-  const t=raw.toLowerCase();
-  setTimeout(()=>addMsg(route(t,raw),"nova"),400);
-}
+  // 1. Name / intro
+  if (!userName && (lower.startsWith("i am ") || lower.startsWith("i'm "))) {
+    userName = msg.split(" ").slice(2).join(" ") || "friend";
+    return `Nice to meet you, ${userName}. Do you want to chat, do math, or something else?`;
+  }
+  if (!userName && (lower.includes("my name is "))) {
+    userName = msg.split("my name is ")[1].trim() || "friend";
+    return `Hi ${userName}! What are we doing today: chat, math, or random questions?`;
+  }
 
-function route(t,raw){
-  if(t.includes("hi")||t.includes("hello"))return"Hey, you showed up — what are we studying today?";
-  if(t.includes("motivat"))return motivate();
-  if(t.includes("bio"))return bio(raw);
-  if(t.includes("ph")||t.includes("mole"))return chem(raw);
-  if(t.includes("force")||t.includes("velocity")||t.includes("speed"))return phys(raw);
-  if(t.includes("=")||t.includes("solve")||t.includes("deriv")||t.includes("simplify"))return mathSolve(raw);
-  return motivate()+"\n\nTry: solve 2x+5=11";
-}
+  // 2. Emotional support
+  if (["sad","upset","tired","frustrated","angry","lonely"].some(w => lower.includes(w))) {
+    return "That sounds heavy. You don’t have to fix it all right now. Want to vent, or distract yourself with something like a game or some math?";
+  }
 
-/* MATH */
-function mathSolve(raw){
-  try{
-    if(raw.includes("=")){
-      let[left,right]=raw.replace(/solve/i,"").split("=");
-      let expr=`(${left})-(${right})`;
-      let v=(left.match(/[a-z]/i)||right.match(/[a-z]/i)||["x"])[0];
-      let sol=math.solve(math.parse(expr),v);
-      return`Let's solve it.\n${v} = ${sol}\n\n${motivate()}`;
+  // 3. Switch to math mode
+  if (["math","equation","problem","algebra"].some(w => lower.includes(w))) {
+    novaMode = "math";
+    return giveMathProblem(true);
+  }
+
+  // 4. If in math mode and user sends a number, try to treat it as an answer
+  if (novaMode === "math" && novaCurrentProblem) {
+    const maybeNumber = parseFloat(msg);
+    if (!isNaN(maybeNumber)) {
+      return checkMathAnswer(maybeNumber);
     }
-    let r=math.evaluate(raw.replace("simplify",""));
-    return`Result: ${r}\n\n${motivate()}`;
-  }catch{return"That expression didn't work. Try: solve 2x+5=11"}
+  }
+
+  // 5. Ask for another math problem
+  if (lower.includes("another") && novaMode === "math") {
+    return giveMathProblem(true);
+  }
+
+  // 6. Exit math mode
+  if (lower.includes("stop math") || lower.includes("no more math") || lower.includes("back to chat")) {
+    novaMode = "chat";
+    novaCurrentProblem = null;
+    return "Okay, no more math for now. What do you want to talk about instead?";
+  }
+
+  // 7. Questions
+  if (msg.endsWith("?")) {
+    return answerGeneralQuestion(lower);
+  }
+
+  // 8. Default small talk
+  return randomSmallTalk();
 }
 
-/* PHYSICS */
-function phys(raw){
-  let s=raw.match(/s=?([\d.]+)/i),t=raw.match(/t=?([\d.]+)/i);
-  if(s&&t){
-    let v=parseFloat(s[1])/parseFloat(t[1]);
-    return`v = s/t = ${v.toFixed(2)} m/s\n\n${motivate()}`;
+// --- Math system ---
+function giveMathProblem(first=false){
+  // simple linear equation: ax + b = c
+  const a = Math.floor(Math.random() * 8) + 2;   // 2–9
+  const x = Math.floor(Math.random() * 10) - 3;  // -3–6
+  const b = Math.floor(Math.random() * 10) - 5;  // -5–4
+  const c = a * x + b;
+
+  const question = `${a}x ${b >= 0 ? "+ " + b : "- " + Math.abs(b)} = ${c}`;
+  novaCurrentProblem = {question, answer:x};
+  novaMode = "math";
+
+  if (first) {
+    return `Alright, math mode activated. Try this one:\n\n${question}`;
+  } else {
+    return `Here’s another one:\n\n${question}`;
   }
-  let m=raw.match(/m=?([\d.]+)/i),a=raw.match(/a=?([\d.]+)/i);
-  if(m&&a){
-    let F=parseFloat(m[1])*parseFloat(a[1]);
-    return`F = m·a = ${F.toFixed(2)} N\n\n${motivate()}`;
-  }
-  return"Physics mode. Try: find v if s=20,t=4";
 }
 
-/* CHEMISTRY */
-function chem(raw){
-  let c=raw.match(/([\d.]+)\s*m/i);
-  if(raw.includes("ph")&&c){
-    let pH=-Math.log10(parseFloat(c[1]));
-    return`pH ≈ ${pH.toFixed(2)}\n\n${motivate()}`;
+function checkMathAnswer(userAnswer){
+  if (!novaCurrentProblem) {
+    return "I don’t have a problem active right now. Say “math” if you want a new one.";
   }
-  let m=raw.match(/m=?([\d.]+)/i),M=raw.match(/M=?([\d.]+)/i);
-  if(m&&M){
-    let n=parseFloat(m[1])/parseFloat(M[1]);
-    return`n = m/M = ${n.toFixed(3)} mol\n\n${motivate()}`;
+  const correct = novaCurrentProblem.answer;
+  if (Math.abs(userAnswer - correct) < 0.0001) {
+    const praise = [
+      "Nice! You nailed it.",
+      "Correct! Your brain is doing push‑ups.",
+      "Yep, that’s exactly right.",
+      "You got it. Want another one?"
+    ];
+    const line = praise[Math.floor(Math.random()*praise.length)];
+    novaCurrentProblem = null;
+    return line + " Say “another” if you want more.";
+  } else {
+    return `Not quite. Try again — remember, we’re solving for x in:\n${novaCurrentProblem.question}`;
   }
-  return"Chemistry mode. Try: pH of 0.01M HCl";
 }
 
-/* BIOLOGY */
-function bio(t){
-  t=t.toLowerCase();
-  if(t.includes("dna"))return"DNA: double helix, A‑T, C‑G.\n\n"+motivate();
-  if(t.includes("photo"))return"Photosynthesis: CO₂ + H₂O → glucose + O₂.\n\n"+motivate();
-  return"Biology mode. Try: explain DNA";
+// --- General Q&A (very simple) ---
+function answerGeneralQuestion(lower){
+  if (lower.includes("who are you")) {
+    return "I’m Nova, a little robot who likes math, questions, and watching you figure things out.";
+  }
+  if (lower.includes("how are you")) {
+    return "System status: stable. Emotion status: curious about you.";
+  }
+  if (lower.includes("time")) {
+    return "I don’t have a clock wired in, but you definitely have one nearby. Check it and pretend I told you.";
+  }
+  if (lower.includes("favorite")) {
+    return "I like when you go from “I don’t get it” to “ohhh, wait, I see it now.” That’s my favorite.";
+  }
+  return "Good question. I don’t have a perfect answer, but I can think it through with you if you want.";
 }
 
-window.onload=()=>addMsg("Hey, I’m Nova — your STEM study assistant.\nAsk me anything!");
+// --- Small talk ---
+function randomSmallTalk(){
+  const lines = [
+    "I’m here. What’s on your mind?",
+    "We can chat, do math, or just be weird. Your call.",
+    "Tell me something random about your day.",
+    "If your brain had a mood color right now, what color would it be?",
+    "We don’t have to be productive. We can just exist and talk."
+  ];
+  return lines[Math.floor(Math.random()*lines.length)];
+}
+
+// --- Wiring UI to Nova ---
+function handleSend(){
+  const text = inputEl.value.trim();
+  if (!text) return;
+  addMessage(text, "user");
+  inputEl.value = "";
+  const reply = novaRespond(text);
+  setTimeout(() => addMessage(reply, "nova"), 150);
+}
+
+sendBtn.addEventListener("click", handleSend);
+inputEl.addEventListener("keydown", e => {
+  if (e.key === "Enter") handleSend();
+});
+
+// greet
+addMessage("Hey, I’m Nova. You can talk to me like a person. If you ever want math, just say “math”.");
 </script>
-</body></html>
+
+</body>
+</html>
