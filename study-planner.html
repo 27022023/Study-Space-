@@ -2,64 +2,169 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Study Planner</title>
+<title>Study Planner Lab</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:system-ui;background:#fdf7ff;min-height:100vh;display:flex;justify-content:center;padding:24px;color:#111827}
-.app{width:100%;max-width:1100px;background:#fff;border-radius:24px;box-shadow:0 12px 30px rgba(0,0,0,.12);border:1px solid rgba(148,163,184,.35);overflow:hidden}
-.header{padding:20px 24px;background:linear-gradient(135deg,#f9a8d4,#a5b4fc,#6ee7b7)}
+body{
+  font-family:system-ui;
+  background:linear-gradient(135deg,#fef3ff,#e0f2fe);
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  padding:24px;
+  color:#111827;
+}
+.app{
+  width:100%;
+  max-width:900px;
+  background:#ffffffcc;
+  border-radius:24px;
+  box-shadow:0 12px 30px rgba(0,0,0,.12);
+  border:1px solid rgba(148,163,184,.35);
+  overflow:hidden;
+  backdrop-filter:blur(6px);
+}
+.header{
+  padding:20px 24px;
+  background:linear-gradient(135deg,#f9a8d4,#a5b4fc,#6ee7b7);
+}
 .header h1{font-size:26px;margin-bottom:4px}
 .header p{font-size:13px;opacity:.9}
-.tag{font-size:11px;padding:4px 10px;border-radius:999px;background:rgba(255,255,255,.7);border:1px solid rgba(255,255,255,.9);margin-right:6px}
+.tag{
+  font-size:11px;padding:4px 10px;border-radius:999px;
+  background:rgba(255,255,255,.7);
+  border:1px solid rgba(255,255,255,.9);
+  margin-right:6px;
+}
 .section{padding:20px 24px;border-top:1px solid #e5e7eb}
 .section-title{font-size:18px;margin-bottom:6px}
 .section-sub{font-size:12px;color:#6b7280;margin-bottom:14px}
-input,select,button{font-family:inherit;font-size:13px}
-input,select{border-radius:999px;border:1px solid #cbd5e1;padding:6px 10px;background:#ffffffdd}
-button{border:none;border-radius:999px;padding:7px 14px;font-weight:600;cursor:pointer}
-.btn-primary{background:linear-gradient(135deg,#6366f1,#ec4899);color:#fff}
-.btn-ghost{background:#fff;color:#4b5563;border:1px solid #e5e7eb}
+
+input,select,button{
+  font-family:inherit;font-size:13px;
+}
+input,select{
+  border-radius:999px;
+  border:1px solid #cbd5e1;
+  padding:6px 10px;
+  background:#ffffffdd;
+}
+button{
+  border:none;border-radius:999px;
+  padding:7px 14px;font-weight:600;cursor:pointer;
+}
+.btn-primary{
+  background:linear-gradient(135deg,#6366f1,#ec4899);
+  color:#fff;
+}
+.btn-ghost{
+  background:#fff;color:#4b5563;border:1px solid #e5e7eb;
+}
 .btn-small{padding:4px 10px;font-size:11px}
-.color-dot{width:18px;height:18px;border-radius:999px;border:2px solid #e5e7eb;cursor:pointer}
-.color-dot.selected{border-color:#111827;box-shadow:0 0 0 2px rgba(15,23,42,.2)}
-.subject-pill{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;font-size:11px;margin:3px 4px;background:#f9fafb;border:1px solid #e5e7eb}
-.subject-color-preview{width:14px;height:14px;border-radius:999px;border:1px solid rgba(15,23,42,.2)}
-.subject-delete{border:none;background:transparent;color:#b91c1c;font-size:12px;cursor:pointer}
-.view-toggle{display:inline-flex;border-radius:999px;border:1px solid #e5e7eb;overflow:hidden}
-.view-toggle button{border:none;background:#fff;padding:6px 12px;font-size:12px;color:#4b5563}
-.view-toggle button.active{background:#111827;color:#f9fafb}
-.grid{display:grid;grid-template-columns:repeat(7,minmax(120px,1fr));gap:8px}
-.day-col{background:linear-gradient(135deg,#eff6ff,#fdf2ff);border-radius:16px;padding:8px;border:1px solid #dbeafe;min-height:140px;display:flex;flex-direction:column}
-.day-header{font-size:12px;font-weight:600;margin-bottom:4px;color:#1f2937}
-.task-list{flex:1;display:flex;flex-direction:column;gap:4px;margin-bottom:6px}
-.task-item{display:flex;align-items:flex-start;gap:6px;padding:4px 6px;border-radius:10px;font-size:12px}
+
+.color-dot{
+  width:18px;height:18px;border-radius:999px;
+  border:2px solid #e5e7eb;cursor:pointer;
+}
+.color-dot.selected{
+  border-color:#111827;
+  box-shadow:0 0 0 2px rgba(15,23,42,.2);
+}
+
+.subject-pill{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:4px 10px;border-radius:999px;
+  font-size:11px;margin:3px 4px;
+  background:#f9fafb;border:1px solid #e5e7eb;
+}
+.subject-color-preview{
+  width:14px;height:14px;border-radius:999px;
+  border:1px solid rgba(15,23,42,.2);
+}
+.subject-delete{
+  border:none;background:transparent;color:#b91c1c;
+  font-size:12px;cursor:pointer;
+}
+
+.view-toggle{
+  display:inline-flex;border-radius:999px;
+  border:1px solid #e5e7eb;overflow:hidden;
+}
+.view-toggle button{
+  border:none;background:#fff;padding:6px 12px;
+  font-size:12px;color:#4b5563;
+}
+.view-toggle button.active{
+  background:#111827;color:#f9fafb;
+}
+
+.day-box{
+  padding:16px;
+  border-radius:18px;
+  border:1px solid rgba(0,0,0,0.08);
+  margin-bottom:14px;
+}
+.day-title{
+  font-size:15px;
+  font-weight:600;
+  margin-bottom:8px;
+}
+.task-item{
+  display:flex;
+  align-items:flex-start;
+  gap:6px;
+  padding:6px 8px;
+  border-radius:10px;
+  font-size:12px;
+  margin-bottom:6px;
+  border:1px solid rgba(0,0,0,0.08);
+}
+.task-done .task-label{text-decoration:line-through;opacity:.6}
 .task-label{flex:1}
 .task-subject{font-size:10px;opacity:.8}
-.task-done .task-label{text-decoration:line-through;opacity:.6}
-.task-add-row{display:flex;flex-direction:column;gap:4px;margin-top:4px}
-.list-view{display:flex;flex-direction:column;gap:10px}
-.list-day{background:linear-gradient(135deg,#fefce8,#eff6ff);border-radius:16px;padding:10px;border:1px solid #e5e7eb}
-.list-day-title{font-size:13px;font-weight:600;margin-bottom:4px}
-.list-day-tasks{display:flex;flex-direction:column;gap:4px}
 .empty-text{font-size:12px;color:#9ca3af;font-style:italic}
-@media(max-width:900px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:600px){body{padding:12px}.app{border-radius:18px}.grid{grid-template-columns:1fr}}
+
+.task-add{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+  margin-top:8px;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(7,1fr);
+  gap:8px;
+}
+.day-col{
+  padding:10px;
+  border-radius:16px;
+  border:1px solid rgba(0,0,0,0.08);
+}
+.day-header{font-size:12px;font-weight:600;margin-bottom:6px}
+
+@media(max-width:900px){
+  .grid{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:600px){
+  .grid{grid-template-columns:1fr}
+}
 </style>
 </head>
 <body>
 <div class="app">
 
 <div class="header">
-  <h1>Study Planner</h1>
-  <p>Plan your exam week, color‑code subjects, and track your progress.</p>
+  <h1>Study Planner Lab</h1>
+  <p>Plan your exam week with pastel gradients and auto‑saving.</p>
   <div style="margin-top:8px">
-    <span class="tag">Weekly Grid</span>
-    <span class="tag">List View</span>
+    <span class="tag">Vertical View</span>
+    <span class="tag">Grid View</span>
     <span class="tag">Auto‑saved</span>
   </div>
 </div>
 
-<!-- SUBJECT MANAGER -->
+<!-- SUBJECTS -->
 <div class="section">
   <div class="section-title">Subjects & Colors</div>
   <div class="section-sub">Choose pastel colors for your subjects.</div>
@@ -73,38 +178,52 @@ button{border:none;border-radius:999px;padding:7px 14px;font-weight:600;cursor:p
   <div id="subjectsContainer"></div>
 </div>
 
-<!-- STUDY GOAL -->
+<!-- GOAL -->
 <div class="section">
   <div class="section-title">Exam Goal</div>
   <div class="section-sub">Set a goal for this study period.</div>
 
-  <div id="goalBox" style="background:linear-gradient(135deg,#fef3ff,#e0f2fe);border:1px solid #dbeafe;border-radius:16px;padding:14px;margin-bottom:16px;display:flex;flex-wrap:wrap;gap:10px;align-items:center">
+  <div style="background:linear-gradient(180deg,#fef3ff,#e0f2fe);border:1px solid #dbeafe;border-radius:16px;padding:14px;margin-bottom:16px;display:flex;flex-wrap:wrap;gap:10px;align-items:center">
     <input id="goalInput" placeholder="Exam name or study goal…" style="flex:1;min-width:240px;border-radius:999px;border:1px solid #cbd5e1;padding:8px 12px;font-size:13px;background:#ffffffdd">
     <button id="clearGoalBtn" class="btn-ghost btn-small">Clear</button>
   </div>
 
   <div class="section-title">Study Planner</div>
-  <div class="section-sub">Everything saves automatically.</div>
+  <div class="section-sub">Vertical layout is the default.</div>
 
   <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap">
     <div class="view-toggle">
-      <button id="gridViewBtn" class="active">Weekly grid</button>
-      <button id="listViewBtn">List view</button>
+      <button id="verticalBtn" class="active">Vertical</button>
+      <button id="gridBtn">Grid</button>
     </div>
     <button class="btn-ghost btn-small" id="clearAllBtn">Clear all</button>
   </div>
 
-  <div id="gridView"><div class="grid" id="gridContainer"></div></div>
-  <div id="listView" style="display:none"><div class="list-view" id="listContainer"></div></div>
+  <div id="verticalView"></div>
+  <div id="gridView" style="display:none"><div class="grid" id="gridContainer"></div></div>
 </div>
 
 </div>
 
 <script>
 const DAYS=["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
-const COLORS=["#F9A8D4","#A5B4FC","#6EE7B7","#FDE68A","#BFDBFE","#FBCFE8","#C7D2FE"];
-const STORAGE_KEY="study_planner_v1";
+const COLORS=[
+  "#F9A8D4","#FBCFE8","#A5B4FC","#C7D2FE",
+  "#BFDBFE","#BAE6FD","#6EE7B7","#A7F3D0",
+  "#FDE68A","#FCD34D","#FECACA","#FECACA",
+  "#FBCFE8","#DDD6FE","#F5D0FE","#FFE4E6"
+];
+const DAY_GRADIENTS=[
+  "linear-gradient(180deg,#ffe4f4,#fbcfe8)",
+  "linear-gradient(180deg,#ede9fe,#c7d2fe)",
+  "linear-gradient(180deg,#e0f2fe,#bfdbfe)",
+  "linear-gradient(180deg,#d1fae5,#a7f3d0)",
+  "linear-gradient(180deg,#fef9c3,#fde68a)",
+  "linear-gradient(180deg,#ffe4e6,#fecaca)",
+  "linear-gradient(180deg,#f3e8ff,#ddd6fe)"
+];
 
+const STORAGE_KEY="study_planner_v2";
 let state={subjects:{},tasks:{},goal:""};
 DAYS.forEach(d=>state.tasks[d]=[]);
 
@@ -178,8 +297,8 @@ goalInput.oninput=()=>{state.goal=goalInput.value.trim();save();};
 clearGoalBtn.onclick=()=>{goalInput.value="";state.goal="";save();};
 
 // PLANNER
+const verticalView=document.getElementById("verticalView");
 const gridContainer=document.getElementById("gridContainer");
-const listContainer=document.getElementById("listContainer");
 
 function createTask(day,subject,task){
   const id=Date.now().toString(36)+Math.random().toString(36).slice(2);
@@ -197,16 +316,21 @@ function deleteTask(day,id){
 function colorOf(s){return state.subjects[s]?.color||"#e5e7eb";}
 
 function renderPlanner(){
-  gridContainer.innerHTML="";
-  DAYS.forEach(day=>{
-    const col=document.createElement("div");
-    col.className="day-col";
-    col.innerHTML=`<div class="day-header">${day}</div>`;
-    const list=document.createElement("div");
-    list.className="task-list";
+  // VERTICAL
+  verticalView.innerHTML="";
+  DAYS.forEach((day,i)=>{
+    const box=document.createElement("div");
+    box.className="day-box";
+    box.style.background=DAY_GRADIENTS[i];
+
+    const title=document.createElement("div");
+    title.className="day-title";
+    title.textContent=day;
+
+    const tasksWrap=document.createElement("div");
     const tasks=state.tasks[day];
     if(!tasks.length){
-      list.innerHTML='<div class="empty-text">No tasks yet.</div>';
+      tasksWrap.innerHTML='<div class="empty-text">No tasks yet.</div>';
     }else{
       tasks.forEach(t=>{
         const item=document.createElement("div");
@@ -222,13 +346,12 @@ function renderPlanner(){
         del.className="btn-ghost btn-small";del.textContent="×";
         del.onclick=()=>deleteTask(day,t.id);
         item.append(cb,label,del);
-        list.appendChild(item);
+        tasksWrap.appendChild(item);
       });
     }
-    col.appendChild(list);
 
     const add=document.createElement("div");
-    add.className="task-add-row";
+    add.className="task-add";
     const subj=document.createElement("select");
     subj.innerHTML='<option value="">Subject…</option>'+Object.keys(state.subjects).map(s=>`<option>${s}</option>`).join("");
     const inp=document.createElement("input");
@@ -237,21 +360,22 @@ function renderPlanner(){
     btn.className="btn-primary btn-small";btn.textContent="Add";
     btn.onclick=()=>{if(inp.value.trim())createTask(day,subj.value,inp.value.trim());inp.value="";};
     add.append(subj,inp,btn);
-    col.appendChild(add);
 
-    gridContainer.appendChild(col);
+    box.append(title,tasksWrap,add);
+    verticalView.appendChild(box);
   });
 
-  listContainer.innerHTML="";
-  DAYS.forEach(day=>{
-    const box=document.createElement("div");
-    box.className="list-day";
-    box.innerHTML=`<div class="list-day-title">${day}</div>`;
-    const wrap=document.createElement("div");
-    wrap.className="list-day-tasks";
+  // GRID
+  gridContainer.innerHTML="";
+  DAYS.forEach((day,i)=>{
+    const col=document.createElement("div");
+    col.className="day-col";
+    col.style.background=DAY_GRADIENTS[i];
+    col.innerHTML=`<div class="day-header">${day}</div>`;
+    const list=document.createElement("div");
     const tasks=state.tasks[day];
     if(!tasks.length){
-      wrap.innerHTML='<div class="empty-text">No tasks yet.</div>';
+      list.innerHTML='<div class="empty-text">No tasks yet.</div>';
     }else{
       tasks.forEach(t=>{
         const item=document.createElement("div");
@@ -267,25 +391,43 @@ function renderPlanner(){
         del.className="btn-ghost btn-small";del.textContent="×";
         del.onclick=()=>deleteTask(day,t.id);
         item.append(cb,label,del);
-        wrap.appendChild(item);
+        list.appendChild(item);
       });
     }
-    box.appendChild(wrap);
-    listContainer.appendChild(box);
+
+    const add=document.createElement("div");
+    add.className="task-add";
+    const subj=document.createElement("select");
+    subj.innerHTML='<option value="">Subject…</option>'+Object.keys(state.subjects).map(s=>`<option>${s}</option>`).join("");
+    const inp=document.createElement("input");
+    inp.placeholder="Study topic…";
+    const btn=document.createElement("button");
+    btn.className="btn-primary btn-small";btn.textContent="Add";
+    btn.onclick=()=>{if(inp.value.trim())createTask(day,subj.value,inp.value.trim());inp.value="";};
+    add.append(subj,inp,btn);
+
+    col.append(list,add);
+    gridContainer.appendChild(col);
   });
 }
 renderPlanner();
 
 // VIEW TOGGLE
+const verticalBtn=document.getElementById("verticalBtn");
+const gridBtn=document.getElementById("gridBtn");
 const gridView=document.getElementById("gridView");
-const listView=document.getElementById("listView");
-document.getElementById("gridViewBtn").onclick=()=>{
-  gridView.style.display="block";listView.style.display="none";
-  gridViewBtn.classList.add("active");listViewBtn.classList.remove("active");
+
+verticalBtn.onclick=()=>{
+  verticalView.style.display="block";
+  gridView.style.display="none";
+  verticalBtn.classList.add("active");
+  gridBtn.classList.remove("active");
 };
-document.getElementById("listViewBtn").onclick=()=>{
-  gridView.style.display="none";listView.style.display="block";
-  listViewBtn.classList.add("active");gridViewBtn.classList.remove("active");
+gridBtn.onclick=()=>{
+  verticalView.style.display="none";
+  gridView.style.display="block";
+  gridBtn.classList.add("active");
+  verticalBtn.classList.remove("active");
 };
 
 // CLEAR ALL
