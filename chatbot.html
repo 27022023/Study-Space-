@@ -301,3 +301,167 @@ body {
     padding: 0;
   }
 }
+const chatEl = document.getElementById('novaChat');
+const inputEl = document.getElementById('novaInput');
+
+/* ------------------------------
+   NOVA'S MOTIVATIONAL PERSONALITY
+--------------------------------*/
+const motivationalPhrases = [
+  "You’re doing the hard part — showing up. That’s where progress starts.",
+  "Every problem you try is a rep for your brain. You’re getting stronger.",
+  "You’re not behind. You’re building momentum at your own pace.",
+  "Most people never even open the book. You’re already ahead.",
+  "Let’s treat this like a gym session for your mind — one set at a time.",
+  "You don’t have to feel ready. You just have to start. You did.",
+  "Confusion is not failure — it’s the doorway to understanding.",
+  "You’re allowed to take it slow. Deep understanding beats fast guessing.",
+  "Every formula you learn is another tool in your pocket.",
+  "You’re building a future where you can rely on yourself. That’s huge.",
+  "You’re not stuck — you’re leveling up. This is what growth feels like.",
+  "Let’s crush this one step at a time. You and me.",
+  "You’re smarter than you give yourself credit for.",
+  "You’re not alone in this. I’m right here with you.",
+  "You’re turning effort into skill. That’s the real flex.",
+  "This isn’t just homework — it’s training for your future self.",
+  "You’re allowed to make mistakes. That’s how we learn.",
+  "You’re closer than you think. Let’s push a little further.",
+  "You’re doing work that future‑you will be grateful for.",
+  "You’re not just solving problems — you’re building discipline."
+];
+
+function randomMotivation() {
+  return motivationalPhrases[Math.floor(Math.random() * motivationalPhrases.length)];
+}
+
+/* ------------------------------
+   MESSAGE RENDERING
+--------------------------------*/
+function addMessage(text, sender = 'nova') {
+  const msg = document.createElement('div');
+  msg.className = `nova-message ${sender}`;
+
+  const label = document.createElement('div');
+  label.className = 'label';
+  label.textContent = sender === 'nova' ? 'Nova' : 'You';
+
+  const p = document.createElement('p');
+  p.textContent = text;
+
+  msg.appendChild(label);
+  msg.appendChild(p);
+  chatEl.appendChild(msg);
+
+  chatEl.scrollTop = chatEl.scrollHeight;
+}
+
+/* ------------------------------
+   TYPING INDICATOR
+--------------------------------*/
+function novaTyping(on) {
+  let typingEl = document.getElementById('novaTyping');
+
+  if (on) {
+    if (!typingEl) {
+      typingEl = document.createElement('div');
+      typingEl.id = 'novaTyping';
+      typingEl.className = 'nova-message nova nova-typing';
+      typingEl.innerHTML = `
+        <div class="label">Nova</div>
+        <div style="display:flex;align-items:center;gap:6px;">
+          <span>Thinking</span>
+          <div class="typing-dots">
+            <span></span><span></span><span></span>
+          </div>
+        </div>
+      `;
+      chatEl.appendChild(typingEl);
+    }
+    typingEl.style.display = 'flex';
+  } else if (typingEl) {
+    typingEl.style.display = 'none';
+  }
+
+  chatEl.scrollTop = chatEl.scrollHeight;
+}
+
+/* ------------------------------
+   SEND MESSAGE
+--------------------------------*/
+function handleNovaSend() {
+  const text = inputEl.value.trim();
+  if (!text) return;
+
+  addMessage(text, 'user');
+  inputEl.value = '';
+
+  processNovaInput(text);
+}
+
+inputEl.addEventListener('keydown', e => {
+  if (e.key === 'Enter') handleNovaSend();
+});
+
+/* ------------------------------
+   ROUTING USER INPUT
+--------------------------------*/
+function processNovaInput(raw) {
+  const text = raw.toLowerCase();
+
+  novaTyping(true);
+
+  setTimeout(() => {
+    const response = routeNova(text, raw);
+    novaTyping(false);
+    addMessage(response, 'nova');
+  }, 700 + Math.random() * 600);
+}
+
+function routeNova(text, raw) {
+  // Greetings
+  if (text.includes('hello') || text.includes('hi') || text.includes('hey')) {
+    return "Hey, you showed up — that’s the hardest part. What are we studying today?";
+  }
+
+  // Motivation
+  if (text.includes('motivate') || text.includes('motivation') || text.includes('tired')) {
+    return randomMotivation();
+  }
+
+  // Subject routing
+  if (text.includes('physics')) return randomMotivation() + "\n\nTell me a physics problem to solve.";
+  if (text.includes('chemistry') || text.includes('chem')) return randomMotivation() + "\n\nAsk me a chemistry calculation.";
+  if (text.includes('biology') || text.includes('bio')) return handleBiologyHelper(text);
+
+  // Chemistry keywords
+  if (text.includes('ph') || text.includes('molar') || text.includes('moles')) {
+    return handleChemistry(raw);
+  }
+
+  // Physics keywords
+  if (text.includes('velocity') || text.includes('speed') || text.includes('acceleration') ||
+      text.includes('force') || text.includes('energy') || text.includes('power')) {
+    return handlePhysics(raw);
+  }
+
+  // Math keywords
+  if (text.match(/=|solve|simplify|derivative|integral|limit/)) {
+    return handleMath(raw);
+  }
+
+  return randomMotivation() + "\n\nTry something like:\n• “solve 2x + 5 = 11”\n• “find v if s=20m, t=4s”\n• “calculate pH of 0.01M HCl”.";
+}
+
+/* ------------------------------
+   INITIAL GREETING
+--------------------------------*/
+window.addEventListener('load', () => {
+  addMessage(
+    "Hey, I’m Nova — your high‑energy STEM study assistant.\n\n" +
+    "Ask me to solve a math, physics, chemistry, or biology question, or tell me you need motivation. " +
+    "We’ll build your future one problem at a time.",
+    'nova'
+  );
+
+  setTimeout(() => addMessage(randomMotivation(), 'nova'), 900);
+});
