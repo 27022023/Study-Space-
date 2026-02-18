@@ -1,171 +1,300 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-<link rel="manifest" href="/site.webmanifest">
-  <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#ffffff"> <meta charset="UTF-8">
-<title>Sample Viewer</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<title>Study Planner</title>
 <style>
-  body {
-    font-family: Arial, sans-serif;
-    background: #e2e7f2;
-    padding: 20px;
-    text-align: center;
-  }
-  h1 { margin-bottom: 10px; }
-  .viewer-frame {
-    width: 90%;
-    max-width: 500px;
-    margin: auto;
-    aspect-ratio: 1/1;
-    background: #111;
-    border-radius: 12px;
-    overflow: hidden;
-    position: relative;
-  }
-  #viewerImage {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transform-origin: center;
-    display: none;
-  }
-  #viewerEmpty {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #ccc;
-    font-size: 14px;
-  }
-  .controls {
-    margin-top: 10px;
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-  }
-  button {
-    padding: 8px 14px;
-    border: none;
-    background: #6366f1;
-    color: white;
-    border-radius: 6px;
-    cursor: pointer;
-  }
-  button:hover { background: #4f46e5; }
-  .sample-list {
-    margin-top: 20px;
-  }
-  .sample-list button {
-    margin: 4px;
-    background: #eef;
-    color: #333;
-  }
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui;background:#fdf7ff;min-height:100vh;display:flex;justify-content:center;padding:24px;color:#111827}
+.app{width:100%;max-width:1100px;background:#fff;border-radius:24px;box-shadow:0 12px 30px rgba(0,0,0,.12);border:1px solid rgba(148,163,184,.35);overflow:hidden}
+.header{padding:20px 24px;background:linear-gradient(135deg,#f9a8d4,#a5b4fc,#6ee7b7)}
+.header h1{font-size:26px;margin-bottom:4px}
+.header p{font-size:13px;opacity:.9}
+.tag{font-size:11px;padding:4px 10px;border-radius:999px;background:rgba(255,255,255,.7);border:1px solid rgba(255,255,255,.9);margin-right:6px}
+.section{padding:20px 24px;border-top:1px solid #e5e7eb}
+.section-title{font-size:18px;margin-bottom:6px}
+.section-sub{font-size:12px;color:#6b7280;margin-bottom:14px}
+input,select,button{font-family:inherit;font-size:13px}
+input,select{border-radius:999px;border:1px solid #cbd5e1;padding:6px 10px;background:#ffffffdd}
+button{border:none;border-radius:999px;padding:7px 14px;font-weight:600;cursor:pointer}
+.btn-primary{background:linear-gradient(135deg,#6366f1,#ec4899);color:#fff}
+.btn-ghost{background:#fff;color:#4b5563;border:1px solid #e5e7eb}
+.btn-small{padding:4px 10px;font-size:11px}
+.color-dot{width:18px;height:18px;border-radius:999px;border:2px solid #e5e7eb;cursor:pointer}
+.color-dot.selected{border-color:#111827;box-shadow:0 0 0 2px rgba(15,23,42,.2)}
+.subject-pill{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;font-size:11px;margin:3px 4px;background:#f9fafb;border:1px solid #e5e7eb}
+.subject-color-preview{width:14px;height:14px;border-radius:999px;border:1px solid rgba(15,23,42,.2)}
+.subject-delete{border:none;background:transparent;color:#b91c1c;font-size:12px;cursor:pointer}
+.view-toggle{display:inline-flex;border-radius:999px;border:1px solid #e5e7eb;overflow:hidden}
+.view-toggle button{border:none;background:#fff;padding:6px 12px;font-size:12px;color:#4b5563}
+.view-toggle button.active{background:#111827;color:#f9fafb}
+.grid{display:grid;grid-template-columns:repeat(7,minmax(120px,1fr));gap:8px}
+.day-col{background:linear-gradient(135deg,#eff6ff,#fdf2ff);border-radius:16px;padding:8px;border:1px solid #dbeafe;min-height:140px;display:flex;flex-direction:column}
+.day-header{font-size:12px;font-weight:600;margin-bottom:4px;color:#1f2937}
+.task-list{flex:1;display:flex;flex-direction:column;gap:4px;margin-bottom:6px}
+.task-item{display:flex;align-items:flex-start;gap:6px;padding:4px 6px;border-radius:10px;font-size:12px}
+.task-label{flex:1}
+.task-subject{font-size:10px;opacity:.8}
+.task-done .task-label{text-decoration:line-through;opacity:.6}
+.task-add-row{display:flex;flex-direction:column;gap:4px;margin-top:4px}
+.list-view{display:flex;flex-direction:column;gap:10px}
+.list-day{background:linear-gradient(135deg,#fefce8,#eff6ff);border-radius:16px;padding:10px;border:1px solid #e5e7eb}
+.list-day-title{font-size:13px;font-weight:600;margin-bottom:4px}
+.list-day-tasks{display:flex;flex-direction:column;gap:4px}
+.empty-text{font-size:12px;color:#9ca3af;font-style:italic}
+@media(max-width:900px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:600px){body{padding:12px}.app{border-radius:18px}.grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
+<div class="app">
 
-<h1>Sample Viewer</h1>
-<p>Choose a sample or upload your own image.</p>
-
-<div class="viewer-frame">
-  <img id="viewerImage">
-  <div id="viewerEmpty">No sample selected</div>
+<div class="header">
+  <h1>Study Planner</h1>
+  <p>Plan your exam week, color‑code subjects, and track your progress.</p>
+  <div style="margin-top:8px">
+    <span class="tag">Weekly Grid</span>
+    <span class="tag">List View</span>
+    <span class="tag">Auto‑saved</span>
+  </div>
 </div>
 
-<div class="controls">
-  <button onclick="zoomOut()">−</button>
-  <span id="zoomLabel">Zoom: 100%</span>
-  <button onclick="zoomIn()">+</button>
+<!-- SUBJECT MANAGER -->
+<div class="section">
+  <div class="section-title">Subjects & Colors</div>
+  <div class="section-sub">Choose pastel colors for your subjects.</div>
+
+  <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:10px">
+    <input id="subjectName" placeholder="Subject name">
+    <div id="colorPicker" style="display:flex;gap:6px"></div>
+    <button class="btn-primary" id="addSubjectBtn">Add</button>
+  </div>
+
+  <div id="subjectsContainer"></div>
 </div>
 
-<p id="caption"></p>
+<!-- STUDY GOAL -->
+<div class="section">
+  <div class="section-title">Exam Goal</div>
+  <div class="section-sub">Set a goal for this study period.</div>
 
-<div class="sample-list">
-  <button onclick="loadSample('s1')">Sample 1</button>
-  <button onclick="loadSample('s2')">Sample 2</button>
-  <button onclick="loadSample('s3')">Sample 3</button>
-  <button onclick="loadSample('s4')">Sample 4</button>
-  <button onclick="loadSample('s5')">Sample 5</button>
-  <button onclick="loadSample('s6')">Sample 6</button>
-  <button onclick="loadSample('s7')">Sample 7</button>
-  <button onclick="loadSample('s8')">Sample 8</button>
-  <button onclick="loadSample('s9')">Sample 9</button>
+  <div id="goalBox" style="background:linear-gradient(135deg,#fef3ff,#e0f2fe);border:1px solid #dbeafe;border-radius:16px;padding:14px;margin-bottom:16px;display:flex;flex-wrap:wrap;gap:10px;align-items:center">
+    <input id="goalInput" placeholder="Exam name or study goal…" style="flex:1;min-width:240px;border-radius:999px;border:1px solid #cbd5e1;padding:8px 12px;font-size:13px;background:#ffffffdd">
+    <button id="clearGoalBtn" class="btn-ghost btn-small">Clear</button>
+  </div>
+
+  <div class="section-title">Study Planner</div>
+  <div class="section-sub">Everything saves automatically.</div>
+
+  <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap">
+    <div class="view-toggle">
+      <button id="gridViewBtn" class="active">Weekly grid</button>
+      <button id="listViewBtn">List view</button>
+    </div>
+    <button class="btn-ghost btn-small" id="clearAllBtn">Clear all</button>
+  </div>
+
+  <div id="gridView"><div class="grid" id="gridContainer"></div></div>
+  <div id="listView" style="display:none"><div class="list-view" id="listContainer"></div></div>
 </div>
 
-<h3 style="margin-top:20px;">Upload Your Own</h3>
-<input type="file" id="uploadInput" accept="image/*">
-<button onclick="useUpload()">View</button>
+</div>
 
 <script>
-const SAMPLES = {
-  s1: { caption: "Sample 1", svg: `<svg xmlns='http://www.w3.org/2000/svg' width='400' height='400'><rect width='400' height='400' fill='#ff9999'/></svg>` },
-  s2: { caption: "Sample 2", svg: `<svg xmlns='http://www.w3.org/2000/svg' width='400' height='400'><rect width='400' height='400' fill='#99ff99'/></svg>` },
-  s3: { caption: "Sample 3", svg: `<svg xmlns='http://www.w3.org/2000/svg' width='400' height='400'><rect width='400' height='400' fill='#9999ff'/></svg>` },
-  s4: { caption: "Sample 4", svg: `<svg xmlns='http://www.w3.org/2000/svg' width='400' height='400'><circle cx='200' cy='200' r='180' fill='#ffcc66'/></svg>` },
-  s5: { caption: "Sample 5", svg: `<svg xmlns='http://www.w3.org/2000/svg' width='400' height='400'><circle cx='200' cy='200' r='180' fill='#66ccff'/></svg>` },
-  s6: { caption: "Sample 6", svg: `<svg xmlns='http://www.w3.org/2000/svg' width='400' height='400'><rect width='400' height='400' fill='#cc66ff'/></svg>` },
-  s7: { caption: "Sample 7", svg: `<svg xmlns='http://www.w3.org/2000/svg' width='400' height='400'><rect width='400' height='400' fill='#ff66cc'/></svg>` },
-  s8: { caption: "Sample 8", svg: `<svg xmlns='http://www.w3.org/2000/svg' width='400' height='400'><rect width='400' height='400' fill='#66ffcc'/></svg>` },
-  s9: { caption: "Sample 9", svg: `<svg xmlns='http://www.w3.org/2000/svg' width='400' height='400'><rect width='400' height='400' fill='#cccccc'/></svg>` }
+const DAYS=["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
+const COLORS=["#F9A8D4","#A5B4FC","#6EE7B7","#FDE68A","#BFDBFE","#FBCFE8","#C7D2FE"];
+const STORAGE_KEY="study_planner_v1";
+
+let state={subjects:{},tasks:{},goal:""};
+DAYS.forEach(d=>state.tasks[d]=[]);
+
+(function load(){
+  try{
+    const raw=localStorage.getItem(STORAGE_KEY);
+    if(raw){
+      const s=JSON.parse(raw);
+      state.subjects=s.subjects||{};
+      state.tasks=Object.assign(state.tasks,s.tasks||{});
+      state.goal=s.goal||"";
+    }
+  }catch(e){}
+})();
+function save(){localStorage.setItem(STORAGE_KEY,JSON.stringify(state));}
+
+const subjectNameInput=document.getElementById("subjectName");
+const colorPicker=document.getElementById("colorPicker");
+const addSubjectBtn=document.getElementById("addSubjectBtn");
+const subjectsContainer=document.getElementById("subjectsContainer");
+let selectedColor=COLORS[0];
+
+function renderColorPicker(){
+  colorPicker.innerHTML="";
+  COLORS.forEach(c=>{
+    const dot=document.createElement("div");
+    dot.className="color-dot"+(c===selectedColor?" selected":"");
+    dot.style.background=c;
+    dot.onclick=()=>{selectedColor=c;renderColorPicker();};
+    colorPicker.appendChild(dot);
+  });
+}
+renderColorPicker();
+
+function renderSubjects(){
+  subjectsContainer.innerHTML="";
+  const names=Object.keys(state.subjects);
+  if(!names.length){
+    subjectsContainer.innerHTML='<div class="empty-text">No subjects yet.</div>';
+    return;
+  }
+  names.forEach(name=>{
+    const pill=document.createElement("span");
+    pill.className="subject-pill";
+    pill.innerHTML=`
+      <span class="subject-color-preview" style="background:${state.subjects[name].color}"></span>
+      ${name}
+      <button class="subject-delete">×</button>`;
+    pill.querySelector(".subject-delete").onclick=()=>{
+      delete state.subjects[name];
+      save();renderSubjects();renderPlanner();
+    };
+    subjectsContainer.appendChild(pill);
+  });
+}
+renderSubjects();
+
+addSubjectBtn.onclick=()=>{
+  const name=subjectNameInput.value.trim();
+  if(!name)return;
+  state.subjects[name]={color:selectedColor};
+  subjectNameInput.value="";
+  save();renderSubjects();renderPlanner();
 };
 
-let zoom = 1;
+// GOAL
+const goalInput=document.getElementById("goalInput");
+const clearGoalBtn=document.getElementById("clearGoalBtn");
+goalInput.value=state.goal;
+goalInput.oninput=()=>{state.goal=goalInput.value.trim();save();};
+clearGoalBtn.onclick=()=>{goalInput.value="";state.goal="";save();};
 
-function loadSample(name) {
-  const sample = SAMPLES[name];
-  const img = document.getElementById("viewerImage");
-  const empty = document.getElementById("viewerEmpty");
+// PLANNER
+const gridContainer=document.getElementById("gridContainer");
+const listContainer=document.getElementById("listContainer");
 
-  img.src = "data:image/svg+xml;base64," + btoa(sample.svg);
-  img.style.display = "block";
-  empty.style.display = "none";
-
-  document.getElementById("caption").textContent = sample.caption;
-  setZoom(1);
+function createTask(day,subject,task){
+  const id=Date.now().toString(36)+Math.random().toString(36).slice(2);
+  state.tasks[day].push({id,subject,task,done:false});
+  save();renderPlanner();
 }
-
-function useUpload() {
-  const file = document.getElementById("uploadInput").files[0];
-  if (!file) return alert("Choose an image first");
-
-  const reader = new FileReader();
-  reader.onload = e => {
-    const img = document.getElementById("viewerImage");
-    const empty = document.getElementById("viewerEmpty");
-
-    img.src = e.target.result;
-    img.style.display = "block";
-    empty.style.display = "none";
-
-    document.getElementById("caption").textContent = "Uploaded Sample";
-    setZoom(1);
-  };
-  reader.readAsDataURL(file);
+function toggleTask(day,id){
+  const t=state.tasks[day].find(x=>x.id===id);
+  if(t){t.done=!t.done;save();renderPlanner();}
 }
-
-function setZoom(z) {
-  zoom = Math.min(Math.max(z, 0.5), 3);
-  document.getElementById("viewerImage").style.transform = `scale(${zoom})`;
-  document.getElementById("zoomLabel").textContent = `Zoom: ${Math.round(zoom * 100)}%`;
+function deleteTask(day,id){
+  state.tasks[day]=state.tasks[day].filter(t=>t.id!==id);
+  save();renderPlanner();
 }
+function colorOf(s){return state.subjects[s]?.color||"#e5e7eb";}
 
-function zoomIn() { setZoom(zoom + 0.2); }
-function zoomOut() { setZoom(zoom - 0.2); }
+function renderPlanner(){
+  gridContainer.innerHTML="";
+  DAYS.forEach(day=>{
+    const col=document.createElement("div");
+    col.className="day-col";
+    col.innerHTML=`<div class="day-header">${day}</div>`;
+    const list=document.createElement("div");
+    list.className="task-list";
+    const tasks=state.tasks[day];
+    if(!tasks.length){
+      list.innerHTML='<div class="empty-text">No tasks yet.</div>';
+    }else{
+      tasks.forEach(t=>{
+        const item=document.createElement("div");
+        item.className="task-item"+(t.done?" task-done":"");
+        item.style.background=colorOf(t.subject);
+        const cb=document.createElement("input");
+        cb.type="checkbox";cb.checked=t.done;
+        cb.onchange=()=>toggleTask(day,t.id);
+        const label=document.createElement("div");
+        label.className="task-label";
+        label.innerHTML=`${t.task}<div class="task-subject">${t.subject||"No subject"}</div>`;
+        const del=document.createElement("button");
+        del.className="btn-ghost btn-small";del.textContent="×";
+        del.onclick=()=>deleteTask(day,t.id);
+        item.append(cb,label,del);
+        list.appendChild(item);
+      });
+    }
+    col.appendChild(list);
+
+    const add=document.createElement("div");
+    add.className="task-add-row";
+    const subj=document.createElement("select");
+    subj.innerHTML='<option value="">Subject…</option>'+Object.keys(state.subjects).map(s=>`<option>${s}</option>`).join("");
+    const inp=document.createElement("input");
+    inp.placeholder="Study topic…";
+    const btn=document.createElement("button");
+    btn.className="btn-primary btn-small";btn.textContent="Add";
+    btn.onclick=()=>{if(inp.value.trim())createTask(day,subj.value,inp.value.trim());inp.value="";};
+    add.append(subj,inp,btn);
+    col.appendChild(add);
+
+    gridContainer.appendChild(col);
+  });
+
+  listContainer.innerHTML="";
+  DAYS.forEach(day=>{
+    const box=document.createElement("div");
+    box.className="list-day";
+    box.innerHTML=`<div class="list-day-title">${day}</div>`;
+    const wrap=document.createElement("div");
+    wrap.className="list-day-tasks";
+    const tasks=state.tasks[day];
+    if(!tasks.length){
+      wrap.innerHTML='<div class="empty-text">No tasks yet.</div>';
+    }else{
+      tasks.forEach(t=>{
+        const item=document.createElement("div");
+        item.className="task-item"+(t.done?" task-done":"");
+        item.style.background=colorOf(t.subject);
+        const cb=document.createElement("input");
+        cb.type="checkbox";cb.checked=t.done;
+        cb.onchange=()=>toggleTask(day,t.id);
+        const label=document.createElement("div");
+        label.className="task-label";
+        label.innerHTML=`${t.task}<div class="task-subject">${t.subject}</div>`;
+        const del=document.createElement("button");
+        del.className="btn-ghost btn-small";del.textContent="×";
+        del.onclick=()=>deleteTask(day,t.id);
+        item.append(cb,label,del);
+        wrap.appendChild(item);
+      });
+    }
+    box.appendChild(wrap);
+    listContainer.appendChild(box);
+  });
+}
+renderPlanner();
+
+// VIEW TOGGLE
+const gridView=document.getElementById("gridView");
+const listView=document.getElementById("listView");
+document.getElementById("gridViewBtn").onclick=()=>{
+  gridView.style.display="block";listView.style.display="none";
+  gridViewBtn.classList.add("active");listViewBtn.classList.remove("active");
+};
+document.getElementById("listViewBtn").onclick=()=>{
+  gridView.style.display="none";listView.style.display="block";
+  listViewBtn.classList.add("active");gridViewBtn.classList.remove("active");
+};
+
+// CLEAR ALL
+document.getElementById("clearAllBtn").onclick=()=>{
+  if(!confirm("Clear all subjects, tasks, and goal?"))return;
+  state={subjects:{},tasks:{},goal:""};
+  DAYS.forEach(d=>state.tasks[d]=[]);
+  save();renderSubjects();renderPlanner();goalInput.value="";
+};
 </script>
-
 </body>
-<script>
-if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("service-worker.js");
-}
-</script>
 </html>
-
-
