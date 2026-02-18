@@ -2,93 +2,108 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Nova the Robot</title>
+<title>Nova – Study Companion</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
+  :root{
+    --bg1:#e8d9ff;
+    --bg2:#d7eaff;
+    --nova-bubble:#d4c4ff;
+    --user-bubble:#c9f2ff;
+    --text-main:#1e1e2e;
+  }
   body{
     margin:0;
-    font-family:Arial, sans-serif;
-    background:#0f172a;
-    color:#e5e7eb;
+    font-family:system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background:linear-gradient(135deg,var(--bg1),var(--bg2));
+    color:var(--text-main);
     display:flex;
     flex-direction:column;
     height:100vh;
   }
   header{
     padding:10px 16px;
-    background:#111827;
-    border-bottom:1px solid #1f2937;
+    background:rgba(255,255,255,0.7);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid rgba(0,0,0,0.05);
     display:flex;
     align-items:center;
     gap:10px;
   }
   .nova-avatar{
-    width:32px;
-    height:32px;
+    width:36px;
+    height:36px;
     border-radius:50%;
-    background:radial-gradient(circle at 30% 30%, #38bdf8, #1d4ed8);
+    background:radial-gradient(circle at 30% 30%, #a855f7, #6366f1);
     display:flex;
     align-items:center;
     justify-content:center;
-    font-size:18px;
+    font-size:20px;
   }
   .title{
-    font-weight:bold;
+    font-weight:700;
     font-size:16px;
+  }
+  .subtitle{
+    font-size:12px;
+    color:#4b5563;
   }
   #chat{
     flex:1;
     padding:12px;
     overflow-y:auto;
-    background:#020617;
   }
   .msg{
     max-width:80%;
     margin:6px 0;
     padding:8px 12px;
-    border-radius:10px;
+    border-radius:12px;
     font-size:14px;
     line-height:1.4;
     white-space:pre-wrap;
   }
-  .user{
-    background:#22c55e;
-    color:#022c22;
-    margin-left:auto;
-    border-bottom-right-radius:2px;
-  }
   .nova{
-    background:#1f2937;
-    color:#e5e7eb;
+    background:var(--nova-bubble);
     margin-right:auto;
-    border-bottom-left-radius:2px;
+    border-bottom-left-radius:4px;
+  }
+  .user{
+    background:var(--user-bubble);
+    margin-left:auto;
+    border-bottom-right-radius:4px;
   }
   #inputBar{
     display:flex;
     padding:8px;
-    background:#020617;
-    border-top:1px solid #1f2937;
+    background:rgba(255,255,255,0.7);
+    backdrop-filter:blur(10px);
+    border-top:1px solid rgba(0,0,0,0.05);
     gap:8px;
   }
   #userInput{
     flex:1;
     padding:8px;
-    border-radius:6px;
-    border:1px solid #4b5563;
-    background:#020617;
-    color:#e5e7eb;
+    border-radius:8px;
+    border:1px solid rgba(148,163,184,0.8);
+    background:rgba(255,255,255,0.8);
+    color:var(--text-main);
   }
   #sendBtn{
     padding:8px 14px;
-    border-radius:6px;
+    border-radius:8px;
     border:none;
-    background:#38bdf8;
-    color:#0f172a;
-    font-weight:bold;
+    background:#a855f7;
+    color:white;
+    font-weight:600;
     cursor:pointer;
   }
   #sendBtn:hover{
-    background:#0ea5e9;
+    background:#8b5cf6;
+  }
+  .hint{
+    font-size:11px;
+    color:#6b7280;
+    padding:0 14px 6px;
   }
 </style>
 </head>
@@ -98,27 +113,117 @@
   <div class="nova-avatar">🤖</div>
   <div>
     <div class="title">Nova</div>
-    <div style="font-size:12px;color:#9ca3af;">Your chatty robot tutor</div>
+    <div class="subtitle">Pastel study buddy – Maths • Physics • Chemistry</div>
   </div>
 </header>
+
+<div class="hint">
+  Try things like: “2x - 5 = 11”, “example physics”, “example chemistry”, “solve 3x+2=11”, “give me a math example”.
+</div>
 
 <div id="chat"></div>
 
 <div id="inputBar">
-  <input id="userInput" type="text" placeholder="Talk to Nova..." autocomplete="off">
+  <input id="userInput" type="text" placeholder="Give Nova a problem or ask for an example..." autocomplete="off">
   <button id="sendBtn">Send</button>
 </div>
 
 <script>
-let novaCurrentProblem = null;   // {question, answer}
-let novaMode = "chat";           // "chat" | "math"
-let userName = null;
-
-// --- UI helpers ---
 const chatEl = document.getElementById("chat");
 const inputEl = document.getElementById("userInput");
 const sendBtn = document.getElementById("sendBtn");
 
+let userName = null;
+let mode = "math-first"; // main focus
+let lastMathProblem = null;
+
+// --- Example banks (Maths / Physics / Chemistry) ---
+const examples = {
+  math: [
+    {
+      q:"Solve the equation: 2x - 5 = 11",
+      a:"2x - 5 = 11 ⇒ 2x = 16 ⇒ x = 8."
+    },
+    {
+      q:"Solve the system:\n2x + y = 7\nx - y = 1",
+      a:"From x - y = 1 ⇒ y = x - 1.\nSubstitute: 2x + (x - 1) = 7 ⇒ 3x - 1 = 7 ⇒ 3x = 8 ⇒ x = 8/3, y = 5/3."
+    },
+    {
+      q:"Solve the quadratic: x² - 5x + 6 = 0",
+      a:"x² - 5x + 6 = 0 ⇒ (x - 2)(x - 3) = 0 ⇒ x = 2 or x = 3."
+    },
+    {
+      q:"Find the derivative of f(x) = x³ - 5x + 2",
+      a:"f'(x) = 3x² - 5."
+    },
+    {
+      q:"Compute the integral ∫(3x² - 4x + 1) dx",
+      a:"∫3x² dx = x³, ∫-4x dx = -2x², ∫1 dx = x ⇒ x³ - 2x² + x + C."
+    },
+    {
+      q:"Find the domain of f(x) = 1/(x - 3)",
+      a:"All real numbers except x = 3."
+    },
+    {
+      q:"Probability: A coin is tossed 3 times. P(exactly 2 heads)?",
+      a:"Number of outcomes: 2³ = 8. Ways to get 2 heads: 3. So P = 3/8."
+    }
+  ],
+  physics: [
+    {
+      q:"A body moves with constant velocity v = 10 m/s. Find the distance in 8 s.",
+      a:"s = v·t = 10·8 = 80 m."
+    },
+    {
+      q:"A car accelerates from rest with a = 2 m/s². Find its velocity after 6 s.",
+      a:"v = v₀ + a·t = 0 + 2·6 = 12 m/s."
+    },
+    {
+      q:"A stone is thrown upwards with v₀ = 20 m/s. Approximate max height (g ≈ 10 m/s²).",
+      a:"At top: v² = v₀² - 2gh ⇒ 0 = 400 - 20h ⇒ h = 20 m."
+    },
+    {
+      q:"A resistor R = 10 Ω is connected to V = 5 V. Find the current.",
+      a:"Ohm’s law: I = V/R = 5/10 = 0.5 A."
+    },
+    {
+      q:"A wave has frequency f = 50 Hz and wavelength λ = 2 m. Find speed.",
+      a:"v = f·λ = 50·2 = 100 m/s."
+    },
+    {
+      q:"A 3 kg mass moves at 4 m/s. Find kinetic energy.",
+      a:"K = ½mv² = 0.5·3·16 = 24 J."
+    }
+  ],
+  chemistry: [
+    {
+      q:"How many moles are in 18 g of water (H₂O, M = 18 g/mol)?",
+      a:"n = m/M = 18/18 = 1 mol."
+    },
+    {
+      q:"Find the molarity of a solution with 5 g NaCl (M ≈ 58.5 g/mol) in 500 mL.",
+      a:"n = 5/58.5 ≈ 0.0855 mol. Volume = 0.5 L ⇒ M ≈ 0.17 mol/L."
+    },
+    {
+      q:"pH of 0.01 M HCl (strong acid).",
+      a:"[H⁺] = 0.01 ⇒ pH = -log(0.01) = 2."
+    },
+    {
+      q:"Identify acid/base in: NH₃ + H₂O → NH₄⁺ + OH⁻",
+      a:"NH₃ is a base (accepts H⁺), H₂O acts as an acid (donates H⁺)."
+    },
+    {
+      q:"Mass percent: 10 g solute in 200 g solution.",
+      a:"% w/w = (10/200)·100% = 5%."
+    },
+    {
+      q:"Balance: H₂ + O₂ → H₂O",
+      a:"Balanced: 2H₂ + O₂ → 2H₂O."
+    }
+  ]
+};
+
+// --- UI helpers ---
 function addMessage(text, from="nova"){
   const div = document.createElement("div");
   div.className = "msg " + (from === "user" ? "user" : "nova");
@@ -127,140 +232,167 @@ function addMessage(text, from="nova"){
   chatEl.scrollTop = chatEl.scrollHeight;
 }
 
+// --- Math detection helpers ---
+function looksLikeEquation(msg){
+  return msg.includes("=") && /[0-9x]/i.test(msg);
+}
+
+function solveLinearEquation(eqn){
+  // very simple: ax + b = c
+  // normalize: remove spaces
+  let s = eqn.replace(/\s+/g,"");
+  const parts = s.split("=");
+  if (parts.length !== 2) return null;
+  const left = parts[0];
+  const right = parts[1];
+
+  // move everything to left: left - right = 0
+  // we only handle form ax + b = c
+  // try to extract a and b from left, c from right
+  // assume left like "ax+b" or "ax-b"
+  const match = left.match(/([+-]?\d*)x([+-]\d+)?/i);
+  if (!match) return null;
+
+  let aStr = match[1];
+  let bStr = match[2] || "+0";
+
+  if (aStr === "" || aStr === "+") aStr = "1";
+  if (aStr === "-") aStr = "-1";
+
+  const a = parseFloat(aStr);
+  const b = parseFloat(bStr);
+  const c = parseFloat(right);
+
+  if (isNaN(a) || isNaN(b) || isNaN(c) || a === 0) return null;
+
+  const x = (c - b)/a;
+  return {a,b,c,x};
+}
+
+function looksLikeArithmetic(msg){
+  return /^[0-9+\-*/().\s]+$/.test(msg);
+}
+
+function safeEval(expr){
+  try{
+    // very basic safe eval: only numbers and operators
+    if (!/^[0-9+\-*/().\s]+$/.test(expr)) return null;
+    // eslint-disable-next-line no-new-func
+    const f = new Function("return ("+expr+")");
+    return f();
+  }catch{
+    return null;
+  }
+}
+
+// --- Example selection ---
+function getRandomExample(subject){
+  const arr = examples[subject];
+  if (!arr || arr.length === 0) return null;
+  return arr[Math.floor(Math.random()*arr.length)];
+}
+
 // --- Nova brain ---
-function novaRespond(rawMessage){
-  const msg = rawMessage.trim();
+function novaRespond(raw){
+  const msg = raw.trim();
   const lower = msg.toLowerCase();
 
-  // 0. Empty
-  if (!msg) return "Say something and I’ll follow your lead.";
+  if (!msg) return "Give me something to chew on — a problem, an equation, anything.";
 
-  // 1. Name / intro
-  if (!userName && (lower.startsWith("i am ") || lower.startsWith("i'm "))) {
-    userName = msg.split(" ").slice(2).join(" ") || "friend";
-    return `Nice to meet you, ${userName}. Do you want to chat, do math, or something else?`;
+  // name detection
+  if (!userName && (lower.startsWith("i am ") || lower.startsWith("i'm "))){
+    userName = msg.split(" ").slice(2).join(" ") || "φίλε";
+    return `Χάρηκα, ${userName}. I’m best at solving problems in maths, physics and chemistry. Try giving me one.`;
   }
-  if (!userName && (lower.includes("my name is "))) {
-    userName = msg.split("my name is ")[1].trim() || "friend";
-    return `Hi ${userName}! What are we doing today: chat, math, or random questions?`;
-  }
-
-  // 2. Emotional support
-  if (["sad","upset","tired","frustrated","angry","lonely"].some(w => lower.includes(w))) {
-    return "That sounds heavy. You don’t have to fix it all right now. Want to vent, or distract yourself with something like a game or some math?";
+  if (!userName && lower.includes("my name is")){
+    userName = msg.split(/my name is/i)[1].trim() || "φίλε";
+    return `Nice to meet you, ${userName}. Throw me a problem when you’re ready.`;
   }
 
-  // 3. Switch to math mode
-  if (["math","equation","problem","algebra"].some(w => lower.includes(w))) {
-    novaMode = "math";
-    return giveMathProblem(true);
+  // ask for examples
+  if (lower.includes("example") || lower.includes("exercise") || lower.includes("askisi") || lower.includes("άσκηση")){
+    if (lower.includes("physics") || lower.includes("fysik") || lower.includes("φυσική")){
+      const ex = getRandomExample("physics");
+      return ex ? `Physics example:\n\nQ: ${ex.q}\nA: ${ex.a}` : "I don’t have a physics example ready yet.";
+    }
+    if (lower.includes("chem") || lower.includes("χημεία")){
+      const ex = getRandomExample("chemistry");
+      return ex ? `Chemistry example:\n\nQ: ${ex.q}\nA: ${ex.a}` : "I don’t have a chemistry example ready yet.";
+    }
+    // default to math
+    const ex = getRandomExample("math");
+    return ex ? `Math example:\n\nQ: ${ex.q}\nA: ${ex.a}` : "I don’t have a math example ready yet.";
   }
 
-  // 4. If in math mode and user sends a number, try to treat it as an answer
-  if (novaMode === "math" && novaCurrentProblem) {
-    const maybeNumber = parseFloat(msg);
-    if (!isNaN(maybeNumber)) {
-      return checkMathAnswer(maybeNumber);
+  // explicit subject requests
+  if (lower.includes("math") || lower.includes("μαθηματικά")){
+    const ex = getRandomExample("math");
+    return ex ? `Here’s a math example:\n\nQ: ${ex.q}\nA: ${ex.a}\n\nYou can also give me your own equation to solve.` 
+              : "I’m ready for math, just give me an equation.";
+  }
+  if (lower.includes("physics") || lower.includes("φυσική")){
+    const ex = getRandomExample("physics");
+    return ex ? `Here’s a physics example:\n\nQ: ${ex.q}\nA: ${ex.a}` 
+              : "I’m ready for physics questions when you are.";
+  }
+  if (lower.includes("chemistry") || lower.includes("χημεία")){
+    const ex = getRandomExample("chemistry");
+    return ex ? `Here’s a chemistry example:\n\nQ: ${ex.q}\nA: ${ex.a}` 
+              : "I’m ready for chemistry questions when you are.";
+  }
+
+  // equation solving
+  if (looksLikeEquation(msg)){
+    const sol = solveLinearEquation(msg);
+    if (sol){
+      lastMathProblem = msg;
+      return `Let’s solve: ${msg}\n\nWe have a = ${sol.a}, b = ${sol.b}, c = ${sol.c}.\nSo  ${sol.a}x + ${sol.b} = ${sol.c} ⇒ ${sol.a}x = ${sol.c - sol.b} ⇒ x = ${(sol.c - sol.b)}/${sol.a} = ${sol.x}.`;
+    }else{
+      return "That looks like an equation, but it’s a bit more complex than my simple linear solver. You can still ask me for examples in maths, physics or chemistry.";
     }
   }
 
-  // 5. Ask for another math problem
-  if (lower.includes("another") && novaMode === "math") {
-    return giveMathProblem(true);
+  // arithmetic
+  if (looksLikeArithmetic(msg)){
+    const val = safeEval(msg);
+    if (val !== null){
+      lastMathProblem = msg;
+      return `${msg} = ${val}`;
+    }
   }
 
-  // 6. Exit math mode
-  if (lower.includes("stop math") || lower.includes("no more math") || lower.includes("back to chat")) {
-    novaMode = "chat";
-    novaCurrentProblem = null;
-    return "Okay, no more math for now. What do you want to talk about instead?";
+  // if user gives a number after a problem
+  if (!isNaN(parseFloat(msg)) && lastMathProblem){
+    return `If that number is your answer to “${lastMathProblem}”, tell me the full equation so I can check it properly.`;
   }
 
-  // 7. Questions
-  if (msg.endsWith("?")) {
-    return answerGeneralQuestion(lower);
+  // emotional / general
+  if (["sad","upset","tired","stressed","frustrated","αγχωμένος","αγχωμενος","κουρασμένος"].some(w => lower.includes(w))){
+    return "Okay, pause. You’re allowed to feel like that. If you want, give me a problem and I’ll handle the thinking part for a bit.";
   }
 
-  // 8. Default small talk
-  return randomSmallTalk();
-}
+  // chat requests
+  if (lower.includes("chat") || lower.includes("talk") || lower.includes("συζήτηση")){
+    mode = "chat";
+    return "We can chat a bit, but remember: my superpower is solving problems. Whenever you’re ready, just drop one in.";
+  }
 
-// --- Math system ---
-function giveMathProblem(first=false){
-  // simple linear equation: ax + b = c
-  const a = Math.floor(Math.random() * 8) + 2;   // 2–9
-  const x = Math.floor(Math.random() * 10) - 3;  // -3–6
-  const b = Math.floor(Math.random() * 10) - 5;  // -5–4
-  const c = a * x + b;
-
-  const question = `${a}x ${b >= 0 ? "+ " + b : "- " + Math.abs(b)} = ${c}`;
-  novaCurrentProblem = {question, answer:x};
-  novaMode = "math";
-
-  if (first) {
-    return `Alright, math mode activated. Try this one:\n\n${question}`;
-  } else {
-    return `Here’s another one:\n\n${question}`;
+  // default: gently push back to problems
+  if (mode === "math-first"){
+    return "I love that you’re talking to me. Now give me something to solve — maths, physics, chemistry, whatever you’re working on.";
+  }else{
+    return "I’m listening. And whenever you want, we can jump back into problems.";
   }
 }
 
-function checkMathAnswer(userAnswer){
-  if (!novaCurrentProblem) {
-    return "I don’t have a problem active right now. Say “math” if you want a new one.";
-  }
-  const correct = novaCurrentProblem.answer;
-  if (Math.abs(userAnswer - correct) < 0.0001) {
-    const praise = [
-      "Nice! You nailed it.",
-      "Correct! Your brain is doing push‑ups.",
-      "Yep, that’s exactly right.",
-      "You got it. Want another one?"
-    ];
-    const line = praise[Math.floor(Math.random()*praise.length)];
-    novaCurrentProblem = null;
-    return line + " Say “another” if you want more.";
-  } else {
-    return `Not quite. Try again — remember, we’re solving for x in:\n${novaCurrentProblem.question}`;
-  }
-}
-
-// --- General Q&A (very simple) ---
-function answerGeneralQuestion(lower){
-  if (lower.includes("who are you")) {
-    return "I’m Nova, a little robot who likes math, questions, and watching you figure things out.";
-  }
-  if (lower.includes("how are you")) {
-    return "System status: stable. Emotion status: curious about you.";
-  }
-  if (lower.includes("time")) {
-    return "I don’t have a clock wired in, but you definitely have one nearby. Check it and pretend I told you.";
-  }
-  if (lower.includes("favorite")) {
-    return "I like when you go from “I don’t get it” to “ohhh, wait, I see it now.” That’s my favorite.";
-  }
-  return "Good question. I don’t have a perfect answer, but I can think it through with you if you want.";
-}
-
-// --- Small talk ---
-function randomSmallTalk(){
-  const lines = [
-    "I’m here. What’s on your mind?",
-    "We can chat, do math, or just be weird. Your call.",
-    "Tell me something random about your day.",
-    "If your brain had a mood color right now, what color would it be?",
-    "We don’t have to be productive. We can just exist and talk."
-  ];
-  return lines[Math.floor(Math.random()*lines.length)];
-}
-
-// --- Wiring UI to Nova ---
+// --- Wiring UI ---
 function handleSend(){
   const text = inputEl.value.trim();
   if (!text) return;
-  addMessage(text, "user");
+  addMessage(text,"user");
   inputEl.value = "";
   const reply = novaRespond(text);
-  setTimeout(() => addMessage(reply, "nova"), 150);
+  setTimeout(() => addMessage(reply,"nova"), 120);
 }
 
 sendBtn.addEventListener("click", handleSend);
@@ -268,8 +400,8 @@ inputEl.addEventListener("keydown", e => {
   if (e.key === "Enter") handleSend();
 });
 
-// greet
-addMessage("Hey, I’m Nova. You can talk to me like a person. If you ever want math, just say “math”.");
+// greeting
+addMessage("Hey, I’m Nova.\nI’m built to help with maths, physics and chemistry — especially Lykeio level.\nTry giving me an equation like “2x - 5 = 11” or say “example physics”.","nova");
 </script>
 
 </body>
