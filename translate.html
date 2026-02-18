@@ -119,4 +119,91 @@ function renderNotes(){
 
 renderNotes();
    </script>
+<script>
+let DICT={};let PARTS=[];
+
+const langs=["English","Spanish","German","French","Italian","Greek","Mandarin"];
+const inSel=document.getElementById("inputLang");
+const outSel=document.getElementById("outputLang");
+langs.forEach(l=>{let o=document.createElement("option");o.value=l;o.textContent=l;inSel.appendChild(o.cloneNode(true));outSel.appendChild(o)});
+
+function normalize(s){return s.toLowerCase().trim()}
+
+function findWord(w){
+ w=normalize(w);
+ for(let cat in DICT){
+  for(let key in DICT[cat]){
+   if(normalize(key)===w) return DICT[cat][key];
+   for(let L in DICT[cat][key]){
+    if(normalize(DICT[cat][key][L])===w) return DICT[cat][key];
+   }
+  }
+ }
+ return null;
+}
+
+function levenshtein(a,b){
+ if(a.length<b.length)[a,b]=[b,a];
+ let prev=Array(b.length+1).fill(0),cur=Array(b.length+1).fill(0);
+ for(let j=0;j<=b.length;j++)prev[j]=j;
+ for(let i=1;i<=a.length;i++){
+  cur[0]=i;
+  for(let j=1;j<=b.length;j++){
+   let cost=a[i-1]===b[j-1]?0:1;
+   cur[j]=Math.min(prev[j]+1,cur[j-1]+1,prev[j-1]+cost);
+  }
+  [prev,cur]=[cur,prev];
+ }
+ return prev[b.length];
+}
+
+function closestMatches(w){
+ w=normalize(w);
+ let arr=[];
+ for(let cat in DICT){
+  for(let key in DICT[cat]){
+   arr.push(key);
+   for(let L in DICT[cat][key]) arr.push(DICT[cat][key][L]);
+  }
+ }
+ let scored=arr.map(x=>({w:x,d:levenshtein(w,normalize(x))}));
+ scored.sort((a,b)=>a.d-b.d);
+ return scored.slice(0,3).map(x=>x.w);
+}
+
+document.getElementById("translateBtn").onclick=()=>{
+ let w=document.getElementById("inputWord").value.trim();
+ if(!w){document.getElementById("result").textContent="";return}
+ let found=findWord(w);
+ if(!found){
+  let c=closestMatches(w);
+  document.getElementById("result").textContent="Not found. Did you mean: "+c.join(", ");
+  return;
+ }
+ let out=outSel.value;
+ document.getElementById("result").textContent=found[out]||"—";
+ saveNote(w,found[out]||"—");
+};
+
+document.getElementById("speakBtn").onclick=()=>{
+ let t=document.getElementById("result").textContent;
+ if(!t)return;
+ let u=new SpeechSynthesisUtterance(t);
+ speechSynthesis.speak(u);
+};
+
+function saveNote(a,b){
+ let notes=JSON.parse(localStorage.getItem("notes")||"[]");
+ notes.push(a+" = "+b);
+ localStorage.setItem("notes",JSON.stringify(notes));
+ renderNotes();
+}
+
+function renderNotes(){
+ let notes=JSON.parse(localStorage.getItem("notes")||"[]");
+ document.getElementById("notes").innerHTML=notes.join("<br>");
+}
+
+renderNotes();
+</script>
 
