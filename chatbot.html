@@ -465,3 +465,282 @@ window.addEventListener('load', () => {
 
   setTimeout(() => addMessage(randomMotivation(), 'nova'), 900);
 });
+/* ------------------------------
+   MATH SOLVER (math.js)
+--------------------------------*/
+function handleMath(raw) {
+  try {
+    const text = raw.toLowerCase();
+
+    // Solve equations: "solve 2x + 5 = 11"
+    if (text.includes('solve') && text.includes('=')) {
+      const eq = raw.replace(/solve/i, '').trim();
+      const parts = eq.split('=');
+      if (parts.length === 2) {
+        const left = parts[0];
+        const right = parts[1];
+        const expr = `(${left}) - (${right})`;
+        const variableMatch = left.match(/[a-zA-Z]/) || right.match(/[a-zA-Z]/);
+        const variable = variableMatch ? variableMatch[0] : 'x';
+
+        const f = math.parse(expr);
+        const solutions = math.solve(f, variable);
+
+        return `Alright, let’s solve this step by step.\n\n` +
+               `1️⃣ Rewrite the equation as:\n   ${left} - (${right}) = 0\n\n` +
+               `2️⃣ Treat this as a function of ${variable} and solve for when it equals 0.\n\n` +
+               `3️⃣ Solving, we get:\n   ${variable} = ${solutions}\n\n` +
+               `${randomMotivation()}`;
+      }
+    }
+
+    // Derivative: "derivative of x^2 + 3x"
+    if (text.includes('derivative')) {
+      const match = raw.match(/derivative of (.+)/i);
+      if (match) {
+        const expr = match[1].trim();
+        const node = math.parse(expr);
+        const d = math.derivative(node, 'x');
+        return `Let’s take this derivative.\n\n` +
+               `Function: f(x) = ${expr}\n\n` +
+               `1️⃣ Apply derivative rules (power rule, sum rule, etc.).\n` +
+               `2️⃣ After simplification, we get:\n   f'(x) = ${d.toString()}\n\n` +
+               `${randomMotivation()}`;
+      }
+    }
+
+    // Integrals (basic guidance only)
+    if (text.includes('integral')) {
+      const match = raw.match(/integral of (.+)/i);
+      if (match) {
+        const expr = match[1].trim();
+        return `Integrals can be tricky, but here’s the idea.\n\n` +
+               `Example rules:\n` +
+               `• ∫ xⁿ dx = xⁿ⁺¹/(n+1) + C\n` +
+               `• ∫ eˣ dx = eˣ + C\n` +
+               `• ∫ 1/x dx = ln|x| + C\n\n` +
+               `Tell me a specific simple function like “integral of x^2” and I’ll walk you through it.`;
+      }
+    }
+
+    // Simplify / evaluate expressions
+    if (text.includes('simplify') || text.includes('evaluate') || !text.includes('=')) {
+      const expr = raw.replace(/simplify|evaluate/gi, '').trim();
+      const result = math.evaluate(expr);
+      return `Let’s evaluate this expression.\n\n` +
+             `Expression:\n   ${expr}\n\n` +
+             `1️⃣ Apply arithmetic and algebraic rules.\n` +
+             `2️⃣ Carefully computing step by step, we get:\n   Result = ${result}\n\n` +
+             `${randomMotivation()}`;
+    }
+
+    // Fallback: try to evaluate
+    const result = math.evaluate(raw);
+    return `Here’s what I got for that expression:\n\n` +
+           `Result = ${result}\n\n` +
+           `If you want, I can walk you through how to get there step by step.`;
+  } catch (e) {
+    return `Something went off with that math expression.\n\n` +
+           `Try writing it like:\n` +
+           `• solve 2x + 5 = 11\n` +
+           `• simplify (3x^2 - 2x + 1)\n` +
+           `• derivative of x^2 + 3x\n\n` +
+           `${randomMotivation()}`;
+  }
+}
+
+/* ------------------------------
+   PHYSICS HELPER
+--------------------------------*/
+function handlePhysics(raw) {
+  const text = raw.toLowerCase();
+
+  // Velocity: v = s / t
+  if (text.includes('velocity') || text.includes('speed') || text.includes('find v')) {
+    const sMatch = raw.match(/s\s*=?\s*([\d.]+)/i);
+    const tMatch = raw.match(/t\s*=?\s*([\d.]+)/i);
+    if (sMatch && tMatch) {
+      const s = parseFloat(sMatch[1]);
+      const t = parseFloat(tMatch[1]);
+      const v = s / t;
+      return `Nice, a kinematics question. Let’s find the velocity.\n\n` +
+             `Formula:\n   v = Δx / Δt\n\n` +
+             `Given:\n   Δx = ${s} m\n   Δt = ${t} s\n\n` +
+             `1️⃣ Plug into the formula:\n   v = ${s} / ${t}\n\n` +
+             `2️⃣ Compute:\n   v = ${v.toFixed(2)} m/s\n\n` +
+             `So the velocity is approximately ${v.toFixed(2)} m/s.\n\n` +
+             `${randomMotivation()}`;
+    }
+    return `To find velocity, try something like:\n“find v if s=20m, t=4s”.`;
+  }
+
+  // Force: F = m·a
+  if (text.includes('force') || text.includes('newton')) {
+    const mMatch = raw.match(/m\s*=?\s*([\d.]+)/i);
+    const aMatch = raw.match(/a\s*=?\s*([\d.]+)/i);
+    if (mMatch && aMatch) {
+      const m = parseFloat(mMatch[1]);
+      const a = parseFloat(aMatch[1]);
+      const F = m * a;
+      return `Let’s use Newton’s 2nd Law.\n\n` +
+             `Formula:\n   F = m · a\n\n` +
+             `Given:\n   m = ${m} kg\n   a = ${a} m/s²\n\n` +
+             `1️⃣ Plug in:\n   F = ${m} · ${a}\n\n` +
+             `2️⃣ Multiply:\n   F = ${F.toFixed(2)} N\n\n` +
+             `So the net force is ${F.toFixed(2)} N.\n\n` +
+             `${randomMotivation()}`;
+    }
+    return `To use F = m·a, try:\n“find F if m=5kg, a=3m/s^2”.`;
+  }
+
+  // Work: W = F·d
+  if (text.includes('work') || text.includes('w = f d')) {
+    const fMatch = raw.match(/f\s*=?\s*([\d.]+)/i);
+    const dMatch = raw.match(/d\s*=?\s*([\d.]+)/i);
+    if (fMatch && dMatch) {
+      const F = parseFloat(fMatch[1]);
+      const d = parseFloat(dMatch[1]);
+      const W = F * d;
+      return `Work time.\n\n` +
+             `Formula:\n   W = F · d\n\n` +
+             `Given:\n   F = ${F} N\n   d = ${d} m\n\n` +
+             `1️⃣ Plug in:\n   W = ${F} · ${d}\n\n` +
+             `2️⃣ Multiply:\n   W = ${W.toFixed(2)} J\n\n` +
+             `So the work done is ${W.toFixed(2)} J.\n\n` +
+             `${randomMotivation()}`;
+    }
+    return `To calculate work, try:\n“find W if F=10N, d=3m”.`;
+  }
+
+  return `Physics mode. I can help with:\n` +
+         `• v = Δx/Δt\n` +
+         `• F = m·a\n` +
+         `• W = F·d\n\n` +
+         `Try something like: “find F if m=2kg, a=4m/s^2”.`;
+}
+
+/* ------------------------------
+   CHEMISTRY HELPER
+--------------------------------*/
+function handleChemistry(raw) {
+  const text = raw.toLowerCase();
+
+  // pH of strong acid: pH = -log[H+]
+  if (text.includes('ph')) {
+    const mMatch = raw.match(/([\d.]+)\s*m/i);
+    if (mMatch) {
+      const c = parseFloat(mMatch[1]);
+      const pH = -Math.log10(c);
+      return `Let’s estimate the pH of this strong acid solution.\n\n` +
+             `Assume a strong monoprotic acid:\n   [H⁺] ≈ c\n\n` +
+             `Given:\n   c = ${c} mol/L\n\n` +
+             `1️⃣ Use pH = -log[H⁺]\n` +
+             `2️⃣ Plug in [H⁺] = ${c}:\n   pH = -log(${c})\n\n` +
+             `3️⃣ Calculate:\n   pH ≈ ${pH.toFixed(2)}\n\n` +
+             `So the pH is about ${pH.toFixed(2)}.\n\n` +
+             `${randomMotivation()}`;
+    }
+    return `To calculate pH, try:\n“calculate pH of 0.01M HCl”.`;
+  }
+
+  // Moles: n = m / M
+  if (text.includes('moles') || text.includes('mole') || text.includes('find n')) {
+    const mMatch = raw.match(/m\s*=?\s*([\d.]+)/i);
+    const MMatch = raw.match(/M\s*=?\s*([\d.]+)/i);
+    if (mMatch && MMatch) {
+      const m = parseFloat(mMatch[1]);
+      const M = parseFloat(MMatch[1]);
+      const n = m / M;
+      return `Let’s find the number of moles.\n\n` +
+             `Formula:\n   n = m / M\n\n` +
+             `Given:\n   m = ${m} g\n   M = ${M} g/mol\n\n` +
+             `1️⃣ Plug in:\n   n = ${m} / ${M}\n\n` +
+             `2️⃣ Divide:\n   n = ${n.toFixed(3)} mol\n\n` +
+             `So the amount of substance is ${n.toFixed(3)} mol.\n\n` +
+             `${randomMotivation()}`;
+    }
+    return `To find moles, try:\n“find n if m=10g, M=40g/mol”.`;
+  }
+
+  // Ideal gas law hint
+  if (text.includes('pv = nrt') || text.includes('ideal gas')) {
+    return `Ideal gas law time.\n\n` +
+           `Formula:\n   PV = nRT\n\n` +
+           `Tell me three of the four (P, V, n, T) and I’ll help you set it up.\n` +
+           `Example: “P=1atm, V=22.4L, n=1mol, find T”.`;
+  }
+
+  return `Chemistry mode. I can help with:\n` +
+         `• n = m/M\n` +
+         `• pH = -log[H⁺]\n` +
+         `• basic ideal gas law setups\n\n` +
+         `Try something like:\n“calculate pH of 0.01M HCl” or “find n if m=10g, M=40g/mol”.`;
+}
+
+/* ------------------------------
+   BIOLOGY HELPER
+--------------------------------*/
+function handleBiologyHelper(text) {
+  text = text.toLowerCase();
+
+  if (text.includes('dna')) {
+    return `Let’s talk DNA.\n\n` +
+           `DNA (deoxyribonucleic acid):\n` +
+           `• Double helix structure\n` +
+           `• Two antiparallel strands\n` +
+           `• Sugar‑phosphate backbone\n` +
+           `• Bases: A, T, C, G (A–T, C–G)\n\n` +
+           `Function:\n` +
+           `• Stores genetic information\n` +
+           `• Guides protein synthesis via RNA\n\n` +
+           `${randomMotivation()}`;
+  }
+
+  if (text.includes('photosynthesis')) {
+    return `Photosynthesis overview.\n\n` +
+           `Overall reaction:\n   6CO₂ + 6H₂O → C₆H₁₂O₆ + 6O₂\n\n` +
+           `Location: chloroplasts.\n` +
+           `Stages:\n` +
+           `1️⃣ Light‑dependent reactions (thylakoid membranes)\n` +
+           `2️⃣ Calvin cycle (stroma)\n\n` +
+           `${randomMotivation()}`;
+  }
+
+  if (text.includes('cellular respiration') || text.includes('respiration')) {
+    return `Cellular respiration overview.\n\n` +
+           `Overall reaction:\n   C₆H₁₂O₆ + 6O₂ → 6CO₂ + 6H₂O + Energy (ATP)\n\n` +
+           `Stages:\n` +
+           `1️⃣ Glycolysis (cytoplasm)\n` +
+           `2️⃣ Krebs cycle (mitochondrial matrix)\n` +
+           `3️⃣ Electron transport chain (inner mitochondrial membrane)\n\n` +
+           `${randomMotivation()}`;
+  }
+
+  if (text.includes('mitosis')) {
+    return `Mitosis — cell division for growth and repair.\n\n` +
+           `Phases:\n` +
+           `1️⃣ Prophase\n` +
+           `2️⃣ Metaphase\n` +
+           `3️⃣ Anaphase\n` +
+           `4️⃣ Telophase\n` +
+           `Then cytokinesis.\n\n` +
+           `Result: 2 genetically identical daughter cells.\n\n` +
+           `${randomMotivation()}`;
+  }
+
+  if (text.includes('meiosis')) {
+    return `Meiosis — cell division for gamete formation.\n\n` +
+           `Two divisions:\n` +
+           `• Meiosis I\n` +
+           `• Meiosis II\n\n` +
+           `Result: 4 non‑identical haploid cells.\n\n` +
+           `${randomMotivation()}`;
+  }
+
+  return `Biology mode. I can explain:\n` +
+         `• DNA structure\n` +
+         `• Photosynthesis\n` +
+         `• Cellular respiration\n` +
+         `• Mitosis & meiosis\n\n` +
+         `Ask me about one of these, like “explain photosynthesis” or “what is mitosis?”.`;
+}
