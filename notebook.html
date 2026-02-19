@@ -290,8 +290,6 @@ canvas.addEventListener("mousemove",e=>{
 });
 canvas.addEventListener("mouseup",()=>drawing=false);
 canvas.addEventListener("mouseleave",()=>drawing=false);
-function clearCanvas(){
-  ctx.clearRect(0,0,canvas.width,canvas.height);
 canvas.addEventListener("touchstart", e => {
   e.preventDefault();
   drawing = true;
@@ -311,6 +309,10 @@ canvas.addEventListener("touchmove", e => {
 });
 
 canvas.addEventListener("touchend", () => drawing = false);
+  }
+  function clearCanvas(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+=> drawing = false);
   }
 
 /* “OCR” PLACEHOLDER: manual text entry from handwriting */
