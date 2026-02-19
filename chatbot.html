@@ -5,8 +5,8 @@
 <title>Nova – Pastel Study Buddy</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<!-- Math engine -->
-<script src="https://cdn.jsdelivr.net/npm/mathjs@11/lib/browser/math.js"></script>
+<!-- Full math.js bundle -->
+<script src="https://cdn.jsdelivr.net/npm/mathjs@11/dist/math.js"></script>
 
 <style>
   :root{
@@ -124,10 +124,12 @@
 
 <div id="chat"></div>
 
-<div class="hint">Try: solve(2x+3=11, x) • solve([2x+3y=7, -x+4y=5],[x,y]) • sin(pi/3) • 0.5*2*3^2</div>
+<div class="hint">
+  You can type: 2x+3=11 • x^2-5x+6=0 • solve([2x+3y=7,-x+4y=5],[x,y]) • 0.5*2*3^2 • 0.2*6.022e23
+</div>
 
 <div id="inputBar">
-  <input id="userInput" placeholder="Type your question…" />
+  <input id="userInput" placeholder="Ask Nova in math form…" />
   <button id="sendBtn">Send</button>
 </div>
 
@@ -157,13 +159,49 @@ function prettyPrint(result){
   return String(result);
 }
 
+// Try to detect a simple equation like "2x+3=11" and wrap it in solve(...)
+function tryAutoSolveEquation(text){
+  if(!text.includes("=")) return null;
+  // very simple heuristic: look for a variable letter
+  const matchVar = text.match(/[a-zA-Z]/);
+  if(!matchVar) return null;
+  const variable = matchVar[0];
+  // build solve(...) call
+  return `solve(${text}, ${variable})`;
+}
+
 function novaRespond(question){
+  let q = question.trim();
+
   try{
-    const result = math.evaluate(question);
+    // 1) If user already uses solve/derivative/simplify, just evaluate
+    if(/solve\(|derivative\(|simplify\(/.test(q)){
+      const result = math.evaluate(q);
+      addMessage(prettyPrint(result), "nova");
+      return;
+    }
+
+    // 2) Try auto equation solving if it looks like "something = something"
+    if(q.includes("=")){
+      const auto = tryAutoSolveEquation(q);
+      if(auto){
+        const result = math.evaluate(auto);
+        addMessage(prettyPrint(result), "nova");
+        return;
+      }
+    }
+
+    // 3) Otherwise, treat it as a numeric / expression / physics / chem formula
+    const result = math.evaluate(q);
     addMessage(prettyPrint(result), "nova");
   } catch(err){
     addMessage(
-      "I couldn't understand that.\nTry:\n• solve(2x+3=11, x)\n• solve([2x+3y=7, -x+4y=5],[x,y])\n• 0.5*2*3^2",
+      "I couldn't understand that.\nTry:\n" +
+      "• 2x+3=11\n" +
+      "• x^2-5x+6=0\n" +
+      "• solve([2x+3y=7,-x+4y=5],[x,y])\n" +
+      "• 0.5*2*3^2 (physics)\n" +
+      "• 0.2*6.022e23 (chemistry)",
       "nova"
     );
   }
@@ -188,7 +226,17 @@ input.addEventListener("keydown", e => {
 
 /* ---------------- WELCOME MESSAGE ---------------- */
 
-addMessage("Hi! I'm Nova 💜\nAsk me anything from algebra to physics to chemistry.", "nova");
+addMessage(
+  "Hi! I'm Nova 💜\n" +
+  "I can help with algebra, systems, physics formulas, and chemistry calculations.\n" +
+  "You can just type:\n" +
+  "  2x+3=11\n" +
+  "  x^2-5x+6=0\n" +
+  "  solve([2x+3y=7,-x+4y=5],[x,y])\n" +
+  "  0.5*2*3^2\n" +
+  "  0.2*6.022e23",
+  "nova"
+);
 </script>
 
 </body>
