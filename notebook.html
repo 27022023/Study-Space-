@@ -261,43 +261,57 @@ function generateFlashcards(){
 }
 
 /* HANDWRITING CANVAS + COLORED PENCILS */
-const canvas=document.getElementById("handwriting-canvas");
-const ctx=canvas.getContext("2d");
-function resizeCanvas(){
-  const rect=canvas.getBoundingClientRect();
-  canvas.width=rect.width;
-  canvas.height=550;
-}
-resizeCanvas();
-window.addEventListener("resize",resizeCanvas);
+const canvas = document.getElementById("handwriting-canvas");
+const ctx = canvas.getContext("2d");
 
-let drawing=false,penColor="#000";
-function setPenColor(c){penColor=c;}
-canvas.addEventListener("mousedown",e=>{
-  drawing=true;
-  ctx.strokeStyle=penColor;
-  ctx.lineWidth=2;
-  ctx.lineCap="round";
+function resizeCanvas() {
+  const rect = canvas.getBoundingClientRect();
+  canvas.width = rect.width;
+  canvas.height = 550; // your chosen height
+}
+window.addEventListener("load", resizeCanvas);
+window.addEventListener("resize", resizeCanvas);
+
+let drawing = false;
+let penColor = "#000";
+
+function setPenColor(c) {
+  penColor = c;
+}
+
+/* MOUSE EVENTS */
+canvas.addEventListener("mousedown", e => {
+  drawing = true;
+  ctx.strokeStyle = penColor;
+  ctx.lineWidth = 2;
+  ctx.lineCap = "round";
   ctx.beginPath();
-  const r=canvas.getBoundingClientRect();
-  ctx.moveTo(e.clientX-r.left,e.clientY-r.top);
+  const r = canvas.getBoundingClientRect();
+  ctx.moveTo(e.clientX - r.left, e.clientY - r.top);
 });
-canvas.addEventListener("mousemove",e=>{
-  if(!drawing)return;
-  const r=canvas.getBoundingClientRect();
-  ctx.lineTo(e.clientX-r.left,e.clientY-r.top);
+
+canvas.addEventListener("mousemove", e => {
+  if (!drawing) return;
+  const r = canvas.getBoundingClientRect();
+  ctx.lineTo(e.clientX - r.left, e.clientY - r.top);
   ctx.stroke();
 });
-canvas.addEventListener("mouseup",()=>drawing=false);
-canvas.addEventListener("mouseleave",()=>drawing=false);
+
+canvas.addEventListener("mouseup", () => drawing = false);
+canvas.addEventListener("mouseleave", () => drawing = false);
+
+/* TOUCH EVENTS (PHONE + TABLET) */
 canvas.addEventListener("touchstart", e => {
   e.preventDefault();
   drawing = true;
+  ctx.strokeStyle = penColor;
+  ctx.lineWidth = 2;
+  ctx.lineCap = "round";
+  ctx.beginPath();
   const t = e.touches[0];
   const r = canvas.getBoundingClientRect();
-  ctx.beginPath();
   ctx.moveTo(t.clientX - r.left, t.clientY - r.top);
-});
+}, { passive: false });
 
 canvas.addEventListener("touchmove", e => {
   e.preventDefault();
@@ -306,9 +320,13 @@ canvas.addEventListener("touchmove", e => {
   const r = canvas.getBoundingClientRect();
   ctx.lineTo(t.clientX - r.left, t.clientY - r.top);
   ctx.stroke();
-});
+}, { passive: false });
 
 canvas.addEventListener("touchend", () => drawing = false);
+
+/* CLEAR CANVAS */
+function clearCanvas() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);                        
   }
   function clearCanvas(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
