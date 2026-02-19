@@ -292,7 +292,26 @@ canvas.addEventListener("mouseup",()=>drawing=false);
 canvas.addEventListener("mouseleave",()=>drawing=false);
 function clearCanvas(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
-}
+canvas.addEventListener("touchstart", e => {
+  e.preventDefault();
+  drawing = true;
+  const t = e.touches[0];
+  const r = canvas.getBoundingClientRect();
+  ctx.beginPath();
+  ctx.moveTo(t.clientX - r.left, t.clientY - r.top);
+});
+
+canvas.addEventListener("touchmove", e => {
+  e.preventDefault();
+  if (!drawing) return;
+  const t = e.touches[0];
+  const r = canvas.getBoundingClientRect();
+  ctx.lineTo(t.clientX - r.left, t.clientY - r.top);
+  ctx.stroke();
+});
+
+canvas.addEventListener("touchend", () => drawing = false);
+  }
 
 /* “OCR” PLACEHOLDER: manual text entry from handwriting */
 function fakeOCR(){
