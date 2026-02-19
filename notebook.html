@@ -76,7 +76,13 @@ body{
 }
 
 #handwriting-canvas{
-  width:100%;height:550px;border-radius:12px;border:1px solid var(--line);background:#fff;
+  width:100%;
+  height:550px;
+  border-radius:12px;
+  border:1px solid var(--line);
+  background:#fff;
+  touch-action:none;
+  display:block;
 }
 .canvas-row{display:flex;flex-direction:column;gap:10px}
 .canvas-tools button{
@@ -261,91 +267,79 @@ function generateFlashcards(){
 }
 
 /* HANDWRITING CANVAS + COLORED PENCILS */
-const canvas = document.getElementById("handwriting-canvas");
-const ctx = canvas.getContext("2d");
+const canvas=document.getElementById("handwriting-canvas");
+const ctx=canvas.getContext("2d");
 
-function resizeCanvas() {
-  const rect = canvas.getBoundingClientRect();
-  canvas.width = rect.width;
-  canvas.height = 550; // your chosen height
+function resizeCanvas(){
+  const rect=canvas.getBoundingClientRect();
+  canvas.width=rect.width;
+  canvas.height=550;
 }
-window.addEventListener("load", resizeCanvas);
-window.addEventListener("resize", resizeCanvas);
+window.addEventListener("load",resizeCanvas);
+window.addEventListener("resize",resizeCanvas);
 
-let drawing = false;
-let penColor = "#000";
+let drawing=false;
+let penColor="#000";
 
-function setPenColor(c) {
-  penColor = c;
-}
+function setPenColor(c){penColor=c;}
 
 /* MOUSE EVENTS */
-canvas.addEventListener("mousedown", e => {
-  drawing = true;
-  ctx.strokeStyle = penColor;
-  ctx.lineWidth = 2;
-  ctx.lineCap = "round";
+canvas.addEventListener("mousedown",e=>{
+  drawing=true;
+  ctx.strokeStyle=penColor;
+  ctx.lineWidth=2;
+  ctx.lineCap="round";
   ctx.beginPath();
-  const r = canvas.getBoundingClientRect();
-  ctx.moveTo(e.clientX - r.left, e.clientY - r.top);
+  const r=canvas.getBoundingClientRect();
+  ctx.moveTo(e.clientX-r.left,e.clientY-r.top);
 });
-
-canvas.addEventListener("mousemove", e => {
-  if (!drawing) return;
-  const r = canvas.getBoundingClientRect();
-  ctx.lineTo(e.clientX - r.left, e.clientY - r.top);
+canvas.addEventListener("mousemove",e=>{
+  if(!drawing)return;
+  const r=canvas.getBoundingClientRect();
+  ctx.lineTo(e.clientX-r.left,e.clientY-r.top);
   ctx.stroke();
 });
+canvas.addEventListener("mouseup",()=>drawing=false);
+canvas.addEventListener("mouseleave",()=>drawing=false);
 
-canvas.addEventListener("mouseup", () => drawing = false);
-canvas.addEventListener("mouseleave", () => drawing = false);
-
-/* TOUCH EVENTS (PHONE + TABLET) */
-canvas.addEventListener("touchstart", e => {
+/* TOUCH EVENTS */
+canvas.addEventListener("touchstart",e=>{
   e.preventDefault();
-  drawing = true;
-  ctx.strokeStyle = penColor;
-  ctx.lineWidth = 2;
-  ctx.lineCap = "round";
+  drawing=true;
+  ctx.strokeStyle=penColor;
+  ctx.lineWidth=2;
+  ctx.lineCap="round";
   ctx.beginPath();
-  const t = e.touches[0];
-  const r = canvas.getBoundingClientRect();
-  ctx.moveTo(t.clientX - r.left, t.clientY - r.top);
-}, { passive: false });
+  const t=e.touches[0];
+  const r=canvas.getBoundingClientRect();
+  ctx.moveTo(t.clientX-r.left,t.clientY-r.top);
+},{passive:false});
 
-canvas.addEventListener("touchmove", e => {
+canvas.addEventListener("touchmove",e=>{
   e.preventDefault();
-  if (!drawing) return;
-  const t = e.touches[0];
-  const r = canvas.getBoundingClientRect();
-  ctx.lineTo(t.clientX - r.left, t.clientY - r.top);
+  if(!drawing)return;
+  const t=e.touches[0];
+  const r=canvas.getBoundingClientRect();
+  ctx.lineTo(t.clientX-r.left,t.clientY-r.top);
   ctx.stroke();
-}, { passive: false });
+},{passive:false});
 
-canvas.addEventListener("touchend", () => drawing = false);
+canvas.addEventListener("touchend",()=>drawing=false);
 
 /* CLEAR CANVAS */
-function clearCanvas() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);                        
-  }
-  function clearCanvas(){
+function clearCanvas(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
-=> drawing = false);
-  }
+}
 
-/* “OCR” PLACEHOLDER: manual text entry from handwriting */
+/* “OCR” PLACEHOLDER */
 function fakeOCR(){
   const txt=prompt("Type what you wrote (manual OCR):","");
   if(!txt)return;
-  // append to notebook
-  if(notesEl.innerHTML.trim()!=="")notesEl.innerHTML+= "<br>"+txt;
+  if(notesEl.innerHTML.trim()!=="")notesEl.innerHTML+="<br>"+txt;
   else notesEl.innerHTML=txt;
   const {folder,notebook}=data.current;
   data.folders[folder].notebooks[notebook].html=notesEl.innerHTML;
   save();
-}
-if("serviceWorker" in navigator){
-  navigator.serviceWorker.register("service-worker.js").catch(()=>{});
 }
 </script>
 </body>
