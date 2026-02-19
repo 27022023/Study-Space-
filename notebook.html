@@ -3,64 +3,311 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Notebook • Study Sphere</title>
+<title>Notebook</title>
 
 <style>
-:root {
-  --pink:#FCE7F3; --lav:#EDE7FF; --mint:#DFFCF0; --blue:#E3F2FD; --peach:#FFEFE2;
-  --text:#3A3A3A; --white:#FFF; --line:#d0d0d0;
+:root{
+  --pink:#FCE7F3;--lav:#EDE7FF;--mint:#DFFCF0;--blue:#E3F2FD;--peach:#FFEFE2;
+  --text:#3A3A3A;--white:#FFF;--line:#d0d0d0;
 }
-
-body {
-  margin:0; font-family:"Poppins",sans-serif; color:var(--text);
+body{
+  margin:0;font-family:"Poppins",sans-serif;color:var(--text);
   background:linear-gradient(135deg,var(--pink),var(--lav),var(--mint),var(--blue),var(--peach));
-  background-size:400% 400%; animation:grad 20s ease infinite;
+  background-size:400% 400%;animation:grad 20s ease infinite;
 }
-@keyframes grad {0%{background-position:0 50%}50%{background-position:100% 50%}100%{background-position:0 50%}}
+@keyframes grad{0%{background-position:0 50%}50%{background-position:100% 50%}100%{background-position:0 50%}}
 
-#menu-btn {
-  position:fixed; top:20px; left:20px; width:55px; height:55px; border-radius:50%;
-  background:var(--white); border:none; cursor:pointer; z-index:1000;
-  box-shadow:0 4px 10px rgba(0,0,0,.1); transition:.2s;
+#menu-btn{
+  position:fixed;top:20px;left:20px;width:55px;height:55px;border-radius:50%;
+  background:var(--white);border:none;cursor:pointer;z-index:1000;
+  box-shadow:0 4px 10px rgba(0,0,0,.1);transition:.2s;
 }
-#menu-btn:hover {transform:scale(1.05)}
+#menu-btn:hover{transform:scale(1.05)}
 
-#sidebar {
-  position:fixed; top:0; left:-260px; width:260px; height:100%; background:var(--white);
-  box-shadow:4px 0 12px rgba(0,0,0,.1); padding:30px 20px; transition:.3s; z-index:999;
+#sidebar{
+  position:fixed;top:0;left:-260px;width:260px;height:100%;background:var(--white);
+  box-shadow:4px 0 12px rgba(0,0,0,.1);padding:30px 20px;transition:.3s;z-index:999;
 }
-#sidebar.open {left:0}
-#sidebar a {
-  display:block; margin:12px 0; padding:8px 10px; text-decoration:none; color:var(--text);
-  border-radius:8px; transition:.2s;
+#sidebar.open{left:0}
+#sidebar h2{margin-top:0}
+#sidebar a{
+  display:block;margin:12px 0;padding:8px 10px;text-decoration:none;color:var(--text);
+  border-radius:8px;transition:.2s;
 }
-#sidebar a:hover {background:var(--lav)}
+#sidebar a:hover{background:var(--lav)}
 
-#notebook-section button {
-  width:100%; margin:5px 0; background:var(--lav); border:none; padding:8px;
-  border-radius:8px; cursor:pointer;
+#notebook-section button{
+  width:100%;margin:5px 0;background:var(--lav);border:none;padding:8px;
+  border-radius:8px;cursor:pointer;
 }
-.folder,.notebook {margin:6px 0; cursor:pointer}
-.rename-btn {margin-left:6px; cursor:pointer; font-size:14px}
+.folder,.notebook-item{margin:6px 0;cursor:pointer}
+.rename-btn{margin-left:6px;cursor:pointer;font-size:14px}
 
-.wrapper {display:flex; gap:20px; padding:120px 40px}
+.wrapper{
+  max-width:1000px;margin:120px auto 40px auto;padding:0 20px;
+  display:flex;flex-direction:column;gap:20px;
+}
 
-.notebook {
-  flex:2; background:var(--white); padding:20px; border-radius:16px;
+.section-card{
+  background:var(--white);padding:20px;border-radius:16px;
   box-shadow:0 4px 12px rgba(0,0,0,.1);
-  background-image:repeating-linear-gradient(to bottom,transparent 0,transparent 22px,var(--line) 23px);
-}
-textarea {
-  width:100%; height:500px; border:none; background:transparent;
-  font-size:18px; line-height:23px; resize:none; outline:none;
 }
 
-.flashcards {
-  flex:1; background:var(--white); padding:20px; border-radius:16px;
-  box-shadow:0 4px 12px rgba(0,0,0,.1); max-height:600px; overflow-y:auto;
+.notebook-area{
+  background-image:repeating-linear-gradient(to bottom,transparent 0,transparent 22px,var(--line) 23px);
+  padding:10px;border-radius:12px;min-height:300px;max-height:500px;overflow-y:auto;
 }
-.flashcard {
-  background:var(--peach); padding:15px; border-radius:12px; margin-bottom:15px;
+#notes{
+  outline:none;white-space:pre-wrap;
 }
+
+.toolbar button{
+  padding:8px 12px;margin:0 4px 8px 0;border:none;border-radius:8px;
+  background:var(--mint);cursor:pointer;font-size:14px;
+}
+.toolbar button:hover{transform:scale(1.03)}
+.color-dot{
+  width:18px;height:18px;border-radius:50%;display:inline-block;margin-right:6px;cursor:pointer;
+  border:1px solid #ccc;
+}
+
+.flashcard{
+  background:var(--peach);padding:15px;border-radius:12px;margin-bottom:10px;
+}
+
+#handwriting-canvas{
+  width:100%;height:550px;border-radius:12px;border:1px solid var(--line);background:#fff;
+}
+.canvas-row{display:flex;flex-direction:column;gap:10px}
+.canvas-tools button{
+  padding:8px 12px;margin-right:6px;border:none;border-radius:8px;background:var(--mint);cursor:pointer;
+}
+.canvas-tools input[type=color]{margin-left:6px}
 </style>
-</head> 
+</head>
+<body>
+
+<button id="menu-btn">Menu</button>
+
+<div id="sidebar">
+  <h2>Study Sphere</h2>
+  <a href="index.html">Home</a>
+  <a href="flashcards.html">Flashcards</a>
+  <a href="translate.html">Language Learning</a>
+  <a href="notebook.html">Notebook</a>
+  <a href="chatbot.html">Chatbot</a>
+  <a href="solver.html">Problem Solver</a>
+  <a href="whiteboard.html">Whiteboard</a>
+  <a href="study-planner.html">Study Planner</a>
+  <a href="todo.html">To-Do List</a>
+  <a href="weekly.html">Weekly Planner</a>
+  <a href="timer.html">Study Timer</a>
+  <a href="relax.html">Relax</a>
+
+  <div id="notebook-section">
+    <h3 style="margin-top:25px;cursor:pointer" onclick="toggleNotebookPanel()">▼ Notebooks</h3>
+    <div id="notebook-panel">
+      <div id="folder-list"></div>
+      <button onclick="newFolder()">+ New Folder</button>
+      <button onclick="newNotebook()">+ New Notebook</button>
+    </div>
+  </div>
+</div>
+
+<div class="wrapper">
+
+  <!-- TOP: NOTEBOOK -->
+  <div class="section-card">
+    <h2>Notebook</h2>
+    <div class="toolbar">
+      <button onclick="applyHighlight('#fff59d')">Yellow highlight</button>
+      <button onclick="applyHighlight('#c5e1a5')">Green highlight</button>
+      <button onclick="applyHighlight('#b3e5fc')">Blue highlight</button>
+      <button onclick="clearFormatting()">Clear formatting</button>
+    </div>
+    <div class="notebook-area">
+      <div id="notes" contenteditable="true"></div>
+    </div>
+  </div>
+
+  <!-- MIDDLE: FLASHCARDS -->
+  <div class="section-card">
+    <h2>Flashcards</h2>
+    <p style="font-size:14px;margin-top:0;">Use lines like <strong>Question: Answer</strong> in your notebook. Then generate:</p>
+    <button onclick="generateFlashcards()">Create Flashcards from Notebook</button>
+    <div id="flashcard-preview" style="margin-top:15px;"></div>
+  </div>
+
+  <!-- BOTTOM: HANDWRITING -->
+  <div class="section-card">
+    <h2>Handwriting & Colored Pencils</h2>
+    <div class="canvas-row">
+      <div class="canvas-tools">
+        <span class="color-dot" style="background:#000" onclick="setPenColor('#000')"></span>
+        <span class="color-dot" style="background:#f44336" onclick="setPenColor('#f44336')"></span>
+        <span class="color-dot" style="background:#2196f3" onclick="setPenColor('#2196f3')"></span>
+        <span class="color-dot" style="background:#4caf50" onclick="setPenColor('#4caf50')"></span>
+        <input type="color" id="pen-picker" value="#000000" onchange="setPenColor(this.value)">
+        <button onclick="clearCanvas()">Clear</button>
+        <button onclick="fakeOCR()">Convert handwriting to text</button>
+      </div>
+      <canvas id="handwriting-canvas"></canvas>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const menuBtn=document.getElementById("menu-btn");
+const sidebar=document.getElementById("sidebar");
+menuBtn.onclick=()=>sidebar.classList.toggle("open");
+
+/* FOLDERS + NOTEBOOKS + AUTOSAVE */
+let data=JSON.parse(localStorage.getItem("notebookData"))||{
+  folders:[{name:"My Notes",notebooks:[{name:"New Notebook",html:""}]}],
+  current:{folder:0,notebook:0}
+};
+const save=()=>localStorage.setItem("notebookData",JSON.stringify(data));
+
+function toggleNotebookPanel(){
+  const p=document.getElementById("notebook-panel");
+  p.style.display=p.style.display==="none"?"block":"none";
+}
+function renderSidebar(){
+  const list=document.getElementById("folder-list");
+  list.innerHTML="";
+  data.folders.forEach((f,fi)=>{
+    const folder=document.createElement("div");
+    folder.className="folder";
+    folder.innerHTML=`📁 ${f.name} <span class="rename-btn" onclick="renameFolder(${fi})">✏️</span>`;
+    list.appendChild(folder);
+    f.notebooks.forEach((n,ni)=>{
+      const nb=document.createElement("div");
+      nb.className="notebook-item";
+      nb.style.marginLeft="20px";
+      nb.innerHTML=`📝 ${n.name} <span class="rename-btn" onclick="renameNotebook(${fi},${ni})">✏️</span>`;
+      nb.onclick=()=>loadNotebook(fi,ni);
+      list.appendChild(nb);
+    });
+  });
+}
+function newFolder(){
+  data.folders.push({name:"New Folder",notebooks:[]});
+  save();renderSidebar();
+}
+function newNotebook(){
+  const f=data.current.folder;
+  data.folders[f].notebooks.push({name:"New Notebook",html:""});
+  save();renderSidebar();
+}
+function renameFolder(i){
+  const name=prompt("Folder name:",data.folders[i].name);
+  if(name){data.folders[i].name=name;save();renderSidebar();}
+}
+function renameNotebook(fi,ni){
+  const name=prompt("Notebook name:",data.folders[fi].notebooks[ni].name);
+  if(name){data.folders[fi].notebooks[ni].name=name;save();renderSidebar();}
+}
+function loadNotebook(fi,ni){
+  data.current={folder:fi,notebook:ni};
+  document.getElementById("notes").innerHTML=data.folders[fi].notebooks[ni].html||"";
+  save();
+}
+const notesEl=document.getElementById("notes");
+notesEl.addEventListener("input",()=>{
+  const {folder,notebook}=data.current;
+  data.folders[folder].notebooks[notebook].html=notesEl.innerHTML;
+  save();
+});
+renderSidebar();
+loadNotebook(data.current.folder,data.current.notebook);
+
+/* HIGHLIGHTERS */
+function applyHighlight(color){
+  const sel=window.getSelection();
+  if(!sel.rangeCount)return;
+  const range=sel.getRangeAt(0);
+  if(range.collapsed)return;
+  const span=document.createElement("span");
+  span.style.backgroundColor=color;
+  range.surroundContents(span);
+  sel.removeAllRanges();
+}
+function clearFormatting(){
+  const html=notesEl.innerText;
+  notesEl.innerHTML=html.replace(/\n/g,"<br>");
+  const {folder,notebook}=data.current;
+  data.folders[folder].notebooks[notebook].html=notesEl.innerHTML;
+  save();
+}
+
+/* FLASHCARDS */
+function generateFlashcards(){
+  const text=notesEl.innerText.split("\n");
+  const preview=document.getElementById("flashcard-preview");
+  preview.innerHTML="";
+  text.forEach(line=>{
+    if(line.includes(":")){
+      const parts=line.split(":");
+      if(parts.length>=2){
+        const q=parts[0],a=parts.slice(1).join(":");
+        const card=document.createElement("div");
+        card.className="flashcard";
+        card.innerHTML=`<strong>${q.trim()}</strong><br>${a.trim()}`;
+        preview.appendChild(card);
+      }
+    }
+  });
+}
+
+/* HANDWRITING CANVAS + COLORED PENCILS */
+const canvas=document.getElementById("handwriting-canvas");
+const ctx=canvas.getContext("2d");
+function resizeCanvas(){
+  const rect=canvas.getBoundingClientRect();
+  canvas.width=rect.width;
+  canvas.height=550;
+}
+resizeCanvas();
+window.addEventListener("resize",resizeCanvas);
+
+let drawing=false,penColor="#000";
+function setPenColor(c){penColor=c;}
+canvas.addEventListener("mousedown",e=>{
+  drawing=true;
+  ctx.strokeStyle=penColor;
+  ctx.lineWidth=2;
+  ctx.lineCap="round";
+  ctx.beginPath();
+  const r=canvas.getBoundingClientRect();
+  ctx.moveTo(e.clientX-r.left,e.clientY-r.top);
+});
+canvas.addEventListener("mousemove",e=>{
+  if(!drawing)return;
+  const r=canvas.getBoundingClientRect();
+  ctx.lineTo(e.clientX-r.left,e.clientY-r.top);
+  ctx.stroke();
+});
+canvas.addEventListener("mouseup",()=>drawing=false);
+canvas.addEventListener("mouseleave",()=>drawing=false);
+function clearCanvas(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+}
+
+/* “OCR” PLACEHOLDER: manual text entry from handwriting */
+function fakeOCR(){
+  const txt=prompt("Type what you wrote (manual OCR):","");
+  if(!txt)return;
+  // append to notebook
+  if(notesEl.innerHTML.trim()!=="")notesEl.innerHTML+= "<br>"+txt;
+  else notesEl.innerHTML=txt;
+  const {folder,notebook}=data.current;
+  data.folders[folder].notebooks[notebook].html=notesEl.innerHTML;
+  save();
+}
+if("serviceWorker" in navigator){
+  navigator.serviceWorker.register("service-worker.js").catch(()=>{});
+}
+</script>
+</body>
+</html>
