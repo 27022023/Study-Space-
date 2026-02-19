@@ -164,6 +164,17 @@
             border-radius: 12px;
             margin-bottom: 15px;
         }
+
+        /* HANDWRITING CANVAS */
+        #draw-area {
+            margin-top: 20px;
+            border: 2px solid var(--line);
+            border-radius: 12px;
+            background: #fff;
+            width: 100%;
+            height: 300px;
+            touch-action: none;
+        }
     </style>
 </head>
 
@@ -194,8 +205,14 @@
 
         <!-- NOTEBOOK -->
         <div class="notebook">
-            <textarea id="notes" placeholder="Write your notes here..."></textarea>
+            <textarea id="notes" oninput="saveNotes()" placeholder="Write your notes here..."></textarea>
+
             <button onclick="generateFlashcards()">Create Flashcards</button>
+            <button onclick="clearNotes()">Clear Everything</button>
+
+            <h3 style="margin-top:25px;">Handwriting Area</h3>
+            <canvas id="draw-area"></canvas>
+            <button onclick="clearCanvas()">Clear Drawing</button>
         </div>
 
         <!-- FLASHCARD PREVIEW -->
@@ -235,41 +252,83 @@
         }
     </script>
 
-</body>
-</html><!DOCTYPE html>
-<html>
-<head>
-  <title>Notes with Memory</title>
-  <style>
-    body { font-family: Arial; padding: 20px; }
-    textarea { width: 300px; height: 200px; padding: 10px; }
-    button { padding: 10px; margin-top: 10px; }
-  </style>
-</head>
-<body>
-  <h1>Your Notes</h1>
+    <!-- ⭐ MEMORY SYSTEM -->
+    <script>
+    window.addEventListener("load", () => {
+      const saved = localStorage.getItem("notebookContent");
+      if (saved) {
+        document.getElementById("notes").value = saved;
+      }
+    });
 
-  <textarea id="notesBox" placeholder="Write something..."></textarea>
-  <br>
-  <button onclick="saveNotes()">Save</button>
-
-  <script>
-    // Load saved notes when the page opens
-    document.getElementById("notesBox").value =
-      localStorage.getItem("myNotes") || "";
-
-    // Save notes to this device
     function saveNotes() {
-      const text = document.getElementById("notesBox").value;
-      localStorage.setItem("myNotes", text);
-      alert("Saved!");
+      const content = document.getElementById("notes").value;
+      localStorage.setItem("notebookContent", content);
     }
-  </script>
-</body>
+
+    function clearNotes() {
+      document.getElementById("notes").value = "";
+      localStorage.removeItem("notebookContent");
+    }
+    </script>
+
+    <!-- ⭐ HANDWRITING CANVAS -->
+    <script>
+    const canvas = document.getElementById("draw-area");
+    const ctx = canvas.getContext("2d");
+
+    canvas.width = canvas.offsetWidth;
+    canvas.height = canvas.offsetHeight;
+
+    let drawing = false;
+
+    function start(e) {
+      drawing = true;
+      draw(e);
+    }
+
+    function end() {
+      drawing = false;
+      ctx.beginPath();
+    }
+
+    function draw(e) {
+      if (!drawing) return;
+
+      const rect = canvas.getBoundingClientRect();
+      const x = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
+      const y = (e.touches ? e.touches[0].clientY : e.clientY) - rect.top;
+
+      ctx.lineWidth = 3;
+      ctx.lineCap = "round";
+      ctx.strokeStyle = "#000";
+
+      ctx.lineTo(x, y);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+    }
+
+    canvas.addEventListener("mousedown", start);
+    canvas.addEventListener("mouseup", end);
+    canvas.addEventListener("mousemove", draw);
+
+    canvas.addEventListener("touchstart", start);
+    canvas.addEventListener("touchend", end);
+    canvas.addEventListener("touchmove", draw);
+
+    function clearCanvas() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+    </script>
+
 <script>
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("service-worker.js");
 }
 </script>
+
+</body>
 </html>
+   
 
