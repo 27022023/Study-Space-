@@ -108,7 +108,244 @@
 </style>
 </head>
 <body>
+/*  
+   ⭐ NOVA UPGRADED BRAIN  
+   — Quadratics (with complex roots)  
+   — Systems of equations  
+   — Biology examples  
+   — Expanded physics & chemistry  
+   — Auto-detection  
+   — Same personality, same UI  
+*/
 
+const chatEl = document.getElementById("chat");
+const inputEl = document.getElementById("userInput");
+const sendBtn = document.getElementById("sendBtn");
+
+let userName = null;
+let mode = "math-first";
+let lastMathProblem = null;
+
+/* ---------------- EXAMPLE BANKS ---------------- */
+const examples = {
+  math: [
+    { q:"Solve the equation: 2x - 5 = 11", a:"2x - 5 = 11 ⇒ 2x = 16 ⇒ x = 8." },
+    { q:"Solve the system:\n2x + y = 7\nx - y = 1", a:"From x - y = 1 ⇒ y = x - 1.\nSubstitute: 2x + (x - 1) = 7 ⇒ 3x - 1 = 7 ⇒ 3x = 8 ⇒ x = 8/3, y = 5/3." },
+    { q:"Solve the quadratic: x² - 5x + 6 = 0", a:"x² - 5x + 6 = 0 ⇒ (x - 2)(x - 3) = 0 ⇒ x = 2 or x = 3." },
+    { q:"Find the derivative of f(x) = x³ - 5x + 2", a:"f'(x) = 3x² - 5." },
+    { q:"Compute the integral ∫(3x² - 4x + 1) dx", a:"x³ - 2x² + x + C." },
+    { q:"Find the domain of f(x) = 1/(x - 3)", a:"All real numbers except x = 3." },
+    { q:"Probability: A coin is tossed 3 times. P(exactly 2 heads)?", a:"3/8." }
+  ],
+  physics: [
+    { q:"A body moves with v = 10 m/s for 8 s. Distance?", a:"80 m." },
+    { q:"Car accelerates from rest at 2 m/s² for 6 s. Final velocity?", a:"12 m/s." },
+    { q:"Stone thrown up at 20 m/s. Max height?", a:"20 m." },
+    { q:"R = 10 Ω, V = 5 V. Current?", a:"0.5 A." },
+    { q:"Wave f = 50 Hz, λ = 2 m. Speed?", a:"100 m/s." },
+    { q:"Mass 3 kg at 4 m/s. KE?", a:"24 J." },
+    { q:"Force 10 N on 2 kg block. Acceleration?", a:"5 m/s²." }
+  ],
+  chemistry: [
+    { q:"Moles in 18 g water?", a:"1 mol." },
+    { q:"Molarity of 5 g NaCl in 500 mL?", a:"≈0.17 M." },
+    { q:"pH of 0.01 M HCl?", a:"2." },
+    { q:"NH₃ + H₂O → NH₄⁺ + OH⁻: acid/base?", a:"NH₃ base, H₂O acid." },
+    { q:"Mass percent: 10 g in 200 g?", a:"5%." },
+    { q:"Balance H₂ + O₂ → H₂O", a:"2H₂ + O₂ → 2H₂O." },
+    { q:"Gas 10 L at 300 K → 600 K. New volume?", a:"20 L." }
+  ],
+  biology: [
+    { q:"Function of mitochondria?", a:"ATP production." },
+    { q:"What is DNA?", a:"Genetic information molecule." },
+    { q:"Define osmosis.", a:"Water diffusion across membrane." },
+    { q:"What is a gene?", a:"DNA segment coding for a trait." },
+    { q:"Define homeostasis.", a:"Maintaining stable internal conditions." }
+  ]
+};
+
+/* ---------------- UI HELPER ---------------- */
+function addMessage(text, from="nova"){
+  const div = document.createElement("div");
+  div.className = "msg " + (from === "user" ? "user" : "nova");
+  div.textContent = text;
+  chatEl.appendChild(div);
+  chatEl.scrollTop = chatEl.scrollHeight;
+}
+
+/* ---------------- DETECTION HELPERS ---------------- */
+function looksLikeEquation(msg){
+  return msg.includes("=") && /[0-9xy]/i.test(msg);
+}
+
+function looksLikeQuadratic(msg){
+  const s = msg.replace(/\s+/g,"").toLowerCase();
+  return looksLikeEquation(msg) && (s.includes("x^2") || s.includes("x²"));
+}
+
+function looksLikeSystem(msg){
+  const eqCount = (msg.match(/=/g) || []).length;
+  return eqCount >= 2 || msg.includes("\n") || (msg.includes(",") && msg.includes("="));
+}
+
+function looksLikeArithmetic(msg){
+  return /^[0-9+\-*/().\s]+$/.test(msg);
+}
+
+/* ---------------- SOLVERS ---------------- */
+function safeEval(expr){
+  try{
+    if (!/^[0-9+\-*/().\s]+$/.test(expr)) return null;
+    return Function("return ("+expr+")")();
+  }catch{ return null; }
+}
+
+function solveLinearEquation(eqn){
+  let s = eqn.replace(/\s+/g,"");
+  const parts = s.split("=");
+  if (parts.length !== 2) return null;
+
+  const left = parts[0];
+  const right = parts[1];
+
+  const match = left.match(/([+-]?\d*)x([+-]\d+)?/i);
+  if (!match) return null;
+
+  let aStr = match[1];
+  let bStr = match[2] || "+0";
+
+  if (aStr === "" || aStr === "+") aStr = "1";
+  if (aStr === "-") aStr = "-1";
+
+  const a = parseFloat(aStr);
+  const b = parseFloat(bStr);
+  const c = parseFloat(right);
+
+  if (isNaN(a) || isNaN(b) || isNaN(c) || a === 0) return null;
+
+  return {a,b,c,x:(c-b)/a};
+}
+
+function solveQuadraticEquation(eqn){
+  let s = eqn.replace(/\s+/g,"").toLowerCase().replace(/x²/g,"x^2");
+  const parts = s.split("=");
+  if (parts.length !== 2) return null;
+
+  let left = parts[0];
+  let right = parts[1];
+
+  if (right !== "0"){
+    if (!/^[+\-]?\d+(\.\d+)?$/.test(right)) return null;
+    const num = parseFloat(right);
+    left += (num >= 0 ? `-${num}` : `+${-num}`);
+  }
+
+  const aMatch = left.match(/([+-]?\d*\.?\d*)x\^2/);
+  if (!aMatch) return null;
+
+  let aStr = aMatch[1];
+  if (aStr === "" || aStr === "+") aStr = "1";
+  if (aStr === "-") aStr = "-1";
+  const a = parseFloat(aStr);
+
+  let b = 0;
+  const bMatch = left.match(/([+-]\d*\.?\d*)x(?!\^2)/);
+  if (bMatch){
+    let bStr = bMatch[1];
+    if (bStr === "+" || bStr === "") bStr = "1";
+    if (bStr === "-") bStr = "-1";
+    b = parseFloat(bStr);
+  }
+
+  let c = 0;
+  const constMatch = left
+    .replace(/([+-]?\d*\.?\d*)x\^2/,"")
+    .replace(/([+-]?\d*\.?\d*)x(?!\^2)/,"")
+    .match(/[+-]?\d+(\.\d+)?/g);
+
+  if (constMatch) c = constMatch.map(parseFloat).reduce((a,v)=>a+v,0);
+
+  const D = b*b - 4*a*c;
+
+  if (D > 0){
+    const sqrtD = Math.sqrt(D);
+    return {type:"real-distinct",a,b,c,D,x1:(-b+sqrtD)/(2*a),x2:(-b-sqrtD)/(2*a)};
+  }
+  if (D === 0){
+    return {type:"real-double",a,b,c,D,x:(-b)/(2*a)};
+  }
+
+  const sqrtD = Math.sqrt(-D);
+  return {
+    type:"complex",
+    a,b,c,D,
+    real:(-b)/(2*a),
+    imag:sqrtD/(2*a)
+  };
+}
+
+function solveSystem2x2(text){
+  let parts = text.split(/\n|,/).map(p=>p.trim()).filter(p=>p);
+  if (parts.length !== 2) return null;
+
+  function parseEq(e){
+    const s = e.replace(/\s+/g,"");
+    const sides = s.split("=");
+    if (sides.length !== 2) return null;
+
+    const left = sides[0];
+    const right = parseFloat(sides[1]);
+
+    const xMatch = left.match(/([+-]?\d*\.?\d*)x/);
+    const yMatch = left.match(/([+-]?\d*\.?\d*)y/);
+
+    let ax = 0, by = 0;
+
+    if (xMatch){
+      let xs = xMatch[1];
+      if (xs === "" || xs === "+") xs = "1";
+      if (xs === "-") xs = "-1";
+      ax = parseFloat(xs);
+    }
+    if (yMatch){
+      let ys = yMatch[1];
+      if (ys === "" || ys === "+") ys = "1";
+      if (ys === "-") ys = "-1";
+      by = parseFloat(ys);
+    }
+
+    if (isNaN(right)) return null;
+    return {ax,by,c:right};
+  }
+
+  const e1 = parseEq(parts[0]);
+  const e2 = parseEq(parts[1]);
+  if (!e1 || !e2) return null;
+
+  const {ax:a1,by:b1,c:c1} = e1;
+  const {ax:a2,by:b2,c:c2} = e2;
+
+  const det = a1*b2 - a2*b1;
+
+  if (det === 0){
+    if (a1*c2 === a2*c1 && b1*c2 === b2*c1) return {type:"infinite"};
+    return {type:"none"};
+  }
+
+  return {
+    type:"unique",
+    a1,b1,c1,a2,b2,c2,det,
+    x:(c1*b2 - c2*b1)/det,
+    y:(a1*c2 - a2*c1)/det
+  };
+}
+
+/* ---------------- EXAMPLE PICKER ---------------- */
+function getRandomExample(subject){
+  const arr = examples[subject];
+  return arr[Math.floor(Math.random()*arr.length)];
+}
+  
 <header>
   <div class="nova-avatar">🤖</div>
   <div>
