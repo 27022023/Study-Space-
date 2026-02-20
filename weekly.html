@@ -1,14 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-<link rel="manifest" href="/site.webmanifest">
-    <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#ffffff"> <meta charset="UTF-8">
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#ffffff">
+
     <title>Weekly Planner</title>
+
+    <!-- Icons -->
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+
+    <!-- Manifest (only ONE) -->
+    <link rel="manifest" href="manifest.json">
+
     <style>
         * { box-sizing: border-box; }
 
@@ -245,288 +251,288 @@
         }
     </style>
 </head>
+
 <body>
 
-    <h1>Weekly Planner</h1>
-    <p class="subtitle">Scroll horizontally to move through the week. Everything saves automatically.</p>
+<h1>Weekly Planner</h1>
+<p class="subtitle">Scroll horizontally to move through the week. Everything saves automatically.</p>
 
-    <div class="week-wrapper">
-        <div class="week" id="weekContainer"></div>
+<div class="week-wrapper">
+    <div class="week" id="weekContainer"></div>
+</div>
+
+<!-- IMAGE GALLERY -->
+<div class="gallery-section">
+    <div class="gallery-title">Image Gallery</div>
+
+    <div class="gallery-upload">
+        <input type="file" id="imageInput" accept="image/*">
+        <input type="text" id="captionInput" placeholder="Caption...">
     </div>
 
-    <!-- IMAGE GALLERY -->
-    <div class="gallery-section">
-        <div class="gallery-title">Image Gallery</div>
+    <button id="addImageBtn" class="todo-add-btn">Add Image</button>
 
-        <div class="gallery-upload">
-            <input type="file" id="imageInput" accept="image/*">
-            <input type="text" id="captionInput" placeholder="Caption...">
-        </div>
+    <div class="gallery-list" id="galleryList"></div>
+</div>
 
-        <button id="addImageBtn" class="todo-add-btn">Add Image</button>
+<script>
+/* ---------------- WEEKLY PLANNER LOGIC ---------------- */
 
-        <div class="gallery-list" id="galleryList"></div>
-    </div>
+const daysOfWeek = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
+const startHour = 8;
+const endHour = 20;
+const storageKey = "weeklyPlanner_v1";
+const galleryKey = "weeklyGallery_v1";
 
-    <script>
-        /* ---------------- WEEKLY PLANNER LOGIC ---------------- */
+function createEmptyData() {
+    const data = {};
+    daysOfWeek.forEach(day => {
+        data[day] = { schedule: {}, todos: [] };
+    });
+    return data;
+}
 
-        const daysOfWeek = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
-        const startHour = 8;
-        const endHour = 20;
-        const storageKey = "weeklyPlanner_v1";
-        const galleryKey = "weeklyGallery_v1";
+function loadData() {
+    const saved = localStorage.getItem(storageKey);
+    return saved ? JSON.parse(saved) : createEmptyData();
+}
 
-        function createEmptyData() {
-            const data = {};
-            daysOfWeek.forEach(day => {
-                data[day] = { schedule: {}, todos: [] };
+function saveData(data) {
+    localStorage.setItem(storageKey, JSON.stringify(data));
+}
+
+function formatHour(h) {
+    return h.toString().padStart(2, "0") + ":00";
+}
+
+function buildPlanner() {
+    const container = document.getElementById("weekContainer");
+    const data = loadData();
+
+    daysOfWeek.forEach(day => {
+        const card = document.createElement("div");
+        card.className = "day-card";
+
+        const header = document.createElement("div");
+        header.className = "day-header";
+
+        const name = document.createElement("div");
+        name.className = "day-name";
+        name.textContent = day;
+
+        header.appendChild(name);
+        card.appendChild(header);
+
+        const scheduleTitle = document.createElement("div");
+        scheduleTitle.className = "section-title";
+        scheduleTitle.textContent = "Schedule (08:00 – 20:00)";
+        card.appendChild(scheduleTitle);
+
+        const schedule = document.createElement("div");
+        schedule.className = "schedule";
+
+        for (let h = startHour; h <= endHour; h++) {
+            const row = document.createElement("div");
+            row.className = "hour-row";
+
+            const label = document.createElement("div");
+            label.className = "hour-label";
+            label.textContent = formatHour(h);
+
+            const content = document.createElement("div");
+            content.className = "hour-content";
+            content.contentEditable = "true";
+
+            const hourKey = formatHour(h);
+            content.textContent = data[day].schedule[hourKey] || "";
+
+            content.addEventListener("input", () => {
+                const d = loadData();
+                d[day].schedule[hourKey] = content.textContent.trim();
+                saveData(d);
             });
-            return data;
+
+            row.appendChild(label);
+            row.appendChild(content);
+            schedule.appendChild(row);
         }
 
-        function loadData() {
-            const saved = localStorage.getItem(storageKey);
-            return saved ? JSON.parse(saved) : createEmptyData();
-        }
+        card.appendChild(schedule);
 
-        function saveData(data) {
-            localStorage.setItem(storageKey, JSON.stringify(data));
-        }
+        const todoTitle = document.createElement("div");
+        todoTitle.className = "section-title";
+        todoTitle.textContent = "To‑Do";
+        card.appendChild(todoTitle);
 
-        function formatHour(h) {
-            return h.toString().padStart(2, "0") + ":00";
-        }
+        const todoSection = document.createElement("div");
+        todoSection.className = "todo-section";
 
-        function buildPlanner() {
-            const container = document.getElementById("weekContainer");
-            const data = loadData();
+        const inputRow = document.createElement("div");
+        inputRow.className = "todo-input-row";
 
-            daysOfWeek.forEach(day => {
-                const card = document.createElement("div");
-                card.className = "day-card";
+        const todoInput = document.createElement("input");
+        todoInput.className = "todo-input";
+        todoInput.placeholder = "Add a task...";
 
-                const header = document.createElement("div");
-                header.className = "day-header";
+        const addBtn = document.createElement("button");
+        addBtn.className = "todo-add-btn";
+        addBtn.textContent = "Add";
 
-                const name = document.createElement("div");
-                name.className = "day-name";
-                name.textContent = day;
+        inputRow.appendChild(todoInput);
+        inputRow.appendChild(addBtn);
 
-                header.appendChild(name);
-                card.appendChild(header);
+        const list = document.createElement("ul");
+        list.className = "todo-list";
 
-                const scheduleTitle = document.createElement("div");
-                scheduleTitle.className = "section-title";
-                scheduleTitle.textContent = "Schedule (08:00 – 20:00)";
-                card.appendChild(scheduleTitle);
+        todoSection.appendChild(inputRow);
+        todoSection.appendChild(list);
+        card.appendChild(todoSection);
 
-                const schedule = document.createElement("div");
-                schedule.className = "schedule";
+        function renderTodos() {
+            const d = loadData();
+            const todos = d[day].todos;
+            list.innerHTML = "";
 
-                for (let h = startHour; h <= endHour; h++) {
-                    const row = document.createElement("div");
-                    row.className = "hour-row";
+            todos.forEach((todo, i) => {
+                const li = document.createElement("li");
+                li.className = "todo-item";
 
-                    const label = document.createElement("div");
-                    label.className = "hour-label";
-                    label.textContent = formatHour(h);
+                const left = document.createElement("div");
+                left.className = "todo-left";
 
-                    const content = document.createElement("div");
-                    content.className = "hour-content";
-                    content.contentEditable = "true";
+                const checkbox = document.createElement("input");
+                checkbox.type = "checkbox";
+                checkbox.checked = todo.completed;
 
-                    const hourKey = formatHour(h);
-                    content.textContent = data[day].schedule[hourKey] || "";
+                const text = document.createElement("span");
+                text.className = "todo-text";
+                text.textContent = todo.text;
 
-                    content.addEventListener("input", () => {
-                        const d = loadData();
-                        d[day].schedule[hourKey] = content.textContent.trim();
-                        saveData(d);
-                    });
+                if (todo.completed) text.style.textDecoration = "line-through";
 
-                    row.appendChild(label);
-                    row.appendChild(content);
-                    schedule.appendChild(row);
-                }
-
-                card.appendChild(schedule);
-
-                const todoTitle = document.createElement("div");
-                todoTitle.className = "section-title";
-                todoTitle.textContent = "To‑Do";
-                card.appendChild(todoTitle);
-
-                const todoSection = document.createElement("div");
-                todoSection.className = "todo-section";
-
-                const inputRow = document.createElement("div");
-                inputRow.className = "todo-input-row";
-
-                const todoInput = document.createElement("input");
-                todoInput.className = "todo-input";
-                todoInput.placeholder = "Add a task...";
-
-                const addBtn = document.createElement("button");
-                addBtn.className = "todo-add-btn";
-                addBtn.textContent = "Add";
-
-                inputRow.appendChild(todoInput);
-                inputRow.appendChild(addBtn);
-
-                const list = document.createElement("ul");
-                list.className = "todo-list";
-
-                todoSection.appendChild(inputRow);
-                todoSection.appendChild(list);
-                card.appendChild(todoSection);
-
-                function renderTodos() {
+                checkbox.addEventListener("change", () => {
                     const d = loadData();
-                    const todos = d[day].todos;
-                    list.innerHTML = "";
-
-                    todos.forEach((todo, i) => {
-                        const li = document.createElement("li");
-                        li.className = "todo-item";
-
-                        const left = document.createElement("div");
-                        left.className = "todo-left";
-
-                        const checkbox = document.createElement("input");
-                        checkbox.type = "checkbox";
-                        checkbox.checked = todo.completed;
-
-                        const text = document.createElement("span");
-                        text.className = "todo-text";
-                        text.textContent = todo.text;
-
-                        if (todo.completed) text.style.textDecoration = "line-through";
-
-                        checkbox.addEventListener("change", () => {
-                            const d = loadData();
-                            d[day].todos[i].completed = checkbox.checked;
-                            saveData(d);
-                            renderTodos();
-                        });
-
-                        left.appendChild(checkbox);
-                        left.appendChild(text);
-
-                        const del = document.createElement("button");
-                        del.className = "todo-delete-btn";
-                        del.textContent = "✕";
-
-                        del.addEventListener("click", () => {
-                            const d = loadData();
-                            d[day].todos.splice(i, 1);
-                            saveData(d);
-                            renderTodos();
-                        });
-
-                        li.appendChild(left);
-                        li.appendChild(del);
-                        list.appendChild(li);
-                    });
-                }
-
-                function addTodo() {
-                    const text = todoInput.value.trim();
-                    if (!text) return;
-
-                    const d = loadData();
-                    d[day].todos.push({ text, completed: false });
+                    d[day].todos[i].completed = checkbox.checked;
                     saveData(d);
-
-                    todoInput.value = "";
                     renderTodos();
-                }
-
-                addBtn.addEventListener("click", addTodo);
-                todoInput.addEventListener("keydown", e => {
-                    if (e.key === "Enter") addTodo();
                 });
 
-                renderTodos();
-                container.appendChild(card);
-            });
-        }
-
-        /* ---------------- IMAGE GALLERY LOGIC ---------------- */
-
-        function loadGallery() {
-            const saved = localStorage.getItem(galleryKey);
-            return saved ? JSON.parse(saved) : [];
-        }
-
-        function saveGallery(data) {
-            localStorage.setItem(galleryKey, JSON.stringify(data));
-        }
-
-        function renderGallery() {
-            const gallery = document.getElementById("galleryList");
-            const images = loadGallery();
-            gallery.innerHTML = "";
-
-            images.forEach((item, index) => {
-                const div = document.createElement("div");
-                div.className = "gallery-item";
-
-                const img = document.createElement("img");
-                img.src = item.src;
-
-                const caption = document.createElement("div");
-                caption.className = "caption";
-                caption.textContent = item.caption;
+                left.appendChild(checkbox);
+                left.appendChild(text);
 
                 const del = document.createElement("button");
-                del.className = "delete-btn";
-                del.textContent = "Delete";
+                del.className = "todo-delete-btn";
+                del.textContent = "✕";
 
                 del.addEventListener("click", () => {
-                    const data = loadGallery();
-                    data.splice(index, 1);
-                    saveGallery(data);
-                    renderGallery();
+                    const d = loadData();
+                    d[day].todos.splice(i, 1);
+                    saveData(d);
+                    renderTodos();
                 });
 
-                div.appendChild(img);
-                div.appendChild(caption);
-                div.appendChild(del);
-
-                gallery.appendChild(div);
+                li.appendChild(left);
+                li.appendChild(del);
+                list.appendChild(li);
             });
         }
 
-        document.getElementById("addImageBtn").addEventListener("click", () => {
-            const fileInput = document.getElementById("imageInput");
-            const captionInput = document.getElementById("captionInput");
+        function addTodo() {
+            const text = todoInput.value.trim();
+            if (!text) return;
 
-            const file = fileInput.files[0];
-            const caption = captionInput.value.trim();
+            const d = loadData();
+            d[day].todos.push({ text, completed: false });
+            saveData(d);
 
-            if (!file) return;
+            todoInput.value = "";
+            renderTodos();
+        }
 
-            const reader = new FileReader();
-            reader.onload = () => {
-                const data = loadGallery();
-                data.push({ src: reader.result, caption });
-                saveGallery(data);
-                renderGallery();
-            };
-
-            reader.readAsDataURL(file);
-
-            fileInput.value = "";
-            captionInput.value = "";
+        addBtn.addEventListener("click", addTodo);
+        todoInput.addEventListener("keydown", e => {
+            if (e.key === "Enter") addTodo();
         });
 
-        document.addEventListener("DOMContentLoaded", () => {
-            buildPlanner();
+        renderTodos();
+        container.appendChild(card);
+    });
+}
+
+/* ---------------- IMAGE GALLERY LOGIC ---------------- */
+
+function loadGallery() {
+    const saved = localStorage.getItem(galleryKey);
+    return saved ? JSON.parse(saved) : [];
+}
+
+function saveGallery(data) {
+    localStorage.setItem(galleryKey, JSON.stringify(data));
+}
+
+function renderGallery() {
+    const gallery = document.getElementById("galleryList");
+    const images = loadGallery();
+    gallery.innerHTML = "";
+
+    images.forEach((item, index) => {
+        const div = document.createElement("div");
+        div.className = "gallery-item";
+
+        const img = document.createElement("img");
+        img.src = item.src;
+
+        const caption = document.createElement("div");
+        caption.className = "caption";
+        caption.textContent = item.caption;
+
+        const del = document.createElement("button");
+        del.className = "delete-btn";
+        del.textContent = "Delete";
+
+        del.addEventListener("click", () => {
+            const data = loadGallery();
+            data.splice(index, 1);
+            saveGallery(data);
             renderGallery();
         });
-   
+
+        div.appendChild(img);
+        div.appendChild(caption);
+        div.appendChild(del);
+
+        gallery.appendChild(div);
+    });
+}
+
+document.getElementById("addImageBtn").addEventListener("click", () => {
+    const fileInput = document.getElementById("imageInput");
+    const captionInput = document.getElementById("captionInput");
+
+    const file = fileInput.files[0];
+    const caption = captionInput.value.trim();
+
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = () => {
+        const data = loadGallery();
+        data.push({ src: reader.result, caption });
+        saveGallery(data);
+        renderGallery();
+    };
+
+    reader.readAsDataURL(file);
+
+    fileInput.value = "";
+    captionInput.value = "";
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+    buildPlanner();
+    renderGallery();
+});
+</script>
 
 </body>
-</script>
 </html>
