@@ -366,361 +366,79 @@ function getRandomExample(subject){
 </div>
 
 <script>
-  <!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<title>Nova – Study Companion</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<style>
-  :root{
-    --bg1:#e8d9ff;
-    --bg2:#d7eaff;
-    --nova-bubble:#d4c4ff;
-    --user-bubble:#c9f2ff;
-    --text-main:#1e1e2e;
-  }
-  body{
-    margin:0;
-    font-family:system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    background:linear-gradient(135deg,var(--bg1),var(--bg2));
-    color:var(--text-main);
-    display:flex;
-    flex-direction:column;
-    height:100vh;
-  }
-  header{
-    padding:10px 16px;
-    background:rgba(255,255,255,0.7);
-    backdrop-filter:blur(10px);
-    border-bottom:1px solid rgba(0,0,0,0.05);
-    display:flex;
-    align-items:center;
-    gap:10px;
-  }
-  .nova-avatar{
-    width:36px;
-    height:36px;
-    border-radius:50%;
-    background:radial-gradient(circle at 30% 30%, #a855f7, #6366f1);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-size:20px;
-  }
-  .title{
-    font-weight:700;
-    font-size:16px;
-  }
-  .subtitle{
-    font-size:12px;
-    color:#4b5563;
-  }
-  #chat{
-    flex:1;
-    padding:12px;
-    overflow-y:auto;
-  }
-  .msg{
-    max-width:80%;
-    margin:6px 0;
-    padding:8px 12px;
-    border-radius:12px;
-    font-size:14px;
-    line-height:1.4;
-    white-space:pre-wrap;
-  }
-  .nova{
-    background:var(--nova-bubble);
-    margin-right:auto;
-    border-bottom-left-radius:4px;
-  }
-  .user{
-    background:var(--user-bubble);
-    margin-left:auto;
-    border-bottom-right-radius:4px;
-  }
-  #inputBar{
-    display:flex;
-    padding:8px;
-    background:rgba(255,255,255,0.7);
-    backdrop-filter:blur(10px);
-    border-top:1px solid rgba(0,0,0,0.05);
-    gap:8px;
-  }
-  #userInput{
-    flex:1;
-    padding:8px;
-    border-radius:8px;
-    border:1px solid rgba(148,163,184,0.8);
-    background:rgba(255,255,255,0.8);
-    color:var(--text-main);
-  }
-  #sendBtn{
-    padding:8px 14px;
-    border-radius:8px;
-    border:none;
-    background:#a855f7;
-    color:white;
-    font-weight:600;
-    cursor:pointer;
-  }
-  #sendBtn:hover{
-    background:#8b5cf6;
-  }
-  .hint{
-    font-size:11px;
-    color:#6b7280;
-    padding:0 14px 6px;
-  }
-</style>
-</head>
-<body>
-
-<header>
-  <div class="nova-avatar">🤖</div>
-  <div>
-    <div class="title">Nova</div>
-    <div class="subtitle">Pastel study buddy – Maths • Physics • Chemistry</div>
-  </div>
-</header>
-
-<div class="hint">
-  Try things like: “2x - 5 = 11”, “example physics”, “example chemistry”, “solve 3x+2=11”, “give me a math example”.
-</div>
-
-<div id="chat"></div>
-
-<div id="inputBar">
-  <input id="userInput" type="text" placeholder="Give Nova a problem or ask for an example..." autocomplete="off">
-  <button id="sendBtn">Send</button>
-</div>
-
-<script>
-const chatEl = document.getElementById("chat");
-const inputEl = document.getElementById("userInput");
-const sendBtn = document.getElementById("sendBtn");
-
-let userName = null;
-let mode = "math-first"; // main focus
-let lastMathProblem = null;
-
-// --- Example banks (Maths / Physics / Chemistry) ---
-const examples = {
-  math: [
-    {
-      q:"Solve the equation: 2x - 5 = 11",
-      a:"2x - 5 = 11 ⇒ 2x = 16 ⇒ x = 8."
-    },
-    {
-      q:"Solve the system:\n2x + y = 7\nx - y = 1",
-      a:"From x - y = 1 ⇒ y = x - 1.\nSubstitute: 2x + (x - 1) = 7 ⇒ 3x - 1 = 7 ⇒ 3x = 8 ⇒ x = 8/3, y = 5/3."
-    },
-    {
-      q:"Solve the quadratic: x² - 5x + 6 = 0",
-      a:"x² - 5x + 6 = 0 ⇒ (x - 2)(x - 3) = 0 ⇒ x = 2 or x = 3."
-    },
-    {
-      q:"Find the derivative of f(x) = x³ - 5x + 2",
-      a:"f'(x) = 3x² - 5."
-    },
-    {
-      q:"Compute the integral ∫(3x² - 4x + 1) dx",
-      a:"∫3x² dx = x³, ∫-4x dx = -2x², ∫1 dx = x ⇒ x³ - 2x² + x + C."
-    },
-    {
-      q:"Find the domain of f(x) = 1/(x - 3)",
-      a:"All real numbers except x = 3."
-    },
-    {
-      q:"Probability: A coin is tossed 3 times. P(exactly 2 heads)?",
-      a:"Number of outcomes: 2³ = 8. Ways to get 2 heads: 3. So P = 3/8."
-    }
-  ],
-  physics: [
-    {
-      q:"A body moves with constant velocity v = 10 m/s. Find the distance in 8 s.",
-      a:"s = v·t = 10·8 = 80 m."
-    },
-    {
-      q:"A car accelerates from rest with a = 2 m/s². Find its velocity after 6 s.",
-      a:"v = v₀ + a·t = 0 + 2·6 = 12 m/s."
-    },
-    {
-      q:"A stone is thrown upwards with v₀ = 20 m/s. Approximate max height (g ≈ 10 m/s²).",
-      a:"At top: v² = v₀² - 2gh ⇒ 0 = 400 - 20h ⇒ h = 20 m."
-    },
-    {
-      q:"A resistor R = 10 Ω is connected to V = 5 V. Find the current.",
-      a:"Ohm’s law: I = V/R = 5/10 = 0.5 A."
-    },
-    {
-      q:"A wave has frequency f = 50 Hz and wavelength λ = 2 m. Find speed.",
-      a:"v = f·λ = 50·2 = 100 m/s."
-    },
-    {
-      q:"A 3 kg mass moves at 4 m/s. Find kinetic energy.",
-      a:"K = ½mv² = 0.5·3·16 = 24 J."
-    }
-  ],
-  chemistry: [
-    {
-      q:"How many moles are in 18 g of water (H₂O, M = 18 g/mol)?",
-      a:"n = m/M = 18/18 = 1 mol."
-    },
-    {
-      q:"Find the molarity of a solution with 5 g NaCl (M ≈ 58.5 g/mol) in 500 mL.",
-      a:"n = 5/58.5 ≈ 0.0855 mol. Volume = 0.5 L ⇒ M ≈ 0.17 mol/L."
-    },
-    {
-      q:"pH of 0.01 M HCl (strong acid).",
-      a:"[H⁺] = 0.01 ⇒ pH = -log(0.01) = 2."
-    },
-    {
-      q:"Identify acid/base in: NH₃ + H₂O → NH₄⁺ + OH⁻",
-      a:"NH₃ is a base (accepts H⁺), H₂O acts as an acid (donates H⁺)."
-    },
-    {
-      q:"Mass percent: 10 g solute in 200 g solution.",
-      a:"% w/w = (10/200)·100% = 5%."
-    },
-    {
-      q:"Balance: H₂ + O₂ → H₂O",
-      a:"Balanced: 2H₂ + O₂ → 2H₂O."
-    }
-  ]
-};
-
-// --- UI helpers ---
-function addMessage(text, from="nova"){
-  const div = document.createElement("div");
-  div.className = "msg " + (from === "user" ? "user" : "nova");
-  div.textContent = text;
-  chatEl.appendChild(div);
-  chatEl.scrollTop = chatEl.scrollHeight;
-}
-
-// --- Math detection helpers ---
-function looksLikeEquation(msg){
-  return msg.includes("=") && /[0-9x]/i.test(msg);
-}
-
-function solveLinearEquation(eqn){
-  // very simple: ax + b = c
-  // normalize: remove spaces
-  let s = eqn.replace(/\s+/g,"");
-  const parts = s.split("=");
-  if (parts.length !== 2) return null;
-  const left = parts[0];
-  const right = parts[1];
-
-  // move everything to left: left - right = 0
-  // we only handle form ax + b = c
-  // try to extract a and b from left, c from right
-  // assume left like "ax+b" or "ax-b"
-  const match = left.match(/([+-]?\d*)x([+-]\d+)?/i);
-  if (!match) return null;
-
-  let aStr = match[1];
-  let bStr = match[2] || "+0";
-
-  if (aStr === "" || aStr === "+") aStr = "1";
-  if (aStr === "-") aStr = "-1";
-
-  const a = parseFloat(aStr);
-  const b = parseFloat(bStr);
-  const c = parseFloat(right);
-
-  if (isNaN(a) || isNaN(b) || isNaN(c) || a === 0) return null;
-
-  const x = (c - b)/a;
-  return {a,b,c,x};
-}
-
-function looksLikeArithmetic(msg){
-  return /^[0-9+\-*/().\s]+$/.test(msg);
-}
-
-function safeEval(expr){
-  try{
-    // very basic safe eval: only numbers and operators
-    if (!/^[0-9+\-*/().\s]+$/.test(expr)) return null;
-    // eslint-disable-next-line no-new-func
-    const f = new Function("return ("+expr+")");
-    return f();
-  }catch{
-    return null;
-  }
-}
-
-// --- Example selection ---
-function getRandomExample(subject){
-  const arr = examples[subject];
-  if (!arr || arr.length === 0) return null;
-  return arr[Math.floor(Math.random()*arr.length)];
-}
-
-// --- Nova brain ---
+/* ---------------- NOVA BRAIN (RESPONSE LOGIC) ---------------- */
 function novaRespond(raw){
   const msg = raw.trim();
   const lower = msg.toLowerCase();
 
   if (!msg) return "Give me something to chew on — a problem, an equation, anything.";
 
-  // name detection
+  /* --- Name detection --- */
   if (!userName && (lower.startsWith("i am ") || lower.startsWith("i'm "))){
-    userName = msg.split(" ").slice(2).join(" ") || "φίλε";
-    return `Χάρηκα, ${userName}. I’m best at solving problems in maths, physics and chemistry. Try giving me one.`;
-  }
-  if (!userName && lower.includes("my name is")){
-    userName = msg.split(/my name is/i)[1].trim() || "φίλε";
+    userName = msg.split(" ").slice(2).join(" ") || "friend";
     return `Nice to meet you, ${userName}. Throw me a problem when you’re ready.`;
   }
+  if (!userName && lower.includes("my name is")){
+    userName = msg.split(/my name is/i)[1].trim() || "friend";
+    return `Nice to meet you, ${userName}. Give me something to solve.`;
+  }
 
-  // ask for examples
+  /* --- Example requests --- */
   if (lower.includes("example") || lower.includes("exercise") || lower.includes("askisi") || lower.includes("άσκηση")){
-    if (lower.includes("physics") || lower.includes("fysik") || lower.includes("φυσική")){
-      const ex = getRandomExample("physics");
-      return ex ? `Physics example:\n\nQ: ${ex.q}\nA: ${ex.a}` : "I don’t have a physics example ready yet.";
-    }
-    if (lower.includes("chem") || lower.includes("χημεία")){
-      const ex = getRandomExample("chemistry");
-      return ex ? `Chemistry example:\n\nQ: ${ex.q}\nA: ${ex.a}` : "I don’t have a chemistry example ready yet.";
-    }
-    // default to math
-    const ex = getRandomExample("math");
-    return ex ? `Math example:\n\nQ: ${ex.q}\nA: ${ex.a}` : "I don’t have a math example ready yet.";
+    if (lower.includes("physics")) return formatExample("physics");
+    if (lower.includes("chem")) return formatExample("chemistry");
+    if (lower.includes("bio")) return formatExample("biology");
+    return formatExample("math");
   }
 
-  // explicit subject requests
-  if (lower.includes("math") || lower.includes("μαθηματικά")){
-    const ex = getRandomExample("math");
-    return ex ? `Here’s a math example:\n\nQ: ${ex.q}\nA: ${ex.a}\n\nYou can also give me your own equation to solve.` 
-              : "I’m ready for math, just give me an equation.";
-  }
-  if (lower.includes("physics") || lower.includes("φυσική")){
-    const ex = getRandomExample("physics");
-    return ex ? `Here’s a physics example:\n\nQ: ${ex.q}\nA: ${ex.a}` 
-              : "I’m ready for physics questions when you are.";
-  }
-  if (lower.includes("chemistry") || lower.includes("χημεία")){
-    const ex = getRandomExample("chemistry");
-    return ex ? `Here’s a chemistry example:\n\nQ: ${ex.q}\nA: ${ex.a}` 
-              : "I’m ready for chemistry questions when you are.";
-  }
+  /* --- Subject requests --- */
+  if (lower.includes("math")) return formatExample("math");
+  if (lower.includes("physics")) return formatExample("physics");
+  if (lower.includes("chemistry")) return formatExample("chemistry");
+  if (lower.includes("biology")) return formatExample("biology");
 
-  // equation solving
+  /* --- Equation solving --- */
   if (looksLikeEquation(msg)){
-    const sol = solveLinearEquation(msg);
-    if (sol){
-      lastMathProblem = msg;
-      return `Let’s solve: ${msg}\n\nWe have a = ${sol.a}, b = ${sol.b}, c = ${sol.c}.\nSo  ${sol.a}x + ${sol.b} = ${sol.c} ⇒ ${sol.a}x = ${sol.c - sol.b} ⇒ x = ${(sol.c - sol.b)}/${sol.a} = ${sol.x}.`;
-    }else{
-      return "That looks like an equation, but it’s a bit more complex than my simple linear solver. You can still ask me for examples in maths, physics or chemistry.";
+
+    /* SYSTEMS FIRST */
+    if (looksLikeSystem(msg)){
+      const sys = solveSystem2x2(msg);
+      if (sys){
+        if (sys.type === "unique"){
+          lastMathProblem = msg;
+          return `Let’s solve this system:\n${msg}\n\nΔ = ${sys.det} ≠ 0 ⇒ unique solution.\n\nx = ${sys.x}\ny = ${sys.y}`;
+        }
+        if (sys.type === "infinite") return "This system has infinitely many solutions — the equations describe the same line.";
+        if (sys.type === "none") return "This system has no solution — the lines are parallel.";
+      }
     }
+
+    /* QUADRATICS */
+    if (looksLikeQuadratic(msg)){
+      const q = solveQuadraticEquation(msg);
+      if (q){
+        lastMathProblem = msg;
+        if (q.type === "real-distinct"){
+          return `Solving: ${msg}\n\nTwo real roots:\nx₁ = ${q.x1}\nx₂ = ${q.x2}`;
+        }
+        if (q.type === "real-double"){
+          return `Solving: ${msg}\n\nOne double root:\nx = ${q.x}`;
+        }
+        return `Solving: ${msg}\n\nComplex roots:\nx₁ = ${q.real} + ${q.imag}i\nx₂ = ${q.real} - ${q.imag}i`;
+      }
+    }
+
+    /* LINEAR */
+    const lin = solveLinearEquation(msg);
+    if (lin){
+      lastMathProblem = msg;
+      return `Solving: ${msg}\n\nx = ${lin.x}`;
+    }
+
+    return "That looks like an equation, but it's a bit too complex for my parser.";
   }
 
-  // arithmetic
+  /* --- Arithmetic --- */
   if (looksLikeArithmetic(msg)){
     const val = safeEval(msg);
     if (val !== null){
@@ -729,31 +447,26 @@ function novaRespond(raw){
     }
   }
 
-  // if user gives a number after a problem
-  if (!isNaN(parseFloat(msg)) && lastMathProblem){
-    return `If that number is your answer to “${lastMathProblem}”, tell me the full equation so I can check it properly.`;
+  /* --- Emotional / general --- */
+  if (["sad","upset","tired","stressed","frustrated"].some(w => lower.includes(w))){
+    return "Take a breath. If you want, give me a problem and I’ll handle the thinking.";
   }
 
-  // emotional / general
-  if (["sad","upset","tired","stressed","frustrated","αγχωμένος","αγχωμενος","κουρασμένος"].some(w => lower.includes(w))){
-    return "Okay, pause. You’re allowed to feel like that. If you want, give me a problem and I’ll handle the thinking part for a bit.";
-  }
-
-  // chat requests
-  if (lower.includes("chat") || lower.includes("talk") || lower.includes("συζήτηση")){
+  /* --- Chat mode --- */
+  if (lower.includes("chat") || lower.includes("talk")){
     mode = "chat";
-    return "We can chat a bit, but remember: my superpower is solving problems. Whenever you’re ready, just drop one in.";
+    return "Sure, we can talk. And whenever you want, drop a problem in.";
   }
 
-  // default: gently push back to problems
+  /* --- Default --- */
   if (mode === "math-first"){
-    return "I love that you’re talking to me. Now give me something to solve — maths, physics, chemistry, whatever you’re working on.";
-  }else{
-    return "I’m listening. And whenever you want, we can jump back into problems.";
+    return "I love talking with you. Now give me something to solve — maths, physics, chemistry, biology, anything.";
   }
+
+  return "I’m listening. And whenever you want, we can jump back into problems.";
 }
 
-// --- Wiring UI ---
+/* ---------------- UI WIRING ---------------- */
 function handleSend(){
   const text = inputEl.value.trim();
   if (!text) return;
@@ -768,9 +481,9 @@ inputEl.addEventListener("keydown", e => {
   if (e.key === "Enter") handleSend();
 });
 
-// greeting
-addMessage("Hey, I’m Nova 💜.\nI’m built to help with maths, physics and chemistry — especially higher levels.\nTry giving me an equation like “2x - 5 = 11” or say “example physics”.","nova");
-</script>
+/* --- Greeting --- */
+addMessage("Hey, I’m Nova 💜.\nI’m built to help with maths, physics, chemistry and biology.\nTry giving me an equation like “2x - 5 = 11” or say “example physics”.","nova");
 
+</script>
 </body>
 </html>
