@@ -1,209 +1,207 @@
-  <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<a href="chatbot.html">Open Nova Chatbot</a>
- <link rel="apple-touch-icon" sizes="192x192" href="/apple-touch-icon.png">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Study Sphere</title>
+
+<!-- Icons -->
+<link rel="apple-touch-icon" sizes="192x192" href="/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="512x512" href="/favicon-512x512.png">
 <link rel="icon" type="image/png" sizes="64x64" href="/favicon-64x64.png">
-<link rel="manifest" href="/site.webmanifest"><meta charset="UTF-8">
-  <title>Study Sphere</title>
+<link rel="icon" type="image/png" href="favicon.png">
 
-  <!-- Favicon (browser tab icon) -->
-  <link rel="icon" type="image/png" href="favicon.png">
+<!-- Manifest -->
+<link rel="manifest" href="manifest.json">
 
-  <!-- PWA manifest -->
-  <link rel="manifest" href="manifest.json">
+<!-- Theme -->
+<meta name="theme-color" content="#D8BFD8">
+<meta name="background-color" content="#D8BFD8">
 
-  <!-- Theme + background colors -->
-  <meta name="theme-color" content="#D8BFD8">
-  <meta name="background-color" content="#D8BFD8">
+<style>
+    :root {
+        --pink: #FCE7F3;
+        --lavender: #EDE7FF;
+        --mint: #DFFCF0;
+        --blue: #E3F2FD;
+        --peach: #FFEFE2;
+        --text: #3A3A3A;
+        --white: #FFFFFF;
+    }
 
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-</head>
-<body>
-</body>
-</html>
-    <link rel="stylesheet" href="style.css">
-    <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#ffffff">
-    
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Study Sphere</title>
+    body {
+        margin: 0;
+        font-family: "Poppins", sans-serif;
+        background: linear-gradient(135deg, var(--pink), var(--lavender), var(--mint), var(--blue), var(--peach));
+        background-size: 400% 400%;
+        animation: gradientShift 20s ease infinite;
+        color: var(--text);
+    }
 
-    <style>
-        /* ------------------------------
-           PASTEL RAINBOW THEME
-        ------------------------------ */
-        :root {
-            --pink: #FCE7F3;
-            --lavender: #EDE7FF;
-            --mint: #DFFCF0;
-            --blue: #E3F2FD;
-            --peach: #FFEFE2;
-            --text: #3A3A3A;
-            --white: #FFFFFF;
-        }
+    @keyframes gradientShift {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
 
-        body {
-            margin: 0;
-            font-family: "Poppins", sans-serif;
-            background: linear-gradient(135deg, var(--pink), var(--lavender), var(--mint), var(--blue), var(--peach));
-            background-size: 400% 400%;
-            animation: gradientShift 20s ease infinite;
-            color: var(--text);
-        }
+    /* MENU BUTTON */
+    #menu-btn {
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        width: 55px;
+        height: 55px;
+        border-radius: 50%;
+        background: var(--white);
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        border: none;
+        font-size: 16px;
+        cursor: pointer;
+        z-index: 1000;
+        transition: transform 0.2s ease;
+    }
 
-        @keyframes gradientShift {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
+    #menu-btn:hover {
+        transform: scale(1.05);
+    }
 
-        /* ------------------------------
-           MENU BUTTON (PASTEL CIRCLE)
-        ------------------------------ */
-        #menu-btn {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            width: 55px;
-            height: 55px;
-            border-radius: 50%;
-            background: var(--white);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            border: none;
-            font-size: 16px;
-            cursor: pointer;
-            z-index: 1000;
-            transition: transform 0.2s ease;
-        }
+    /* SIDEBAR */
+    #sidebar {
+        position: fixed;
+        top: 0;
+        left: -260px;
+        width: 260px;
+        height: 100%;
+        background: var(--white);
+        box-shadow: 4px 0 12px rgba(0,0,0,0.1);
+        padding: 30px 20px;
+        transition: left 0.3s ease;
+        z-index: 999;
+    }
 
-        #menu-btn:hover {
-            transform: scale(1.05);
-        }
+    #sidebar.open {
+        left: 0;
+    }
 
-        /* ------------------------------
-           COLLAPSIBLE SIDEBAR
-        ------------------------------ */
-        #sidebar {
-            position: fixed;
-            top: 0;
-            left: -260px;
-            width: 260px;
-            height: 100%;
-            background: var(--white);
-            box-shadow: 4px 0 12px rgba(0,0,0,0.1);
-            padding: 30px 20px;
-            transition: left 0.3s ease;
-            z-index: 999;
-        }
+    #sidebar h2 {
+        margin-top: 0;
+        font-size: 22px;
+        color: var(--text);
+    }
 
-        #sidebar.open {
-            left: 0;
-        }
+    #sidebar a {
+        display: block;
+        margin: 15px 0;
+        text-decoration: none;
+        color: var(--text);
+        font-size: 18px;
+        padding: 8px 10px;
+        border-radius: 8px;
+        transition: background 0.2s ease;
+    }
 
-        #sidebar h2 {
-            margin-top: 0;
-            font-size: 22px;
-            color: var(--text);
-        }
+    #sidebar a:hover {
+        background: var(--lavender);
+    }
 
-        #sidebar a {
-            display: block;
-            margin: 15px 0;
-            text-decoration: none;
-            color: var(--text);
-            font-size: 18px;
-            padding: 8px 10px;
-            border-radius: 8px;
-            transition: background 0.2s ease;
-        }
+    /* HERO SECTION */
+    .hero {
+        text-align: center;
+        padding: 150px 20px;
+    }
 
-        #sidebar a:hover {
-            background: var(--lavender);
-        }
+    .hero h1 {
+        font-size: 48px;
+        margin-bottom: 10px;
+    }
 
-        /* ------------------------------
-           HOMEPAGE CONTENT
-        ------------------------------ */
-        .hero {
-            text-align: center;
-            padding: 150px 20px;
-        }
+    .hero p {
+        font-size: 20px;
+        max-width: 600px;
+        margin: 0 auto;
+    }
 
-        .hero h1 {
-            font-size: 48px;
-            margin-bottom: 10px;
-        }
+    .cta {
+        margin-top: 30px;
+        display: inline-block;
+        padding: 14px 28px;
+        background: var(--white);
+        border-radius: 12px;
+        font-size: 18px;
+        text-decoration: none;
+        color: var(--text);
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        transition: transform 0.2s ease;
+    }
 
-        .hero p {
-            font-size: 20px;
-            max-width: 600px;
-            margin: 0 auto;
-        }
+    .cta:hover {
+        transform: scale(1.05);
+    }
 
-        .cta {
-            margin-top: 30px;
-            display: inline-block;
-            padding: 14px 28px;
-            background: var(--white);
-            border-radius: 12px;
-            font-size: 18px;
-            text-decoration: none;
-            color: var(--text);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            transition: transform 0.2s ease;
-        }
-
-        .cta:hover {
-            transform: scale(1.05);
-        }
-    </style>
+    /* NOVA TOP LINK */
+    .nova-top {
+        display: block;
+        text-align: center;
+        padding: 12px;
+        background: white;
+        color: #3A3A3A;
+        font-family: Poppins, sans-serif;
+        font-size: 16px;
+        text-decoration: none;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        position: relative;
+        z-index: 1001;
+    }
+</style>
 </head>
 
 <body>
 
-    <!-- MENU BUTTON -->
-    <button id="menu-btn">Menu</button>
+<!-- NOVA CHATBOT AT TOP -->
+<a href="chatbot.html" class="nova-top">Open Nova Chatbot</a>
 
-    <!-- SIDEBAR -->
-    <div id="sidebar">
-        <h2>Study Sphere</h2>
-        <a href="index.html">Home</a>
-        <a href="flashcards.html">Flashcards</a>
-        <a href="translate.html">Language learning</a>
-        <a href="notebook.html">Notebook</a>
-        <a href="chatbot.html">Chatbot</a>
-        <a href="solver.html">Problem Solver</a>
-        <a href="whiteboard.html">Whiteboard</a>
-        <a href="study-planner.html"> Study Planner</a>
-        <a href="todo.html">To‑Do List</a></li>
-        <a href="weekly.html">Weekly Planner</a>
-        <a href="timer.html"> Study Timer</a>
-        <a href="relax.html">Relax</a>
-    </div>
+<!-- MENU BUTTON -->
+<button id="menu-btn">Menu</button>
 
-    <!-- HOMEPAGE CONTENT -->
-    <div class="hero">
-        <h1>Welcome to Study Sphere</h1>
-        <p>Your soft pastel study companion — flashcards, notes, language learning, and more.</p>
-        <a class="cta" href="notebook.html">Start Studying</a>
-    </div>
+<!-- SIDEBAR -->
+<div id="sidebar">
+    <h2>Study Sphere</h2>
+    <a href="index.html">Home</a>
+    <a href="flashcards.html">Flashcards</a>
+    <a href="translate.html">Language learning</a>
+    <a href="notebook.html">Notebook</a>
+    <a href="chatbot.html">Chatbot</a> <!-- NOVA ALSO HERE -->
+    <a href="solver.html">Problem Solver</a>
+    <a href="whiteboard.html">Whiteboard</a>
+    <a href="study-planner.html">Study Planner</a>
+    <a href="todo.html">To‑Do List</a>
+    <a href="weekly.html">Weekly Planner</a>
+    <a href="timer.html">Study Timer</a>
+    <a href="relax.html">Relax</a>
+</div>
 
-    <script>
-        const menuBtn = document.getElementById("menu-btn");
-        const sidebar = document.getElementById("sidebar");
+<!-- HERO SECTION -->
+<div class="hero">
+    <h1>Welcome to Study Sphere</h1>
+    <p>Your soft pastel study companion — flashcards, notes, language learning, and more.</p>
+    <a class="cta" href="notebook.html">Start Studying</a>
+</div>
 
-        menuBtn.addEventListener("click", () => {
-            sidebar.classList.toggle("open");
-        });
-    </script>
+<script>
+const menuBtn = document.getElementById("menu-btn");
+const sidebar = document.getElementById("sidebar");
 
-</body>
+menuBtn.addEventListener("click", () => {
+    sidebar.classList.toggle("open");
+});
+</script>
+
 <script>
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("service-worker.js");
 }
 </script>
+
+</body>
 </html>
