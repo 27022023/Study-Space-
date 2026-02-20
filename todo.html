@@ -2,12 +2,10 @@
 <html lang="en">
 <head>
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-<link rel="manifest" href="/site.webmanifest"
-    <link rel="stylesheet" href="style.css">
-   <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#ffffff">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>To‑Do List</title>
@@ -109,7 +107,6 @@
     </div>
 
     <script>
-        // Load saved tasks when page opens
         document.addEventListener("DOMContentLoaded", loadTasks);
 
         function addTask() {
@@ -129,7 +126,11 @@
             if (completed) li.classList.add("completed");
 
             li.innerHTML = `
-                <span onclick="toggleComplete(this)">${text}</span>
+                <span contenteditable="true" 
+                      oninput="saveTasks()" 
+                      onclick="toggleComplete(this)">
+                      ${text}
+                </span>
                 <button class="deleteBtn" onclick="deleteTask(this)">X</button>
             `;
 
@@ -137,8 +138,11 @@
         }
 
         function toggleComplete(span) {
-            span.parentElement.classList.toggle("completed");
-            saveTasks();
+            // Only toggle if user is NOT editing
+            if (document.activeElement !== span) {
+                span.parentElement.classList.toggle("completed");
+                saveTasks();
+            }
         }
 
         function deleteTask(btn) {
@@ -162,10 +166,11 @@
             saved.forEach(task => createTaskElement(task.text, task.completed));
         }
     </script>
+
+    <script>
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("service-worker.js");
+    }
+    </script>
 </body>
-<script>
-if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("service-worker.js");
-}
-</script>
 </html>
