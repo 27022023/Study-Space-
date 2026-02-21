@@ -89,21 +89,10 @@
   }
 
   /* Subject Colors */
-  .math {
-    background: #f3e8ff;
-  }
-
-  .physics {
-    background: #e0f0ff;
-  }
-
-  .chemistry {
-    background: #e7ffe7;
-  }
-
-  .biology {
-    background: #fff7d6;
-  }
+  .math { background: #f3e8ff; }
+  .physics { background: #e0f0ff; }
+  .chemistry { background: #e7ffe7; }
+  .biology { background: #fff7d6; }
 
   /* Subject Titles */
   .subject-title {
@@ -133,6 +122,19 @@
   <input type="text" id="calcInput" readonly>
 
   <div class="calc-buttons">
+
+    <!-- NEW BUTTONS ADDED -->
+    <button onclick="appendCalc('(')">(</button>
+    <button onclick="appendCalc(')')">)</button>
+    <button onclick="appendCalc('^')">^</button>
+    <button onclick="appendCalc('^2')">x²</button>
+
+    <button onclick="appendCalc('pi')">π</button>
+    <button onclick="appendCalc('e')">e</button>
+    <button onclick="deleteLast()">DEL</button>
+    <button onclick="toggleDegRad()" id="degRadBtn">DEG</button>
+    <!-- END OF NEW BUTTONS -->
+
     <button onclick="appendCalc('7')">7</button>
     <button onclick="appendCalc('8')">8</button>
     <button onclick="appendCalc('9')">9</button>
@@ -166,7 +168,6 @@
 <section id="formulaBook">
   <h2>Formula Book</h2>
 
-  <!-- SEARCH BAR (visual only) -->
   <input type="text" id="formulaSearch" placeholder="Search formulas..." />
 
   <!-- MATHEMATICS -->
@@ -201,7 +202,7 @@
 
   <div class="formula math">
     <h3>Distance Between Two Points</h3>
-    <p>d = √[(x₂ - x₁)² + (y₂ - y₁)²]</p>
+    <p>d = √[(x₂ - x₁)² + (y₁ - y₂)²]</p>
   </div>
 
   <div class="formula math">
@@ -453,6 +454,29 @@ function clearCalc() {
   document.getElementById("calcInput").value = "";
 }
 
+function deleteLast() {
+  const input = document.getElementById("calcInput");
+  input.value = input.value.slice(0, -1);
+}
+
+let useDegrees = true;
+
+function toggleDegRad() {
+  useDegrees = !useDegrees;
+  document.getElementById("degRadBtn").textContent = useDegrees ? "DEG" : "RAD";
+}
+
+// Override trig for degree mode
+const originalSin = math.sin;
+const originalCos = math.cos;
+const originalTan = math.tan;
+
+math.import({
+  sin: x => originalSin(useDegrees ? x * Math.PI / 180 : x),
+  cos: x => originalCos(useDegrees ? x * Math.PI / 180 : x),
+  tan: x => originalTan(useDegrees ? x * Math.PI / 180 : x)
+}, { override: true });
+
 function calculate() {
   try {
     const input = document.getElementById("calcInput").value;
@@ -465,5 +489,4 @@ function calculate() {
 </script>
 
 </body>
-</html>
-
+  </html>
