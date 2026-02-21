@@ -7,7 +7,7 @@
 *{box-sizing:border-box;margin:0;padding:0}
 body{
   font-family:system-ui;
-  background:linear-gradient(135deg,#fef3ff,#e0f2fe);
+  background:linear-gradient(135deg,#dbeafe,#bfdbfe); /* baby blue */
   min-height:100vh;
   display:flex;
   justify-content:center;
@@ -17,7 +17,7 @@ body{
 .app{
   width:100%;
   max-width:900px;
-  background:#ffffffcc;
+  background:rgba(240,248,255,0.75); /* soft blue-white */
   border-radius:24px;
   box-shadow:0 12px 30px rgba(0,0,0,.12);
   border:1px solid rgba(148,163,184,.35);
@@ -99,13 +99,13 @@ button{
 }
 
 .day-box{
-  padding:16px;
-  border-radius:18px;
+  padding:22px; /* bigger */
+  border-radius:22px; /* softer */
   border:1px solid rgba(0,0,0,0.08);
   margin-bottom:14px;
 }
 .day-title{
-  font-size:15px;
+  font-size:17px; /* bigger */
   font-weight:600;
   margin-bottom:8px;
 }
@@ -113,9 +113,9 @@ button{
   display:flex;
   align-items:flex-start;
   gap:6px;
-  padding:6px 8px;
+  padding:8px 10px; /* bigger */
   border-radius:10px;
-  font-size:12px;
+  font-size:13px; /* bigger */
   margin-bottom:6px;
   border:1px solid rgba(0,0,0,0.08);
 }
@@ -137,11 +137,11 @@ button{
   gap:8px;
 }
 .day-col{
-  padding:10px;
-  border-radius:16px;
+  padding:22px;
+  border-radius:22px;
   border:1px solid rgba(0,0,0,0.08);
 }
-.day-header{font-size:12px;font-weight:600;margin-bottom:6px}
+.day-header{font-size:15px;font-weight:600;margin-bottom:6px}
 
 @media(max-width:900px){
   .grid{grid-template-columns:repeat(2,1fr)}
@@ -207,20 +207,21 @@ button{
 
 <script>
 const DAYS=["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
+
 const COLORS=[
-  "#F9A8D4","#FBCFE8","#A5B4FC","#C7D2FE",
-  "#BFDBFE","#BAE6FD","#6EE7B7","#A7F3D0",
-  "#FDE68A","#FCD34D","#FECACA","#FECACA",
-  "#FBCFE8","#DDD6FE","#F5D0FE","#FFE4E6"
+  "#FBCFE8","#F5D0FE","#DDD6FE","#C7D2FE",
+  "#BFDBFE","#BAE6FD","#A7F3D0","#D1FAE5",
+  "#FDE68A","#FEF3C7","#FECACA","#FFE4E6"
 ];
+
 const DAY_GRADIENTS=[
-  "linear-gradient(180deg,#ffe4f4,#fbcfe8)",
-  "linear-gradient(180deg,#ede9fe,#c7d2fe)",
   "linear-gradient(180deg,#e0f2fe,#bfdbfe)",
+  "linear-gradient(180deg,#ede9fe,#ddd6fe)",
+  "linear-gradient(180deg,#fef3c7,#fde68a)",
   "linear-gradient(180deg,#d1fae5,#a7f3d0)",
-  "linear-gradient(180deg,#fef9c3,#fde68a)",
-  "linear-gradient(180deg,#ffe4e6,#fecaca)",
-  "linear-gradient(180deg,#f3e8ff,#ddd6fe)"
+  "linear-gradient(180deg,#ffe4e6,#fecdd3)",
+  "linear-gradient(180deg,#f3e8ff,#e9d5ff)",
+  "linear-gradient(180deg,#e0f2fe,#bae6fd)"
 ];
 
 const STORAGE_KEY="study_planner_v2";
