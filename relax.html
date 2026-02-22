@@ -1,331 +1,259 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Relax</title>
+<meta charset="UTF-8">
+<title>Relax</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(180deg, #ffe6f2 0%, #f3e8ff 50%, #e3f2ff 100%);
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+  }
 
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: Arial, sans-serif;
+  .container {
+    width: 100%;
+    max-width: 480px;
+    padding: 30px 20px 40px;
+    box-sizing: border-box;
+    text-align: center;
+  }
 
-      /* Pink → Lavender → Baby Blue gradient */
-      background: linear-gradient(
-        180deg,
-        #ffe6f2 0%,
-        #f3e8ff 50%,
-        #e3f2ff 100%
-      );
+  h1 {
+    margin: 0 0 20px;
+    color: #5a305a;
+    font-size: 28px;
+  }
 
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-      min-height: 100vh;
-    }
+  .section {
+    background: rgba(243, 232, 255, 0.9);
+    border-radius: 20px;
+    padding: 20px;
+    margin-bottom: 25px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  }
 
-    .container {
-      width: 100%;
-      max-width: 480px;
-      padding: 30px 20px 40px;
-      box-sizing: border-box;
-      text-align: center;
-    }
+  .breath-box {
+    font-size: 40px;
+    padding: 30px;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.9);
+    width: 220px;
+    margin: 10px auto;
+    animation: fade 4s ease-in-out infinite;
+  }
 
-    h1 {
-      margin: 0 0 20px;
-      color: #5a305a;
-      font-size: 28px;
-    }
+  @keyframes fade {
+    0% { opacity: 0.4; transform: scale(0.96); }
+    50% { opacity: 1; transform: scale(1.04); }
+    100% { opacity: 0.4; transform: scale(0.96); }
+  }
 
-    .timer-section,
-    .breath-section,
-    .sounds-section {
-      background: rgba(243, 232, 255, 0.9);
-      border-radius: 20px;
-      padding: 20px;
-      margin-bottom: 25px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-    }
+  .start-btn {
+    margin-top: 15px;
+    padding: 10px 22px;
+    border-radius: 999px;
+    border: none;
+    background: #ff9ac2;
+    color: #4a234a;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+  }
 
-    .timer-label {
-      font-size: 16px;
-      color: #5a305a;
-      margin-bottom: 10px;
-    }
+  .sound-btn {
+    padding: 8px 14px;
+    border-radius: 999px;
+    border: 1px solid #d1b3c8;
+    background: #fff;
+    color: #5a305a;
+    cursor: pointer;
+  }
 
-    select {
-      padding: 6px 10px;
-      border-radius: 8px;
-      border: 1px solid #d1b3c8;
-      font-size: 14px;
-      background: #fff;
-      color: #5a305a;
-    }
+  .sound-btn.active {
+    background: #ffb3d6;
+    border-color: #ff7fb4;
+  }
 
-    .timer-status {
-      margin-top: 8px;
-      font-size: 14px;
-      color: #7a4b7a;
-      min-height: 18px;
-    }
-
-    .breath-box {
-      font-size: 40px;
-      padding: 30px;
-      border-radius: 20px;
-      background: rgba(255, 255, 255, 0.9);
-      backdrop-filter: blur(6px);
-      width: 220px;
-      margin: 10px auto;
-      animation: fade 4s ease-in-out infinite;
-    }
-
-    @keyframes fade {
-      0% { opacity: 0.4; transform: scale(0.96); }
-      50% { opacity: 1; transform: scale(1.04); }
-      100% { opacity: 0.4; transform: scale(0.96); }
-    }
-
-    .breath-text {
-      font-size: 20px;
-      margin-top: 8px;
-      color: #5a4a6a;
-    }
-
-    .start-btn {
-      margin-top: 15px;
-      padding: 10px 22px;
-      border-radius: 999px;
-      border: none;
-      background: #ff9ac2;
-      color: #4a234a;
-      font-size: 16px;
-      font-weight: bold;
-      cursor: pointer;
-      box-shadow: 0 3px 8px rgba(0,0,0,0.15);
-      transition: background 0.2s, transform 0.1s;
-    }
-
-    .start-btn:hover {
-      background: #ff7fb4;
-      transform: translateY(-1px);
-    }
-
-    .start-btn:active {
-      transform: translateY(1px);
-    }
-
-    .sounds-title {
-      font-size: 18px;
-      color: #5a305a;
-      margin-bottom: 10px;
-    }
-
-    .sound-buttons {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 10px;
-    }
-
-    .sound-btn {
-      padding: 8px 14px;
-      border-radius: 999px;
-      border: 1px solid #d1b3c8;
-      background: #fff;
-      color: #5a305a;
-      font-size: 14px;
-      cursor: pointer;
-      transition: background 0.2s, color 0.2s, box-shadow 0.2s;
-    }
-
-    .sound-btn.active {
-      background: #ffb3d6;
-      color: #4a234a;
-      border-color: #ff7fb4;
-      box-shadow: 0 3px 8px rgba(0,0,0,0.12);
-    }
-
-    .note {
-      margin-top: 10px;
-      font-size: 12px;
-      color: #7a4b7a;
-    }
-  </style>
+  .volume-slider {
+    width: 100%;
+    margin-top: 15px;
+  }
+</style>
 </head>
 
 <body>
-  <div class="container">
+<div class="container">
 
-    <!-- TIMER -->
-    <div class="timer-section">
-      <div class="timer-label">Choose how long you want to relax</div>
-      <select id="durationSelect">
-        <option value="1">1 minute</option>
-        <option value="3">3 minutes</option>
-        <option value="5" selected>5 minutes</option>
-        <option value="10">10 minutes</option>
-      </select>
-      <div class="timer-status" id="timerStatus"></div>
-    </div>
-
-    <!-- BREATHING -->
-    <div class="breath-section">
-      <h1>Take a Moment</h1>
-      <div class="breath-box" id="emojiBox">☺️</div>
-      <p class="breath-text" id="breathText">breathe in…</p>
-      <button class="start-btn" id="startStopBtn">Start</button>
-    </div>
-
-    <!-- SOUNDS -->
-    <div class="sounds-section">
-      <div class="sounds-title">Sounds (toggle any combination)</div>
-      <div class="sound-buttons">
-        <button class="sound-btn" data-sound="rain">🌧️ Rain</button>
-        <button class="sound-btn" data-sound="ocean">🌊 Ocean</button>
-        <button class="sound-btn" data-sound="wind">🍃 Wind</button>
-        <button class="sound-btn" data-sound="space">🪐 Space</button>
-      </div>
-      <div class="note">Sounds start instantly when you press Start and stop instantly when you press Stop.</div>
-    </div>
-
+  <div class="section">
+    <h1>Take a Moment</h1>
+    <div class="breath-box" id="emojiBox">☺️</div>
+    <p id="breathText">breathe in…</p>
+    <button class="start-btn" id="startStopBtn">Start</button>
   </div>
 
-  <script>
-    /* ---------------- BREATHING ---------------- */
-    const emojis = ["☺️","💗","🪷","🌿","🌸","🌙","✨","🫧","🌊","💞"];
-    let emojiIndex = 0;
-    let breathingIn = true;
-    let breathingInterval = null;
+  <div class="section">
+    <h2 style="color:#5a305a;">Sounds</h2>
+    <div>
+      <button class="sound-btn" data-sound="rain">🌧️ Rain</button>
+      <button class="sound-btn" data-sound="ocean">🌊 Ocean</button>
+      <button class="sound-btn" data-sound="wind">🍃 Wind</button>
+      <button class="sound-btn" data-sound="space">🪐 Space</button>
+    </div>
 
-    const emojiBox = document.getElementById("emojiBox");
-    const breathText = document.getElementById("breathText");
-    const startStopBtn = document.getElementById("startStopBtn");
-    const durationSelect = document.getElementById("durationSelect");
-    const timerStatus = document.getElementById("timerStatus");
+    <p style="margin-top:15px;color:#5a305a;">Volume</p>
+    <input type="range" min="0" max="1" step="0.01" value="0.5"
+           id="volumeSlider" class="volume-slider">
+  </div>
 
-    let sessionRunning = false;
-    let timerTimeout = null;
-    let remainingSecondsInterval = null;
-    let sessionEndTime = null;
+</div>
 
-    function updateBreathing() {
-      emojiIndex = (emojiIndex + 1) % emojis.length;
-      emojiBox.innerText = emojis[emojiIndex];
-      breathingIn = !breathingIn;
-      breathText.innerText = breathingIn ? "breathe in…" : "breathe out…";
+<script>
+/* ---------------- BREATHING ---------------- */
+const emojis = ["☺️","💗","🪷","🌿","🌸","🌙","✨","🫧","🌊","💞"];
+let emojiIndex = 0;
+let breathingIn = true;
+let breathingInterval = null;
+
+const emojiBox = document.getElementById("emojiBox");
+const breathText = document.getElementById("breathText");
+const startStopBtn = document.getElementById("startStopBtn");
+
+function updateBreathing() {
+  emojiIndex = (emojiIndex + 1) % emojis.length;
+  emojiBox.innerText = emojis[emojiIndex];
+  breathingIn = !breathingIn;
+  breathText.innerText = breathingIn ? "breathe in…" : "breathe out…";
+}
+
+function startBreathing() {
+  breathingInterval = setInterval(updateBreathing, 4000);
+}
+
+function stopBreathing() {
+  clearInterval(breathingInterval);
+}
+
+/* ---------------- WEB AUDIO ---------------- */
+let audioCtx = null;
+let masterGain = null;
+
+const soundNodes = {
+  rain: null,
+  ocean: null,
+  wind: null,
+  space: null
+};
+
+function createNoise(type="white") {
+  const bufferSize = 2 * audioCtx.sampleRate;
+  const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+  const data = buffer.getChannelData(0);
+
+  let lastOut = 0;
+  for (let i = 0; i < bufferSize; i++) {
+    let white = Math.random() * 2 - 1;
+    if (type === "white") {
+      data[i] = white;
+    } else if (type === "brown") {
+      lastOut = (lastOut + (0.02 * white)) / 1.02;
+      data[i] = lastOut * 3.5;
+    }
+  }
+
+  const noise = audioCtx.createBufferSource();
+  noise.buffer = buffer;
+  noise.loop = true;
+  return noise;
+}
+
+function startSound(key) {
+  if (!audioCtx) return;
+  if (soundNodes[key]) return;
+
+  let node;
+
+  if (key === "rain") {
+    node = createNoise("white");
+  } else if (key === "ocean") {
+    node = createNoise("brown");
+  } else if (key === "wind") {
+    node = createNoise("white");
+  } else if (key === "space") {
+    node = audioCtx.createOscillator();
+    node.type = "sine";
+    node.frequency.value = 80;
+  }
+
+  const gain = audioCtx.createGain();
+  gain.gain.value = 0.4;
+
+  node.connect(gain).connect(masterGain);
+  node.start();
+
+  soundNodes[key] = { node, gain };
+}
+
+function stopSound(key) {
+  if (!soundNodes[key]) return;
+  try { soundNodes[key].node.stop(); } catch(e){}
+  soundNodes[key] = null;
+}
+
+/* ---------------- SESSION CONTROL ---------------- */
+let running = false;
+
+startStopBtn.addEventListener("click", () => {
+  if (!running) {
+    running = true;
+    startStopBtn.textContent = "Stop";
+
+    if (!audioCtx) {
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      masterGain = audioCtx.createGain();
+      masterGain.gain.value = 0.5;
+      masterGain.connect(audioCtx.destination);
     }
 
-    function startBreathing() {
-      emojiIndex = 0;
-      breathingIn = true;
-      emojiBox.innerText = emojis[emojiIndex];
-      breathText.innerText = "breathe in…";
-      breathingInterval = setInterval(updateBreathing, 4000);
-    }
+    startBreathing();
 
-    function stopBreathing() {
-      clearInterval(breathingInterval);
-      breathingInterval = null;
-    }
-
-    /* ---------------- TIMER ---------------- */
-    function startTimer() {
-      const minutes = parseInt(durationSelect.value, 10);
-      const durationMs = minutes * 60 * 1000;
-      sessionEndTime = Date.now() + durationMs;
-
-      timerStatus.textContent = `Session: ${minutes} minute(s)`;
-
-      timerTimeout = setTimeout(() => stopSession("Session complete"), durationMs);
-
-      remainingSecondsInterval = setInterval(() => {
-        const remaining = sessionEndTime - Date.now();
-        if (remaining <= 0) return;
-        timerStatus.textContent = `Time left: ${Math.round(remaining / 1000)} second(s)`;
-      }, 1000);
-    }
-
-    function stopTimer(message) {
-      clearTimeout(timerTimeout);
-      clearInterval(remainingSecondsInterval);
-      timerStatus.textContent = message || "";
-    }
-
-    /* ---------------- SOUNDS ---------------- */
-    const soundConfig = {
-      rain: { src: "https://cdn.jsdelivr.net/gh/naptestdev/audio-files/rain.mp3" },
-      ocean:{ src: "https://cdn.jsdelivr.net/gh/naptestdev/audio-files/ocean.mp3" },
-      wind: { src: "https://cdn.jsdelivr.net/gh/naptestdev/audio-files/wind.mp3" },
-      space:{ src: "https://cdn.jsdelivr.net/gh/naptestdev/audio-files/space.mp3" }
-    };
-
-    const sounds = {};
-
-    function ensureSound(key) {
-      if (!sounds[key]) {
-        const audio = new Audio(soundConfig[key].src);
-        audio.loop = true;
-        audio.volume = 1; /* full volume instantly */
-        sounds[key] = { audio, selected: false };
-      }
-      return sounds[key];
-    }
-
-    document.querySelectorAll(".sound-btn").forEach(btn => {
-      const key = btn.dataset.sound;
-      ensureSound(key);
-
-      btn.addEventListener("click", () => {
-        const s = sounds[key];
-        s.selected = !s.selected;
-        btn.classList.toggle("active", s.selected);
-      });
+    document.querySelectorAll(".sound-btn.active").forEach(btn => {
+      startSound(btn.dataset.sound);
     });
 
-    /* ---------------- SESSION CONTROL ---------------- */
-    startStopBtn.addEventListener("click", () => {
+  } else {
+    running = false;
+    startStopBtn.textContent = "Start";
 
-      /* UNIVERSAL AUDIO UNLOCK (Android + iPhone) */
-      Object.values(sounds).forEach(s => {
-        s.audio.play().then(() => {
-          s.audio.pause();
-          s.audio.currentTime = 0;
-        }).catch(()=>{});
-      });
+    stopBreathing();
 
-      if (!sessionRunning) {
-        sessionRunning = true;
-        startStopBtn.textContent = "Stop";
+    Object.keys(soundNodes).forEach(key => stopSound(key));
+  }
+});
 
-        startBreathing();
-        startTimer();
+/* ---------------- SOUND BUTTONS ---------------- */
+document.querySelectorAll(".sound-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    btn.classList.toggle("active");
 
-        /* START SOUNDS INSTANTLY */
-        Object.values(sounds).forEach(s => {
-          if (s.selected) {
-            s.audio.currentTime = 0;
-            s.audio.play().catch(()=>{});
-          }
-        });
+    if (running) {
+      if (btn.classList.contains("active")) startSound(btn.dataset.sound);
+      else stopSound(btn.dataset.sound);
+    }
+  });
+});
 
-      } else {
-        sessionRunning = false;
-        startStopBtn.textContent = "Start";
+/* ---------------- VOLUME ---------------- */
+document.getElementById("volumeSlider").addEventListener("input", e => {
+  if (masterGain) masterGain.gain.value = e.target.value;
+});
+</script>
 
-        stopBreathing();
-        stopTimer("Stopped");
-
-        /* STOP SOUNDS INSTANTLY */
-        Object.values(sounds).forEach(s => {
-          s.audio.pause();
-          s.audio.currentTime = 0;
-        });
-      }
-    });
-  </script>
 </body>
 </html>
