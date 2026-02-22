@@ -74,6 +74,7 @@
     background: #fff;
     color: #5a305a;
     cursor: pointer;
+    margin: 3px;
   }
 
   .sound-btn.active {
@@ -85,12 +86,21 @@
     width: 100%;
     margin-top: 15px;
   }
+
+  input[type="number"] {
+    padding: 6px;
+    width: 80px;
+    border-radius: 10px;
+    border: 1px solid #c9b3d9;
+    margin-top: 10px;
+  }
 </style>
 </head>
 
 <body>
 <div class="container">
 
+  <!-- BREATHING -->
   <div class="section">
     <h1>Take a Moment</h1>
     <div class="breath-box" id="emojiBox">☺️</div>
@@ -98,6 +108,24 @@
     <button class="start-btn" id="startStopBtn">Start</button>
   </div>
 
+  <!-- TIMER -->
+  <div class="section">
+    <h2 style="color:#5a305a;">Timer</h2>
+    <p id="timerDisplay" style="font-size:22px;color:#5a305a;">00:00</p>
+
+    <div style="margin-top:10px;">
+      <button class="sound-btn" onclick="setTimer(1)">1 min</button>
+      <button class="sound-btn" onclick="setTimer(3)">3 min</button>
+      <button class="sound-btn" onclick="setTimer(5)">5 min</button>
+      <button class="sound-btn" onclick="setTimer(10)">10 min</button>
+    </div>
+
+    <p style="margin-top:15px;color:#5a305a;">Custom minutes</p>
+    <input type="number" id="customMinutes" min="1" placeholder="min">
+    <button class="sound-btn" onclick="applyCustom()">Set</button>
+  </div>
+
+  <!-- SOUNDS -->
   <div class="section">
     <h2 style="color:#5a305a;">Sounds</h2>
     <div>
@@ -140,6 +168,48 @@ function stopBreathing() {
   clearInterval(breathingInterval);
 }
 
+/* ---------------- TIMER ---------------- */
+let timerInterval = null;
+let timeLeft = 0;
+
+function setTimer(minutes) {
+  timeLeft = minutes * 60;
+  updateTimerDisplay();
+}
+
+function applyCustom() {
+  const val = parseInt(document.getElementById("customMinutes").value);
+  if (!isNaN(val) && val > 0) {
+    setTimer(val);
+  }
+}
+
+function updateTimerDisplay() {
+  const mins = String(Math.floor(timeLeft / 60)).padStart(2, "0");
+  const secs = String(timeLeft % 60).padStart(2, "0");
+  document.getElementById("timerDisplay").textContent = `${mins}:${secs}`;
+}
+
+function startTimer() {
+  if (timeLeft <= 0) return;
+
+  timerInterval = setInterval(() => {
+    timeLeft--;
+    updateTimerDisplay();
+
+    if (timeLeft <= 0) {
+      clearInterval(timerInterval);
+      timerInterval = null;
+      startStopBtn.click(); // stop session
+    }
+  }, 1000);
+}
+
+function stopTimer() {
+  clearInterval(timerInterval);
+  timerInterval = null;
+}
+
 /* ---------------- WEB AUDIO ---------------- */
 let audioCtx = null;
 let masterGain = null;
@@ -179,13 +249,10 @@ function startSound(key) {
 
   let node;
 
-  if (key === "rain") {
-    node = createNoise("white");
-  } else if (key === "ocean") {
-    node = createNoise("brown");
-  } else if (key === "wind") {
-    node = createNoise("white");
-  } else if (key === "space") {
+  if (key === "rain") node = createNoise("white");
+  if (key === "ocean") node = createNoise("brown");
+  if (key === "wind") node = createNoise("white");
+  if (key === "space") {
     node = audioCtx.createOscillator();
     node.type = "sine";
     node.frequency.value = 80;
@@ -222,6 +289,7 @@ startStopBtn.addEventListener("click", () => {
     }
 
     startBreathing();
+    startTimer();
 
     document.querySelectorAll(".sound-btn.active").forEach(btn => {
       startSound(btn.dataset.sound);
@@ -232,6 +300,7 @@ startStopBtn.addEventListener("click", () => {
     startStopBtn.textContent = "Start";
 
     stopBreathing();
+    stopTimer();
 
     Object.keys(soundNodes).forEach(key => stopSound(key));
   }
