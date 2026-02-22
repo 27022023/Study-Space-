@@ -15,9 +15,9 @@
       /* Pink → Lavender → Baby Blue gradient */
       background: linear-gradient(
         180deg,
-        #ffe6f2 0%,   /* pastel pink */
-        #f3e8ff 50%,  /* pastel lavender */
-        #e3f2ff 100%  /* baby blue */
+        #ffe6f2 0%,
+        #f3e8ff 50%,
+        #e3f2ff 100%
       );
 
       display: flex;
@@ -40,7 +40,6 @@
       font-size: 28px;
     }
 
-    /* Lavender boxes */
     .timer-section,
     .breath-section,
     .sounds-section {
@@ -190,7 +189,7 @@
         <button class="sound-btn" data-sound="wind">🍃 Wind</button>
         <button class="sound-btn" data-sound="space">🪐 Space</button>
       </div>
-      <div class="note">Sounds fade in when you press Start and fade out when you press Stop or when the timer ends.</div>
+      <div class="note">Sounds start instantly when you press Start and stop instantly when you press Stop.</div>
     </div>
 
   </div>
@@ -258,39 +257,23 @@
 
     /* ---------------- SOUNDS ---------------- */
     const soundConfig = {
-      rain: { src: "https://files.freemusicarchive.org/storage-freemusicarchive-org/music/no_curator/Lee_Rosevere/Nature_Ambience/Lee_Rosevere_-_01_-_Gentle_Rain.mp3" },
-      ocean:{ src: "https://files.freemusicarchive.org/storage-freemusicarchive-org/music/no_curator/Lee_Rosevere/Nature_Ambience/Lee_Rosevere_-_03_-_Ocean_Waves.mp3" },
-      wind: { src: "https://files.freemusicarchive.org/storage-freemusicarchive-org/music/no_curator/Lee_Rosevere/Nature_Ambience/Lee_Rosevere_-_02_-_Wind.mp3" },
-      space:{ src: "https://files.freemusicarchive.org/storage-freemusicarchive-org/music/no_curator/Lee_Rosevere/Ambient_Music/Lee_Rosevere_-_05_-_Space_Ambience.mp3" }
+      rain: { src: "https://cdn.jsdelivr.net/gh/naptestdev/audio-files/rain.mp3" },
+      ocean:{ src: "https://cdn.jsdelivr.net/gh/naptestdev/audio-files/ocean.mp3" },
+      wind: { src: "https://cdn.jsdelivr.net/gh/naptestdev/audio-files/wind.mp3" },
+      space:{ src: "https://cdn.jsdelivr.net/gh/naptestdev/audio-files/space.mp3" }
     };
 
     const sounds = {};
-    const maxVolume = 0.6;
-    const fadeStep = 0.05;
 
     function ensureSound(key) {
       if (!sounds[key]) {
         const audio = new Audio(soundConfig[key].src);
         audio.loop = true;
-        audio.volume = 0;
-        sounds[key] = { audio, selected: false, target: 0, current: 0 };
+        audio.volume = 1; /* full volume instantly */
+        sounds[key] = { audio, selected: false };
       }
       return sounds[key];
     }
-
-    function fadeLoop() {
-      Object.values(sounds).forEach(s => {
-        if (Math.abs(s.current - s.target) > 0.01) {
-          s.current += (s.current < s.target ? fadeStep : -fadeStep);
-          s.current = Math.max(0, Math.min(maxVolume, s.current));
-          s.audio.volume = s.current;
-
-          if (s.current > 0 && s.audio.paused) s.audio.play().catch(()=>{});
-          if (s.current === 0 && s.target === 0) s.audio.pause();
-        }
-      });
-    }
-    setInterval(fadeLoop, 120);
 
     document.querySelectorAll(".sound-btn").forEach(btn => {
       const key = btn.dataset.sound;
@@ -300,44 +283,48 @@
         const s = sounds[key];
         s.selected = !s.selected;
         btn.classList.toggle("active", s.selected);
-
-        if (sessionRunning) s.target = s.selected ? maxVolume : 0;
       });
     });
 
-    function applySounds() {
-      Object.values(sounds).forEach(s => {
-        s.target = s.selected ? maxVolume : 0;
-      });
-    }
-
-    function fadeOutAll() {
-      Object.values(sounds).forEach(s => s.target = 0);
-    }
-
     /* ---------------- SESSION CONTROL ---------------- */
-    function startSession() {
-      sessionRunning = true;
-      startStopBtn.textContent = "Stop";
-
-      Object.values(sounds).forEach(s => s.audio.play().catch(()=>{}));
-
-      startBreathing();
-      startTimer();
-      applySounds();
-    }
-
-    function stopSession(message) {
-      sessionRunning = false;
-      startStopBtn.textContent = "Start";
-      stopBreathing();
-      stopTimer(message);
-      fadeOutAll();
-    }
-
     startStopBtn.addEventListener("click", () => {
-      if (!sessionRunning) startSession();
-      else stopSession("Stopped");
+
+      /* UNIVERSAL AUDIO UNLOCK (Android + iPhone) */
+      Object.values(sounds).forEach(s => {
+        s.audio.play().then(() => {
+          s.audio.pause();
+          s.audio.currentTime = 0;
+        }).catch(()=>{});
+      });
+
+      if (!sessionRunning) {
+        sessionRunning = true;
+        startStopBtn.textContent = "Stop";
+
+        startBreathing();
+        startTimer();
+
+        /* START SOUNDS INSTANTLY */
+        Object.values(sounds).forEach(s => {
+          if (s.selected) {
+            s.audio.currentTime = 0;
+            s.audio.play().catch(()=>{});
+          }
+        });
+
+      } else {
+        sessionRunning = false;
+        startStopBtn.textContent = "Start";
+
+        stopBreathing();
+        stopTimer("Stopped");
+
+        /* STOP SOUNDS INSTANTLY */
+        Object.values(sounds).forEach(s => {
+          s.audio.pause();
+          s.audio.currentTime = 0;
+        });
+      }
     });
   </script>
 </body>
