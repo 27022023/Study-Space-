@@ -11,7 +11,15 @@
       margin: 0;
       padding: 0;
       font-family: Arial, sans-serif;
-      background: #ffe6f2; /* soft pastel pink */
+
+      /* Pink → Lavender → Baby Blue gradient */
+      background: linear-gradient(
+        180deg,
+        #ffe6f2 0%,   /* pastel pink */
+        #f3e8ff 50%,  /* pastel lavender */
+        #e3f2ff 100%  /* baby blue */
+      );
+
       display: flex;
       justify-content: center;
       align-items: flex-start;
@@ -32,27 +40,21 @@
       font-size: 28px;
     }
 
-    /* Timer section */
-    .timer-section {
+    /* Lavender boxes */
+    .timer-section,
+    .breath-section,
+    .sounds-section {
+      background: rgba(243, 232, 255, 0.9); /* pastel lavender */
+      border-radius: 20px;
+      padding: 20px;
       margin-bottom: 25px;
-      background: rgba(255, 255, 255, 0.8);
-      border-radius: 16px;
-      padding: 15px 20px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
     }
 
     .timer-label {
       font-size: 16px;
       color: #5a305a;
       margin-bottom: 10px;
-    }
-
-    .timer-controls {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      align-items: center;
-      flex-wrap: wrap;
     }
 
     select {
@@ -71,15 +73,6 @@
       min-height: 18px;
     }
 
-    /* Breathing section */
-    .breath-section {
-      margin-bottom: 25px;
-      background: rgba(255, 255, 255, 0.9);
-      border-radius: 20px;
-      padding: 20px 20px 25px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    }
-
     .breath-box {
       font-size: 40px;
       padding: 30px;
@@ -87,7 +80,7 @@
       background: rgba(255, 255, 255, 0.9);
       backdrop-filter: blur(6px);
       width: 220px;
-      margin: 10px auto 10px;
+      margin: 10px auto;
       animation: fade 4s ease-in-out infinite;
     }
 
@@ -124,15 +117,6 @@
 
     .start-btn:active {
       transform: translateY(1px);
-      box-shadow: 0 1px 4px rgba(0,0,0,0.2);
-    }
-
-    /* Sounds section */
-    .sounds-section {
-      background: rgba(255, 255, 255, 0.9);
-      border-radius: 18px;
-      padding: 18px 18px 20px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.08);
     }
 
     .sounds-title {
@@ -156,7 +140,7 @@
       color: #5a305a;
       font-size: 14px;
       cursor: pointer;
-      transition: background 0.2s, color 0.2s, box-shadow 0.2s, border-color 0.2s;
+      transition: background 0.2s, color 0.2s, box-shadow 0.2s;
     }
 
     .sound-btn.active {
@@ -173,21 +157,23 @@
     }
   </style>
 </head>
+
 <body>
   <div class="container">
+
+    <!-- TIMER -->
     <div class="timer-section">
       <div class="timer-label">Choose how long you want to relax</div>
-      <div class="timer-controls">
-        <select id="durationSelect">
-          <option value="1">1 minute</option>
-          <option value="3">3 minutes</option>
-          <option value="5" selected>5 minutes</option>
-          <option value="10">10 minutes</option>
-        </select>
-      </div>
+      <select id="durationSelect">
+        <option value="1">1 minute</option>
+        <option value="3">3 minutes</option>
+        <option value="5" selected>5 minutes</option>
+        <option value="10">10 minutes</option>
+      </select>
       <div class="timer-status" id="timerStatus"></div>
     </div>
 
+    <!-- BREATHING -->
     <div class="breath-section">
       <h1>Take a Moment</h1>
       <div class="breath-box" id="emojiBox">☺️</div>
@@ -195,6 +181,7 @@
       <button class="start-btn" id="startStopBtn">Start</button>
     </div>
 
+    <!-- SOUNDS -->
     <div class="sounds-section">
       <div class="sounds-title">Sounds (toggle any combination)</div>
       <div class="sound-buttons">
@@ -203,13 +190,14 @@
         <button class="sound-btn" data-sound="wind">🍃 Wind</button>
         <button class="sound-btn" data-sound="space">🪐 Space</button>
       </div>
-      <div class="note">Sounds will fade in when you press Start and fade out when you press Stop or when the timer ends.</div>
+      <div class="note">Sounds fade in when you press Start and fade out when you press Stop or when the timer ends.</div>
     </div>
+
   </div>
 
   <script>
-    // --- Breathing logic ---
-    const emojis = ["☺️", "💗", "🪷", "🌿", "🌸", "🌙", "✨", "🫧", "🌊", "💞"];
+    /* ---------------- BREATHING ---------------- */
+    const emojis = ["☺️","💗","🪷","🌿","🌸","🌙","✨","🫧","🌊","💞"];
     let emojiIndex = 0;
     let breathingIn = true;
     let breathingInterval = null;
@@ -228,203 +216,128 @@
     function updateBreathing() {
       emojiIndex = (emojiIndex + 1) % emojis.length;
       emojiBox.innerText = emojis[emojiIndex];
-
       breathingIn = !breathingIn;
       breathText.innerText = breathingIn ? "breathe in…" : "breathe out…";
     }
 
     function startBreathing() {
-      // reset state
       emojiIndex = 0;
       breathingIn = true;
       emojiBox.innerText = emojis[emojiIndex];
       breathText.innerText = "breathe in…";
-
-      if (breathingInterval) clearInterval(breathingInterval);
       breathingInterval = setInterval(updateBreathing, 4000);
     }
 
     function stopBreathing() {
-      if (breathingInterval) {
-        clearInterval(breathingInterval);
-        breathingInterval = null;
-      }
+      clearInterval(breathingInterval);
+      breathingInterval = null;
     }
 
-    // --- Timer logic ---
+    /* ---------------- TIMER ---------------- */
     function startTimer() {
       const minutes = parseInt(durationSelect.value, 10);
       const durationMs = minutes * 60 * 1000;
-      const now = Date.now();
-      sessionEndTime = now + durationMs;
+      sessionEndTime = Date.now() + durationMs;
 
       timerStatus.textContent = `Session: ${minutes} minute(s)`;
-      if (timerTimeout) clearTimeout(timerTimeout);
-      if (remainingSecondsInterval) clearInterval(remainingSecondsInterval);
 
-      timerTimeout = setTimeout(() => {
-        stopSession("Session complete");
-      }, durationMs);
+      timerTimeout = setTimeout(() => stopSession("Session complete"), durationMs);
 
       remainingSecondsInterval = setInterval(() => {
-        const remainingMs = sessionEndTime - Date.now();
-        if (remainingMs <= 0) {
-          clearInterval(remainingSecondsInterval);
-          return;
-        }
-        const remainingSec = Math.round(remainingMs / 1000);
-        timerStatus.textContent = `Time left: ${remainingSec} second(s)`;
+        const remaining = sessionEndTime - Date.now();
+        if (remaining <= 0) return;
+        timerStatus.textContent = `Time left: ${Math.round(remaining / 1000)} second(s)`;
       }, 1000);
     }
 
     function stopTimer(message) {
-      if (timerTimeout) {
-        clearTimeout(timerTimeout);
-        timerTimeout = null;
-      }
-      if (remainingSecondsInterval) {
-        clearInterval(remainingSecondsInterval);
-        remainingSecondsInterval = null;
-      }
+      clearTimeout(timerTimeout);
+      clearInterval(remainingSecondsInterval);
       timerStatus.textContent = message || "";
     }
 
-    // --- Sound logic with smooth fade ---
+    /* ---------------- SOUNDS ---------------- */
     const soundConfig = {
-      rain: {
-        src: "https://cdn.pixabay.com/download/audio/2021/08/04/audio_7b3c1f3f3a.mp3?filename=rain-ambient-6101.mp3"
-      },
-      ocean: {
-        src: "https://cdn.pixabay.com/download/audio/2021/08/04/audio_3f6b9f96e5.mp3?filename=waves-ambient-6105.mp3"
-      },
-      wind: {
-        src: "https://cdn.pixabay.com/download/audio/2021/08/04/audio_5f4f0a1d57.mp3?filename=wind-nature-6100.mp3"
-      },
-      space: {
-        src: "https://cdn.pixabay.com/download/audio/2022/03/15/audio_4b0f5bd8a3.mp3?filename=ambient-space-110241.mp3"
-      }
+      rain: { src: "https://cdn.pixabay.com/download/audio/2021/08/04/audio_7b3c1f3f3a.mp3?filename=rain-ambient-6101.mp3" },
+      ocean:{ src: "https://cdn.pixabay.com/download/audio/2021/08/04/audio_3f6b9f96e5.mp3?filename=waves-ambient-6105.mp3" },
+      wind: { src: "https://cdn.pixabay.com/download/audio/2021/08/04/audio_5f4f0a1d57.mp3?filename=wind-nature-6100.mp3" },
+      space:{ src: "https://cdn.pixabay.com/download/audio/2022/03/15/audio_4b0f5bd8a3.mp3?filename=ambient-space-110241.mp3" }
     };
 
     const sounds = {};
     const maxVolume = 0.6;
     const fadeStep = 0.05;
-    const fadeIntervalMs = 120;
-    let fadeInterval = null;
 
     function ensureSound(key) {
       if (!sounds[key]) {
         const audio = new Audio(soundConfig[key].src);
         audio.loop = true;
         audio.volume = 0;
-        sounds[key] = {
-          audio,
-          targetVolume: 0,
-          currentVolume: 0,
-          selected: false
-        };
+        sounds[key] = { audio, selected: false, target: 0, current: 0 };
       }
       return sounds[key];
     }
 
-    function updateFadeLoop() {
-      if (fadeInterval) return;
-      fadeInterval = setInterval(() => {
-        let anyActive = false;
-        for (const key in sounds) {
-          const s = sounds[key];
-          if (!s) continue;
-          if (Math.abs(s.currentVolume - s.targetVolume) > 0.01) {
-            anyActive = true;
-            if (s.currentVolume < s.targetVolume) {
-              s.currentVolume = Math.min(s.currentVolume + fadeStep, s.targetVolume);
-            } else {
-              s.currentVolume = Math.max(s.currentVolume - fadeStep, s.targetVolume);
-            }
-            s.audio.volume = s.currentVolume;
-            if (s.currentVolume > 0 && s.audio.paused) {
-              s.audio.play().catch(() => {});
-            }
-            if (s.currentVolume === 0 && s.targetVolume === 0) {
-              s.audio.pause();
-            }
-          }
+    function fadeLoop() {
+      Object.values(sounds).forEach(s => {
+        if (Math.abs(s.current - s.target) > 0.01) {
+          s.current += (s.current < s.target ? fadeStep : -fadeStep);
+          s.current = Math.max(0, Math.min(maxVolume, s.current));
+          s.audio.volume = s.current;
+
+          if (s.current > 0 && s.audio.paused) s.audio.play().catch(()=>{});
+          if (s.current === 0 && s.target === 0) s.audio.pause();
         }
-        if (!anyActive) {
-          clearInterval(fadeInterval);
-          fadeInterval = null;
-        }
-      }, fadeIntervalMs);
+      });
     }
+    setInterval(fadeLoop, 120);
 
-    function setSoundActive(key, active) {
-      const s = ensureSound(key);
-      s.targetVolume = active ? maxVolume : 0;
-      updateFadeLoop();
-    }
-
-    function applySelectedSoundsOnStart() {
-      for (const key in sounds) {
-        const s = sounds[key];
-        if (!s) continue;
-        if (s.selected) {
-          s.targetVolume = maxVolume;
-        } else {
-          s.targetVolume = 0;
-        }
-      }
-      updateFadeLoop();
-    }
-
-    function fadeOutAllSounds() {
-      for (const key in sounds) {
-        const s = sounds[key];
-        if (!s) continue;
-        s.targetVolume = 0;
-      }
-      updateFadeLoop();
-    }
-
-    // --- Sound buttons UI ---
-    const soundButtons = document.querySelectorAll(".sound-btn");
-    soundButtons.forEach(btn => {
-      const key = btn.getAttribute("data-sound");
+    document.querySelectorAll(".sound-btn").forEach(btn => {
+      const key = btn.dataset.sound;
       ensureSound(key);
+
       btn.addEventListener("click", () => {
         const s = sounds[key];
         s.selected = !s.selected;
         btn.classList.toggle("active", s.selected);
 
-        // If session is running, immediately fade in/out this sound
-        if (sessionRunning) {
-          setSoundActive(key, s.selected);
-        }
+        if (sessionRunning) s.target = s.selected ? maxVolume : 0;
       });
     });
 
-    // --- Session control ---
+    function applySounds() {
+      Object.values(sounds).forEach(s => {
+        s.target = s.selected ? maxVolume : 0;
+      });
+    }
+
+    function fadeOutAll() {
+      Object.values(sounds).forEach(s => s.target = 0);
+    }
+
+    /* ---------------- SESSION CONTROL ---------------- */
     function startSession() {
       sessionRunning = true;
       startStopBtn.textContent = "Stop";
+
+      Object.values(sounds).forEach(s => s.audio.play().catch(()=>{}));
+
       startBreathing();
       startTimer();
-      applySelectedSoundsOnStart();
+      applySounds();
     }
 
     function stopSession(message) {
       sessionRunning = false;
       startStopBtn.textContent = "Start";
       stopBreathing();
-      stopTimer(message || "");
-      fadeOutAllSounds();
+      stopTimer(message);
+      fadeOutAll();
     }
 
     startStopBtn.addEventListener("click", () => {
-      if (!sessionRunning) {
-        stopTimer(""); // clear any old message
-        startSession();
-      } else {
-        stopSession("Stopped");
-      }
+      if (!sessionRunning) startSession();
+      else stopSession("Stopped");
     });
   </script>
 </body>
