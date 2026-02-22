@@ -649,5 +649,11 @@ PARTS.forEach(p=>{
  let cat=Object.keys(p)[0];
  DICT[cat]=p[cat];
 });
+ /* Clear All Notes */
+document.getElementById("clearNotesBtn").addEventListener("click", () => {
+    document.getElementById("notes").innerHTML = "";
+    localStorage.removeItem("notes");
+});
+ 
 </script>
 
