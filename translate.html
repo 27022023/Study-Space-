@@ -199,6 +199,12 @@ window.onload = () => {
   if (saved) document.getElementById("notes").innerHTML = saved;
 };
 
+// load voices properly
+let voices = [];
+speechSynthesis.onvoiceschanged = () => {
+  voices = speechSynthesis.getVoices();
+};
+
 document.getElementById("translateBtn").onclick = async () => {
   let word = document.getElementById("inputWord").value.trim();
   let from = document.getElementById("inputLang").value;
@@ -219,7 +225,7 @@ document.getElementById("clearNotesBtn").onclick = () => {
   localStorage.removeItem("notes");
 };
 
-// speaker button
+// speaker button FIXED
 document.getElementById("speakBtn").onclick = () => {
   let text = document.getElementById("result").textContent;
   if (!text) return;
@@ -260,6 +266,11 @@ document.getElementById("speakBtn").onclick = () => {
 
   let utter = new SpeechSynthesisUtterance(text);
   utter.lang = voiceMap[lang] || "en";
+
+  // choose correct voice
+  let voice = voices.find(v => v.lang.startsWith(utter.lang));
+  if (voice) utter.voice = voice;
+
   speechSynthesis.speak(utter);
 };
 </script>
