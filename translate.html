@@ -64,13 +64,6 @@ input, select, button {
   font-weight: bold;
 }
 
-#speakBtn {
-  background: #f9a8d4;
-  border: none;
-  padding: 10px 14px;
-  border-radius: 10px;
-}
-
 .notebook {
   background: #fff7c2;
   border: 2px solid #fce588;
@@ -96,6 +89,23 @@ input, select, button {
   margin-top: 12px;
   font-weight: bold;
 }
+
+#resultBox {
+  margin-top: 10px;
+  padding: 10px;
+  border-radius: 8px;
+  background: #ffe9f5;
+  border: 1px solid #f9a8d4;
+}
+
+#pronunciationBox {
+  margin-top: 8px;
+  padding: 8px;
+  border-radius: 8px;
+  background: #f3f4ff;
+  border: 1px solid #c7d2fe;
+  font-size: 14px;
+}
 </style>
 </head>
 
@@ -111,7 +121,7 @@ input, select, button {
     <div class="translator-inner">
 
       <div class="row">
-        <input id="inputWord" placeholder="Enter word">
+        <input id="inputWord" placeholder="Enter word or sentence">
       </div>
 
       <div class="row">
@@ -122,12 +132,15 @@ input, select, button {
         <select id="outputLang"></select>
       </div>
 
-      <div class="row">
-        <button id="speakBtn">🔊 Speak</button>
-      </div>
-
       <button id="translateBtn">Translate</button>
-      <div id="result"></div>
+
+      <div id="resultBox">
+        <div><strong>Translation:</strong> <span id="result"></span></div>
+        <div id="pronunciationBox" style="display:none;">
+          <strong>Pronunciation hint:</strong>
+          <div id="pronunciationText"></div>
+        </div>
+      </div>
 
     </div>
   </div>
@@ -141,29 +154,27 @@ input, select, button {
 </div>
 
 <script>
-// languages with flags + proper codes
+// languages with flags + ISO codes for LibreTranslate
+// Supported languages: https://libretranslate.com (docs)
 const langs = [
-  { name: "English", flag: "🇬🇧", code: "en" },
-  { name: "Spanish", flag: "🇪🇸", code: "es" },
-  { name: "German", flag: "🇩🇪", code: "de" },
-  { name: "French", flag: "🇫🇷", code: "fr" },
-  { name: "Italian", flag: "🇮🇹", code: "it" },
-  { name: "Greek", flag: "🇬🇷", code: "el" },
-  { name: "Mandarin", flag: "🇨🇳", code: "zh" },
-  { name: "Russian", flag: "🇷🇺", code: "ru" },
-  { name: "Arabic", flag: "🇸🇦", code: "ar" },
-  { name: "Japanese", flag: "🇯🇵", code: "ja" },
-  { name: "Korean", flag: "🇰🇷", code: "ko" },
-  { name: "Portuguese", flag: "🇵🇹", code: "pt" },
-  { name: "Hindi", flag: "🇮🇳", code: "hi" },
-  { name: "Dutch", flag: "🇳🇱", code: "nl" },
-  { name: "Polish", flag: "🇵🇱", code: "pl" },
-  { name: "Swedish", flag: "🇸🇪", code: "sv" },
-  { name: "Norwegian", flag: "🇳🇴", code: "no" },
+  { name: "English",   flag: "🇬🇧", code: "en" },
+  { name: "Spanish",   flag: "🇪🇸", code: "es" },
+  { name: "German",    flag: "🇩🇪", code: "de" },
+  { name: "French",    flag: "🇫🇷", code: "fr" },
+  { name: "Italian",   flag: "🇮🇹", code: "it" },
+  { name: "Portuguese",flag: "🇵🇹", code: "pt" },
+  { name: "Russian",   flag: "🇷🇺", code: "ru" },
+  { name: "Arabic",    flag: "🇸🇦", code: "ar" },
+  { name: "Chinese",   flag: "🇨🇳", code: "zh" },
+  { name: "Japanese",  flag: "🇯🇵", code: "ja" },
+  { name: "Korean",    flag: "🇰🇷", code: "ko" },
+  { name: "Hindi",     flag: "🇮🇳", code: "hi" },
+  { name: "Dutch",     flag: "🇳🇱", code: "nl" },
+  { name: "Polish",    flag: "🇵🇱", code: "pl" },
   { name: "Ukrainian", flag: "🇺🇦", code: "uk" }
 ];
 
-const inSel = document.getElementById("inputLang");
+const inSel  = document.getElementById("inputLang");
 const outSel = document.getElementById("outputLang");
 
 langs.forEach(l => {
@@ -174,12 +185,64 @@ langs.forEach(l => {
   outSel.appendChild(opt);
 });
 
-// translation API
+// default: from English to Spanish
+inSel.value = "en";
+outSel.value = "es";
+
+function getLangByCode(code) {
+  return langs.find(l => l.code === code);
+}
+
+// LibreTranslate public endpoint
+// Docs: https://libretranslate.com (no key needed for basic use)
 async function translateText(text, fromCode, toCode) {
-  const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${fromCode}|${toCode}`;
-  const res = await fetch(url);
+  const res = await fetch("https://libretranslate.com/translate", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      q: text,
+      source: fromCode,
+      target: toCode,
+      format: "text"
+    })
+  });
   const data = await res.json();
-  return data.responseData.translatedText;
+  return data.translatedText;
+}
+
+// very simple pronunciation hint generator
+function buildPronunciationHint(text, langCode) {
+  // This is intentionally simple: it just gives a "say it like" helper.
+  // For real IPA you'd need a dedicated phonetic API per language.
+  if (!text) return "";
+
+  // For languages using Latin alphabet, we just repeat the word
+  const latinLangs = ["en","es","fr","de","it","pt","nl","pl","ro","sv","no"];
+  if (latinLangs.includes(langCode)) {
+    return `Say it slowly like: "${text}"`;
+  }
+
+  if (langCode === "ja") {
+    return `Japanese: try to read it evenly, each syllable the same length: "${text}"`;
+  }
+
+  if (langCode === "zh") {
+    return `Chinese: tones matter. Try to keep the syllables clear: "${text}"`;
+  }
+
+  if (langCode === "ko") {
+    return `Korean: read it smoothly, no strong stress: "${text}"`;
+  }
+
+  if (langCode === "ar") {
+    return `Arabic: emphasize consonants clearly: "${text}"`;
+  }
+
+  if (langCode === "ru" || langCode === "uk") {
+    return `Slavic: roll the 'r' slightly and keep vowels short: "${text}"`;
+  }
+
+  return `Pronounce it clearly as written: "${text}"`;
 }
 
 // load notebook memory
@@ -189,32 +252,36 @@ window.onload = () => {
 };
 
 document.getElementById("translateBtn").onclick = async () => {
-  let word = document.getElementById("inputWord").value.trim();
-  let fromCode = document.getElementById("inputLang").value;
-  let toCode = document.getElementById("outputLang").value;
+  const word = document.getElementById("inputWord").value.trim();
+  const fromCode = document.getElementById("inputLang").value;
+  const toCode   = document.getElementById("outputLang").value;
 
   if (!word) return;
 
-  let translated = await translateText(word, fromCode, toCode);
-  document.getElementById("result").textContent = translated;
+  try {
+    const translated = await translateText(word, fromCode, toCode);
+    document.getElementById("result").textContent = translated;
 
-  let notes = document.getElementById("notes");
-  notes.innerHTML += `<div>${word} → ${translated}</div>`;
-  localStorage.setItem("notes", notes.innerHTML);
-};
+    // pronunciation hint
+    const hint = buildPronunciationHint(translated, toCode);
+    const pronBox = document.getElementById("pronunciationBox");
+    const pronText = document.getElementById("pronunciationText");
+    if (hint) {
+      pronText.textContent = hint;
+      pronBox.style.display = "block";
+    } else {
+      pronBox.style.display = "none";
+    }
 
-// ANDROID‑SAFE SPEAKER (Lingva TTS)
-document.getElementById("speakBtn").onclick = () => {
-  let text = document.getElementById("result").textContent;
-  let lang = document.getElementById("outputLang").value;
-
-  if (!text) return;
-
-  let audio = new Audio(
-    `https://lingva.ml/api/v1/${lang}/en/${encodeURIComponent(text)}`
-  );
-
-  audio.play();
+    // notebook
+    const notes = document.getElementById("notes");
+    const fromLang = getLangByCode(fromCode);
+    const toLang   = getLangByCode(toCode);
+    notes.innerHTML += `<div>${fromLang.flag} ${word} → ${toLang.flag} ${translated}</div>`;
+    localStorage.setItem("notes", notes.innerHTML);
+  } catch (e) {
+    document.getElementById("result").textContent = "Error translating. Try again.";
+  }
 };
 
 document.getElementById("clearNotesBtn").onclick = () => {
