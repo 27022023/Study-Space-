@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Translator + Notebook</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: sans-serif;
+  background: #cfe9ff;
+}
+
+#earthIcon {
+  position: fixed;
+  top: 15px;
+  right: 15px;
+  font-size: 48px;
+  opacity: 0.9;
+}
+
+#app {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 10px;
+}
+
+.translator {
+  background: #ffd6e8;
+  border: 2px solid #f9a8d4;
+  padding: 25px;
+  margin: 20px 0;
+  border-radius: 20px;
+}
+
+.translator-inner {
+  background: white;
+  padding: 20px;
+  border-radius: 15px;
+  border: 1px solid #f3b4d2;
+}
+
+.row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+input, select, button {
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 15px;
+}
+
+#translateBtn {
+  background: #f472b6;
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 10px;
+  font-weight: bold;
+}
+
+#speakBtn {
+  background: #f9a8d4;
+  border: none;
+  padding: 10px 14px;
+  border-radius: 10px;
+}
+
+.notebook {
+  background: #fff7c2;
+  border: 2px solid #fce588;
+  padding: 20px;
+  margin: 20px 0;
+  border-radius: 15px;
+}
+
+#notes {
+  min-height: 150px;
+  padding: 10px;
+  background: white;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+.clear-btn {
+  background: #e8d4ff;
+  border: 1px solid #c7a8ff;
+  color: #4a2a7a;
+  padding: 10px 16px;
+  border-radius: 10px;
+  margin-top: 12px;
+  font-weight: bold;
+}
+</style>
+</head>
+
+<body>
+
+<div id="earthIcon">🌍</div>
+
+<div id="app">
+
+  <div class="translator">
+    <h2>Translator</h2>
+
+    <div class="translator-inner">
+      <div class="row">
+        <input id="inputWord" placeholder="Enter word">
+        <select id="inputLang"></select>
+      </div>
+
+      <div class="row">
+        <select id="outputLang"></select>
+        <button id="speakBtn">🔊</button>
+      </div>
+
+      <button id="translateBtn">Translate</button>
+      <div id="result"></div>
+    </div>
+  </div>
+
+  <div class="notebook">
+    <h2>Notebook</h2>
+    <div id="notes"></div>
+    <button id="clearNotesBtn" class="clear-btn">Clear All</button>
+  </div>
+
+</div>
+
+<script>
+// languages
+const langs = [
+  "English","Spanish","German","French","Italian","Greek","Mandarin",
+  "Russian","Arabic","Norwegian","Swedish","Finnish","Estonian",
+  "Czech","Croatian","Serbian","Slovenian","Korean","Japanese",
+  "Portuguese","Afrikaans","Hindi","Dutch","Polish","Ukrainian",
+  "Romanian","Hungarian","Indonesian","Swahili"
+];
+
+const inSel = document.getElementById("inputLang");
+const outSel = document.getElementById("outputLang");
+
+langs.forEach(l => {
+  let opt = document.createElement("option");
+  opt.value = l;
+  opt.textContent = l;
+  inSel.appendChild(opt.cloneNode(true));
+  outSel.appendChild(opt);
+});
+
+// translator using online API
+async function translateText(text, from, to) {
+  const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${from}|${to}`;
+  const res = await fetch(url);
+  const data = await res.json();
+  return data.responseData.translatedText;
+}
+
+document.getElementById("translateBtn").onclick = async () => {
+  let word = document.getElementById("inputWord").value.trim();
+  let from = document.getElementById("inputLang").value;
+  let to = document.getElementById("outputLang").value;
+
+  if (!word) return;
+
+  let translated = await translateText(word, from, to);
+  document.getElementById("result").textContent = translated;
+
+  let notes = document.getElementById("notes");
+  notes.innerHTML += `<div>${word} → ${translated}</div>`;
+  localStorage.setItem("notes", notes.innerHTML);
+};
+
+document.getElementById("clearNotesBtn").onclick = () => {
+  document.getElementById("notes").innerHTML = "";
+  localStorage.removeItem("notes");
+};
+
+document.getElementById("speakBtn").onclick = () => {
+  let text = document.getElementById("result").textContent;
+  if (!text) return;
+  let utter = new SpeechSynthesisUtterance(text);
+  speechSynthesis.speak(utter);
+};
+</script>
+
+</body>
+</html>
