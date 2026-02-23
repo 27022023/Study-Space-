@@ -211,43 +211,7 @@ document.getElementById("speakBtn").onclick = () => {
   speechSynthesis.speak(utter);
 };
 </script>
-<script>
-document.getElementById("translateBtn").onclick = () => {
-  let word = document.getElementById("inputWord").value.trim().toLowerCase();
-  let from = document.getElementById("inputLang").value;
-  let to = document.getElementById("outputLang").value;
 
-  let found = null;
-
-  // Search inside every category
-  for (let category in DICT) {
-    if (DICT[category][word]) {
-      found = DICT[category][word];
-      break;
-    }
-  }
-
-  // If not found
-  if (!found) {
-    document.getElementById("result").textContent = "—";
-    return;
-  }
-
-  // Translate
-  let translated = found[to] || "—";
-  document.getElementById("result").textContent = translated;
-
-  // Notes
-  let notes = <document.getElementById("notes");
-  notes.innerHTML += `<div>${word} → ${translated}</div>`;
-  localStorage.setItem("notes", notes.innerHTML);
-};
-
-document.getElementById("clearNotesBtn").onclick = () => {
-  document.getElementById("notes").innerHTML = "";
-  localStorage.removeItem("notes");
-};
-</script>
 PARTS.forEach(p=>{
  let cat = Object.keys(p)[0];
  DICT[cat] = p[cat];
