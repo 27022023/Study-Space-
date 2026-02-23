@@ -211,3 +211,28 @@ document.getElementById("speakBtn").onclick = () => {
   speechSynthesis.speak(utter);
 };
 </script>
+<script>
+document.getElementById("translateBtn").onclick = () => {
+  let word = document.getElementById("inputWord").value.trim().toLowerCase();
+  let from = document.getElementById("inputLang").value;
+  let to = document.getElementById("outputLang").value;
+
+  let found = DICT[word];
+  if (!found) {
+    document.getElementById("result").textContent = "—";
+    return;
+  }
+
+  let translated = found[to] || "—";
+  document.getElementById("result").textContent = translated;
+
+  let notes = document.getElementById("notes");
+  notes.innerHTML += `<div>${word} → ${translated}</div>`;
+  localStorage.setItem("notes", notes.innerHTML);
+};
+
+document.getElementById("clearNotesBtn").onclick = () => {
+  document.getElementById("notes").innerHTML = "";
+  localStorage.removeItem("notes");
+};
+</script>
