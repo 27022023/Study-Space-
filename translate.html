@@ -164,48 +164,6 @@ button {
   const clearBtn = document.getElementById("clearNotesBtn");
 
   translateBtn.addEventListener("click", () => {
-
-    // Make sure DICT exists
-    if (typeof DICT === "undefined") {
-      document.getElementById("result").textContent = "—";
-      return;
-    }
-
-    let word = document.getElementById("inputWord").value.trim().toLowerCase();
-    let to = document.getElementById("outputLang").value;
-
-    let found = null;
-
-    // Search inside every category
-    for (let category in DICT) {
-      if (DICT[category] && DICT[category][word]) {
-        found = DICT[category][word];
-        break;
-      }
-    }
-
-    if (!found) {
-      document.getElementById("result").textContent = "—";
-      return;
-    }
-
-    let translated = found[to] || "—";
-    document.getElementById("result").textContent = translated;
-
-    let notes = document.getElementById("notes");
-    notes.innerHTML += `<div>${word} → ${translated}</div>`;
-    localStorage.setItem("notes", notes.innerHTML);
-  });
-
-  clearBtn.addEventListener("click", () => {
-    document.getElementById("notes").innerHTML = "";
-    localStorage.removeItem("notes");
-  });
-
-});
-      </script>
-  
-
   <div class="notebook">
     <h2>Notebook</h2>
     <div id="notes"></div>
