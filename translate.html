@@ -193,6 +193,12 @@ async function translateText(text, from, to) {
   return data.responseData.translatedText;
 }
 
+// load notebook memory
+window.onload = () => {
+  const saved = localStorage.getItem("notes");
+  if (saved) document.getElementById("notes").innerHTML = saved;
+};
+
 document.getElementById("translateBtn").onclick = async () => {
   let word = document.getElementById("inputWord").value.trim();
   let from = document.getElementById("inputLang").value;
