@@ -767,4 +767,191 @@ PARTS.push({
   }
 });
 </script>
+ <script>
+PARTS.push({
+  animals: {
+
+    dog: {
+      English:"dog", Spanish:"perro", German:"Hund", French:"chien", Italian:"cane",
+      Greek:"σκύλος", Mandarin:"狗", Russian:"собака", Arabic:"كلب", Norwegian:"hund",
+      Swedish:"hund", Finnish:"koira", Estonian:"koer", Czech:"pes", Croatian:"pas",
+      Serbian:"пас", Slovenian:"pes", Korean:"개", Japanese:"犬", Portuguese:"cão",
+      Afrikaans:"hond", "Egyptian Arabic":"كلب", Hindi:"कुत्ता", Dutch:"hond", Polish:"pies",
+      Ukrainian:"пес", Romanian:"câine", Hungarian:"kutya", Indonesian:"anjing", Swahili:"mbwa"
+    },
+
+    cat: {
+      English:"cat", Spanish:"gato", German:"Katze", French:"chat", Italian:"gatto",
+      Greek:"γάτα", Mandarin:"猫", Russian:"кошка", Arabic:"قطة", Norwegian:"katt",
+      Swedish:"katt", Finnish:"kissa", Estonian:"kass", Czech:"kočka", Croatian:"mačka",
+      Serbian:"мачка", Slovenian:"mačka", Korean:"고양이", Japanese:"猫", Portuguese:"gato",
+      Afrikaans:"kat", "Egyptian Arabic":"قطة", Hindi:"बिल्ली", Dutch:"kat", Polish:"kot",
+      Ukrainian:"кіт", Romanian:"pisică", Hungarian:"macska", Indonesian:"kucing", Swahili:"paka"
+    },
+
+    bird: {
+      English:"bird", Spanish:"pájaro", German:"Vogel", French:"oiseau", Italian:"uccello",
+      Greek:"πουλί", Mandarin:"鸟", Russian:"птица", Arabic:"طائر", Norwegian:"fugl",
+      Swedish:"fågel", Finnish:"lintu", Estonian:"lind", Czech:"pták", Croatian:"ptica",
+      Serbian:"птица", Slovenian:"ptica", Korean:"새", Japanese:"鳥", Portuguese:"pássaro",
+      Afrikaans:"voël", "Egyptian Arabic":"عصفور", Hindi:"पक्षी", Dutch:"vogel", Polish:"ptak",
+      Ukrainian:"птах", Romanian:"pasăre", Hungarian:"madár", Indonesian:"burung", Swahili:"ndege"
+    },
+
+    fish: {
+      English:"fish", Spanish:"pez", German:"Fisch", French:"poisson", Italian:"pesce",
+      Greek:"ψάρι", Mandarin:"鱼", Russian:"рыба", Arabic:"سمكة", Norwegian:"fisk",
+      Swedish:"fisk", Finnish:"kala", Estonian:"kala", Czech:"ryba", Croatian:"riba",
+      Serbian:"риба", Slovenian:"riba", Korean:"물고기", Japanese:"魚", Portuguese:"peixe",
+      Afrikaans:"vis", "Egyptian Arabic":"سمكة", Hindi:"मछली", Dutch:"vis", Polish:"ryba",
+      Ukrainian:"риба", Romanian:"pește", Hungarian:"hal", Indonesian:"ikan", Swahili:"samaki"
+    },
+
+    horse: {
+      English:"horse", Spanish:"caballo", German:"Pferd", French:"cheval", Italian:"cavallo",
+      Greek:"άλογο", Mandarin:"马", Russian:"лошадь", Arabic:"حصان", Norwegian:"hest",
+      Swedish:"häst", Finnish:"hevonen", Estonian:"hobune", Czech:"kůň", Croatian:"konj",
+      Serbian:"коњ", Slovenian:"konj", Korean:"말", Japanese:"馬", Portuguese:"cavalo",
+      Afrikaans:"perd", "Egyptian Arabic":"حصان", Hindi:"घोड़ा", Dutch:"paard", Polish:"koń",
+      Ukrainian:"кінь", Romanian:"cal", Hungarian:"ló", Indonesian:"kuda", Swahili:"farasi"
+    },
+
+    cow: {
+      English:"cow", Spanish:"vaca", German:"Kuh", French:"vache", Italian:"mucca",
+      Greek:"αγελάδα", Mandarin:"牛", Russian:"корова", Arabic:"بقرة", Norwegian:"ku",
+      Swedish:"ko", Finnish:"lehmä", Estonian:"lehm", Czech:"kráva", Croatian:"krava",
+      Serbian:"крава", Slovenian:"krava", Korean:"소", Japanese:"牛", Portuguese:"vaca",
+      Afrikaans:"koei", "Egyptian Arabic":"بقرة", Hindi:"गाय", Dutch:"koe", Polish:"krowa",
+      Ukrainian:"корова", Romanian:"vacă", Hungarian:"tehén", Indonesian:"sapi", Swahili:"ng’ombe"
+    },
+
+    pig: {
+      English:"pig", Spanish:"cerdo", German:"Schwein", French:"cochon", Italian:"maiale",
+      Greek:"γουρούνι", Mandarin:"猪", Russian:"свинья", Arabic:"خنزير", Norwegian:"gris",
+      Swedish:"gris", Finnish:"sika", Estonian:"siga", Czech:"prase", Croatian:"svinja",
+      Serbian:"свиња", Slovenian:"prašič", Korean:"돼지", Japanese:"豚", Portuguese:"porco",
+      Afrikaans:"vark", "Egyptian Arabic":"خنزير", Hindi:"सूअर", Dutch:"varken", Polish:"świnia",
+      Ukrainian:"свиня", Romanian:"porc", Hungarian:"disznó", Indonesian:"babi", Swahili:"nguruwe"
+    },
+
+    sheep: {
+      English:"sheep", Spanish:"oveja", German:"Schaf", French:"mouton", Italian:"pecora",
+      Greek:"πρόβατο", Mandarin:"羊", Russian:"овца", Arabic:"خروف", Norwegian:"sau",
+      Swedish:"får", Finnish:"lammas", Estonian:"lammas", Czech:"ovce", Croatian:"ovca",
+      Serbian:"овца", Slovenian:"ovca", Korean:"양", Japanese:"羊", Portuguese:"ovelha",
+      Afrikaans:"skaap", "Egyptian Arabic":"خروف", Hindi:"भेड़", Dutch:"schaap", Polish:"owca",
+      Ukrainian:"вівця", Romanian:"oaie", Hungarian:"juh", Indonesian:"domba", Swahili:"kondoo"
+    },
+
+    goat: {
+      English:"goat", Spanish:"cabra", German:"Ziege", French:"chèvre", Italian:"capra",
+      Greek:"κατσίκα", Mandarin:"山羊", Russian:"коза", Arabic:"ماعز", Norwegian:"geit",
+      Swedish:"get", Finnish:"vuohi", Estonian:"kits", Czech:"koza", Croatian:"koza",
+      Serbian:"коза", Slovenian:"koza", Korean:"염소", Japanese:"ヤギ", Portuguese:"cabra",
+      Afrikaans:"bok", "Egyptian Arabic":"ماعز", Hindi:"बकरी", Dutch:"geit", Polish:"koza",
+      Ukrainian:"коза", Romanian:"capră", Hungarian:"kecske", Indonesian:"kambing", Swahili:"mbuzi"
+    },
+
+    chicken: {
+      English:"chicken", Spanish:"pollo", German:"Huhn", French:"poulet", Italian:"pollo",
+      Greek:"κότα", Mandarin:"鸡", Russian:"курица", Arabic:"دجاج", Norwegian:"kylling",
+      Swedish:"kyckling", Finnish:"kana", Estonian:"kana", Czech:"kuře", Croatian:"piletina",
+      Serbian:"пилетина", Slovenian:"piščanec", Korean:"닭", Japanese:"鶏", Portuguese:"frango",
+      Afrikaans:"hoender", "Egyptian Arabic":"فرخة", Hindi:"मुर्गी", Dutch:"kip", Polish:"kurczak",
+      Ukrainian:"курка", Romanian:"pui", Hungarian:"csirke", Indonesian:"ayam", Swahili:"kuku"
+    },
+
+    duck: {
+      English:"duck", Spanish:"pato", German:"Ente", French:"canard", Italian:"anatra",
+      Greek:"πάπια", Mandarin:"鸭子", Russian:"утка", Arabic:"بطة", Norwegian:"and",
+      Swedish:"anka", Finnish:"ankka", Estonian:"part", Czech:"kachna", Croatian:"patka",
+      Serbian:"патка", Slovenian:"raca", Korean:"오리", Japanese:"鴨", Portuguese:"pato",
+      Afrikaans:"eend", "Egyptian Arabic":"بطة", Hindi:"बतख", Dutch:"eend", Polish:"kaczka",
+      Ukrainian:"качка", Romanian:"rață", Hungarian:"kacsa", Indonesian:"bebek", Swahili:"bata"
+    },
+
+    lion: {
+      English:"lion", Spanish:"león", German:"Löwe", French:"lion", Italian:"leone",
+      Greek:"λιοντάρι", Mandarin:"狮子", Russian:"лев", Arabic:"أسد", Norwegian:"løve",
+      Swedish:"lejon", Finnish:"leijona", Estonian:"lõvi", Czech:"lev", Croatian:"lav",
+      Serbian:"лав", Slovenian:"lev", Korean:"사자", Japanese:"ライオン", Portuguese:"leão",
+      Afrikaans:"leeu", "Egyptian Arabic":"أسد", Hindi:"सिंह", Dutch:"leeuw", Polish:"lew",
+      Ukrainian:"лев", Romanian:"leu", Hungarian:"oroszlán", Indonesian:"singa", Swahili:"simba"
+    },
+
+    tiger: {
+      English:"tiger", Spanish:"tigre", German:"Tiger", French:"tigre", Italian:"tigre",
+      Greek:"τίγρης", Mandarin:"老虎", Russian:"тигр", Arabic:"نمر", Norwegian:"tiger",
+      Swedish:"tiger", Finnish:"tiikeri", Estonian:"tiiger", Czech:"tygr", Croatian:"tigar",
+      Serbian:"тигар", Slovenian:"tiger", Korean:"호랑이", Japanese:"虎", Portuguese:"tigre",
+      Afrikaans:"tier", "Egyptian Arabic":"نمر", Hindi:"बाघ", Dutch:"tijger", Polish:"tygrys",
+      Ukrainian:"тигр", Romanian:"tigru", Hungarian:"tigris", Indonesian:"harimau", Swahili:"chui"
+    },
+
+    bear: {
+      English:"bear", Spanish:"oso", German:"Bär", French:"ours", Italian:"orso",
+      Greek:"αρκούδα", Mandarin:"熊", Russian:"медведь", Arabic:"دب", Norwegian:"bjørn",
+      Swedish:"björn", Finnish:"karhu", Estonian:"karu", Czech:"medvěd", Croatian:"medvjed",
+      Serbian:"медвед", Slovenian:"medved", Korean:"곰", Japanese:"熊", Portuguese:"urso",
+      Afrikaans:"beer", "Egyptian Arabic":"دب", Hindi:"भालू", Dutch:"beer", Polish:"niedźwiedź",
+      Ukrainian:"ведмідь", Romanian:"urs", Hungarian:"medve", Indonesian:"beruang", Swahili:"dubu"
+    },
+
+    elephant: {
+      English:"elephant", Spanish:"elefante", German:"Elefant", French:"éléphant", Italian:"elefante",
+      Greek:"ελέφαντας", Mandarin:"大象", Russian:"слон", Arabic:"فيل", Norwegian:"elefant",
+      Swedish:"elefant", Finnish:"norsu", Estonian:"elevant", Czech:"slon", Croatian:"slon",
+      Serbian:"слон", Slovenian:"slon", Korean:"코끼리", Japanese:"象", Portuguese:"elefante",
+      Afrikaans:"olifant", "Egyptian Arabic":"فيل", Hindi:"हाथी", Dutch:"olifant", Polish:"słoń",
+      Ukrainian:"слон", Romanian:"elefant", Hungarian:"elefánt", Indonesian:"gajah", Swahili:"tembo"
+    },
+
+    monkey: {
+      English:"monkey", Spanish:"mono", German:"Affe", French:"singe", Italian:"scimmia",
+      Greek:"μαϊμού", Mandarin:"猴子", Russian:"обезьяна", Arabic:"قرد", Norwegian:"ape",
+      Swedish:"apa", Finnish:"apina", Estonian:"ahv", Czech:"opice", Croatian:"majmun",
+      Serbian:"мајмун", Slovenian:"opica", Korean:"원숭이", Japanese:"猿", Portuguese:"macaco",
+      Afrikaans:"aap", "Egyptian Arabic":"قرد", Hindi:"बंदर", Dutch:"aap", Polish:"małpa",
+      Ukrainian:"мавпа", Romanian:"maimuță", Hungarian:"majom", Indonesian:"monyet", Swahili:"tumbili"
+    },
+
+    snake: {
+      English:"snake", Spanish:"serpiente", German:"Schlange", French:"serpent", Italian:"serpente",
+      Greek:"φίδι", Mandarin:"蛇", Russian:"змея", Arabic:"ثعبان", Norwegian:"slange",
+      Swedish:"orm", Finnish:"käärme", Estonian:"madu", Czech:"had", Croatian:"zmija",
+      Serbian:"змија", Slovenian:"kača", Korean:"뱀", Japanese:"蛇", Portuguese:"cobra",
+      Afrikaans:"slang", "Egyptian Arabic":"ثعبان", Hindi:"साँप", Dutch:"slang", Polish:"wąż",
+      Ukrainian:"змія", Romanian:"șarpe", Hungarian:"kígyó", Indonesian:"ular", Swahili:"nyoka"
+    },
+
+    frog: {
+      English:"frog", Spanish:"rana", German:"Frosch", French:"grenouille", Italian:"rana",
+      Greek:"βάτραχος", Mandarin:"青蛙", Russian:"лягушка", Arabic:"ضفدع", Norwegian:"frosk",
+      Swedish:"groda", Finnish:"sammakko", Estonian:"konn", Czech:"žába", Croatian:"žaba",
+      Serbian:"жаба", Slovenian:"žaba", Korean:"개구리", Japanese:"カエル", Portuguese:"sapo",
+      Afrikaans:"padda", "Egyptian Arabic":"ضفدع", Hindi:"मेंढक", Dutch:"kikker", Polish:"żaba",
+      Ukrainian:"жаба", Romanian:"broască", Hungarian:"béka", Indonesian:"katak", Swahili:"chura"
+    },
+
+    mouse: {
+      English:"mouse", Spanish:"ratón", German:"Maus", French:"souris", Italian:"topo",
+      Greek:"ποντίκι", Mandarin:"老鼠", Russian:"мышь", Arabic:"فأر", Norwegian:"mus",
+      Swedish:"mus", Finnish:"hiiri", Estonian:"hiir", Czech:"myš", Croatian:"miš",
+      Serbian:"миш", Slovenian:"miš", Korean:"쥐", Japanese:"ネズミ", Portuguese:"rato",
+      Afrikaans:"muis", "Egyptian Arabic":"فأر", Hindi:"चूहा", Dutch:"muis", Polish:"mysz",
+      Ukrainian:"миша", Romanian:"șoarece", Hungarian:"egér", Indonesian:"tikus", Swahili:"panya"
+    },
+
+    rabbit: {
+      English:"rabbit", Spanish:"conejo", German:"Kaninchen", French:"lapin", Italian:"coniglio",
+      Greek:"κουνέλι", Mandarin:"兔子", Russian:"кролик", Arabic:"أرنب", Norwegian:"kanin",
+      Swedish:"kanin", Finnish:"kani", Estonian:"jänes", Czech:"králík", Croatian:"zec",
+      Serbian:"зец", Slovenian:"zajec", Korean:"토끼", Japanese:"ウサギ", Portuguese:"coelho",
+      Afrikaans:"haas", "Egyptian Arabic":"أرنب", Hindi:"खरगोश", Dutch:"konijn", Polish:"królik",
+      Ukrainian:"кролик", Romanian:"iepure", Hungarian:"nyúl", Indonesian:"kelinci", Swahili:"sungura"
+    }
+
+  }
+});
+ </script>
   
