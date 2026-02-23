@@ -1,26 +1,30 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Translator + Notebook</title></head><body>
-<div id="app">
-<div class="card translator">
-<h2>Translator</h2>
-<div class="row"><input id="inputWord" placeholder="Enter word"><select id="inputLang"></select></div>
-<div class="row"><select id="outputLang"></select><button id="speakBtn">🔊</button></div>
-<button id="translateBtn">Translate</button>
-<div id="result"></div>
-</div>
-<div class="card notebook">
-<h2>Notebook</h2>
-<div id="notes"></div>
- <!-- Lavender Clear All button -->
-  <button id="clearNotesBtn" class="clear-btn">Clear All</button>
-</div>
-</div>
-</div>
-</body></html>
- <style>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Translator + Notebook</title>
+
+<style>
 body {
   margin: 0;
   font-family: sans-serif;
-  background: #cfe9ff; /* baby blue */
+  background: #cfe9ff;
+}
+
+/* EARTH ICON */
+#earthIcon {
+  position: fixed;
+  top: 15px;
+  right: 15px;
+  font-size: 48px;
+  cursor: default;
+  user-select: none;
+  opacity: 0.9;
+  transition: transform 0.2s ease;
+}
+#earthIcon:hover {
+  transform: scale(1.1);
 }
 
 #app {
@@ -29,47 +33,21 @@ body {
   padding: 10px;
 }
 
-/* CLOUD SHAPE for translator */
 .translator {
-  background: #ffd6e8; /* pastel pink */
+  background: #ffd6e8;
   border: 2px solid #f9a8d4;
   padding: 25px;
   margin: 20px 0;
-  border-radius: 50px;
-  position: relative;
+  border-radius: 20px;
   box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
 
-/* cloud bumps */
-.translator::before,
-.translator::after {
-  content: "";
-  position: absolute;
-  background: #ffd6e8;
-  border: 2px solid #f9a8d4;
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  top: -40px;
-  z-index: -1;
-}
-
-.translator::before {
-  left: 20px;
-}
-
-.translator::after {
-  right: 20px;
-}
-
-/* NOTEBOOK */
-.notebook {
-  background: #fff7c2; /* pastel yellow */
-  border: 2px solid #fce588;
+.translator-inner {
+  background: white;
   padding: 20px;
-  margin: 20px 0;
   border-radius: 15px;
-  box-shadow: 0 2px 5px rgba(0,0,0,.1);
+  border: 1px solid #f3b4d2;
+  box-shadow: inset 0 0 5px rgba(0,0,0,0.05);
 }
 
 h2 {
@@ -85,10 +63,10 @@ h2 {
 }
 
 input, select, button {
-  padding: 8px;
-  border-radius: 6px;
+  padding: 10px;
+  border-radius: 8px;
   border: 1px solid #ccc;
-  font-size: 14px;
+  font-size: 15px;
 }
 
 button {
@@ -100,16 +78,31 @@ button {
   background: #f472b6;
   color: #fff;
   border: none;
+  padding: 10px 18px;
+  border-radius: 10px;
+  font-weight: bold;
 }
 
 #speakBtn {
   background: #f9a8d4;
   border: none;
+  padding: 10px 14px;
+  border-radius: 10px;
 }
 
 #result {
   margin-top: 10px;
   font-weight: bold;
+  font-size: 18px;
+}
+
+.notebook {
+  background: #fff7c2;
+  border: 2px solid #fce588;
+  padding: 20px;
+  margin: 20px 0;
+  border-radius: 15px;
+  box-shadow: 0 2px 5px rgba(0,0,0,.1);
 }
 
 #notes {
@@ -120,19 +113,13 @@ button {
   border: 1px solid #ccc;
 }
 
-@media(max-width: 700px) {
-  #app {
-    padding: 5px;
-  }
-  .row {
-    flex-direction: column;
- .clear-btn {
-  background: #e8d4ff; /* soft lavender */
+.clear-btn {
+  background: #e8d4ff;
   border: 1px solid #c7a8ff;
   color: #4a2a7a;
-  padding: 8px 14px;
-  border-radius: 8px;
-  margin-top: 10px;
+  padding: 10px 16px;
+  border-radius: 10px;
+  margin-top: 12px;
   cursor: pointer;
   font-weight: bold;
   transition: 0.2s;
@@ -140,520 +127,46 @@ button {
 
 .clear-btn:hover {
   background: #f0e4ff;
-} 
- </style>
-<script>
-let DICT={};let PARTS=[];
+}
 
-const langs=["English","Spanish","German","French","Italian","Greek","Mandarin"];
-const inSel=document.getElementById("inputLang");
-const outSel=document.getElementById("outputLang");
-langs.forEach(l=>{let o=document.createElement("option");o.value=l;o.textContent=l;inSel.appendChild(o.cloneNode(true));outSel.appendChild(o)});
-
-function normalize(s){return s.toLowerCase().trim()}
-
-function findWord(w){
- w=normalize(w);
- for(let cat in DICT){
-  for(let key in DICT[cat]){
-   if(normalize(key)===w) return DICT[cat][key];
-   for(let L in DICT[cat][key]){
-    if(normalize(DICT[cat][key][L])===w) return DICT[cat][key];
-   }
+@media(max-width: 700px) {
+  .row {
+    flex-direction: column;
   }
- }
- return null;
 }
+</style>
+</head>
 
-function levenshtein(a,b){
- if(a.length<b.length)[a,b]=[b,a];
- let prev=Array(b.length+1).fill(0),cur=Array(b.length+1).fill(0);
- for(let j=0;j<=b.length;j++)prev[j]=j;
- for(let i=1;i<=a.length;i++){
-  cur[0]=i;
-  for(let j=1;j<=b.length;j++){
-   let cost=a[i-1]===b[j-1]?0:1;
-   cur[j]=Math.min(prev[j]+1,cur[j-1]+1,prev[j-1]+cost);
-  }
-  [prev,cur]=[cur,prev];
- }
- return prev[b.length];
-}
+<body>
 
-function closestMatches(w){
- w=normalize(w);
- let arr=[];
- for(let cat in DICT){
-  for(let key in DICT[cat]){
-   arr.push(key);
-   for(let L in DICT[cat][key]) arr.push(DICT[cat][key][L]);
-  }
- }
- let scored=arr.map(x=>({w:x,d:levenshtein(w,normalize(x))}));
- scored.sort((a,b)=>a.d-b.d);
- return scored.slice(0,3).map(x=>x.w);
-}
+<!-- EARTH ICON -->
+<div id="earthIcon">🌍</div>
 
-document.getElementById("translateBtn").onclick=()=>{
- let w=document.getElementById("inputWord").value.trim();
- if(!w){document.getElementById("result").textContent="";return}
- let found=findWord(w);
- if(!found){
-  let c=closestMatches(w);
-  document.getElementById("result").textContent="Not found. Did you mean: "+c.join(", ");
-  return;
- }
- let out=outSel.value;
- document.getElementById("result").textContent=found[out]||"—";
- saveNote(w,found[out]||"—");
-};
+<div id="app">
 
-document.getElementById("speakBtn").onclick=()=>{
- let t=document.getElementById("result").textContent;
- if(!t)return;
- let u=new SpeechSynthesisUtterance(t);
- speechSynthesis.speak(u);
-};
+  <div class="translator">
+    <h2>Translator</h2>
 
-function saveNote(a,b){
- let notes=JSON.parse(localStorage.getItem("notes")||"[]");
- notes.push(a+" = "+b);
- localStorage.setItem("notes",JSON.stringify(notes));
- renderNotes();
-}
+    <div class="translator-inner">
+      <div class="row">
+        <input id="inputWord" placeholder="Enter word">
+        <select id="inputLang"></select>
+      </div>
 
-function renderNotes(){
- let notes=JSON.parse(localStorage.getItem("notes")||"[]");
- document.getElementById("notes").innerHTML=notes.join("<br>");
-}
+      <div class="row">
+        <select id="outputLang"></select>
+        <button id="speakBtn">🔊</button>
+      </div>
+    </div>
 
-renderNotes();
-   </script>
-<script>
-let DICT={};let PARTS=[];
+    <button id="translateBtn">Translate</button>
+    <div id="result"></div>
+  </div>
 
-const langs=["English","Spanish","German","French","Italian","Greek","Mandarin"];
-const inSel=document.getElementById("inputLang");
-const outSel=document.getElementById("outputLang");
-langs.forEach(l=>{let o=document.createElement("option");o.value=l;o.textContent=l;inSel.appendChild(o.cloneNode(true));outSel.appendChild(o)});
+  <div class="notebook">
+    <h2>Notebook</h2>
+    <div id="notes"></div>
+    <button id="clearNotesBtn" class="clear-btn">Clear All</button>
+  </div>
 
-function normalize(s){return s.toLowerCase().trim()}
-
-function findWord(w){
- w=normalize(w);
- for(let cat in DICT){
-  for(let key in DICT[cat]){
-   if(normalize(key)===w) return DICT[cat][key];
-   for(let L in DICT[cat][key]){
-    if(normalize(DICT[cat][key][L])===w) return DICT[cat][key];
-   }
-  }
- }
- return null;
-}
-
-function levenshtein(a,b){
- if(a.length<b.length)[a,b]=[b,a];
- let prev=Array(b.length+1).fill(0),cur=Array(b.length+1).fill(0);
- for(let j=0;j<=b.length;j++)prev[j]=j;
- for(let i=1;i<=a.length;i++){
-  cur[0]=i;
-  for(let j=1;j<=b.length;j++){
-   let cost=a[i-1]===b[j-1]?0:1;
-   cur[j]=Math.min(prev[j]+1,cur[j-1]+1,prev[j-1]+cost);
-  }
-  [prev,cur]=[cur,prev];
- }
- return prev[b.length];
-}
-
-function closestMatches(w){
- w=normalize(w);
- let arr=[];
- for(let cat in DICT){
-  for(let key in DICT[cat]){
-   arr.push(key);
-   for(let L in DICT[cat][key]) arr.push(DICT[cat][key][L]);
-  }
- }
- let scored=arr.map(x=>({w:x,d:levenshtein(w,normalize(x))}));
- scored.sort((a,b)=>a.d-b.d);
- return scored.slice(0,3).map(x=>x.w);
-}
-
-document.getElementById("translateBtn").onclick=()=>{
- let w=document.getElementById("inputWord").value.trim();
- if(!w){document.getElementById("result").textContent="";return}
- let found=findWord(w);
- if(!found){
-  let c=closestMatches(w);
-  document.getElementById("result").textContent="Not found. Did you mean: "+c.join(", ");
-  return;
- }
- let out=outSel.value;
- document.getElementById("result").textContent=found[out]||"—";
- saveNote(w,found[out]||"—");
-};
-
-document.getElementById("speakBtn").onclick=()=>{
- let t=document.getElementById("result").textContent;
- if(!t)return;
- let u=new SpeechSynthesisUtterance(t);
- speechSynthesis.speak(u);
-};
-
-function saveNote(a,b){
- let notes=JSON.parse(localStorage.getItem("notes")||"[]");
- notes.push(a+" = "+b);
- localStorage.setItem("notes",JSON.stringify(notes));
- renderNotes();
-}
-
-function renderNotes(){
- let notes=JSON.parse(localStorage.getItem("notes")||"[]");
- document.getElementById("notes").innerHTML=notes.join("<br>");
-}
-
-renderNotes();
-</script>
-<script>
-PARTS.push({
-family:{
-mother:{English:"mother",Spanish:"madre",German:"Mutter",French:"mère",Italian:"madre",Greek:"μητέρα",Mandarin:"母亲"},
-father:{English:"father",Spanish:"padre",German:"Vater",French:"père",Italian:"padre",Greek:"πατέρας",Mandarin:"父亲"},
-parents:{English:"parents",Spanish:"padres",German:"Eltern",French:"parents",Italian:"genitori",Greek:"γονείς",Mandarin:"父母"},
-daughter:{English:"daughter",Spanish:"hija",German:"Tochter",French:"fille",Italian:"figlia",Greek:"κόρη",Mandarin:"女儿"},
-son:{English:"son",Spanish:"hijo",German:"Sohn",French:"fils",Italian:"figlio",Greek:"γιος",Mandarin:"儿子"},
-sister:{English:"sister",Spanish:"hermana",German:"Schwester",French:"soeur",Italian:"sorella",Greek:"αδελφή",Mandarin:"姐姐"},
-brother:{English:"brother",Spanish:"hermano",German:"Bruder",French:"frère",Italian:"fratello",Greek:"αδελφός",Mandarin:"哥哥"},
-grandmother:{English:"grandmother",Spanish:"abuela",German:"Großmutter",French:"grand-mère",Italian:"nonna",Greek:"γιαγιά",Mandarin:"奶奶"},
-grandfather:{English:"grandfather",Spanish:"abuelo",German:"Großvater",French:"grand-père",Italian:"nonno",Greek:"παππούς",Mandarin:"爷爷"},
-grandparents:{English:"grandparents",Spanish:"abuelos",German:"Großeltern",French:"grands-parents",Italian:"nonni",Greek:"παππούδες",Mandarin:"祖父母"},
-aunt:{English:"aunt",Spanish:"tía",German:"Tante",French:"tante",Italian:"zia",Greek:"θεία",Mandarin:"阿姨"},
-uncle:{English:"uncle",Spanish:"tío",German:"Onkel",French:"oncle",Italian:"zio",Greek:"θείος",Mandarin:"叔叔"},
-cousin:{English:"cousin",Spanish:"primo",German:"Cousin",French:"cousin",Italian:"cugino",Greek:"ξάδερφος",Mandarin:"表亲"},
-niece:{English:"niece",Spanish:"sobrina",German:"Nichte",French:"nièce",Italian:"nipote",Greek:"ανιψιά",Mandarin:"侄女"},
-nephew:{English:"nephew",Spanish:"sobrino",German:"Neffe",French:"neveu",Italian:"nipote",Greek:"ανιψιός",Mandarin:"侄子"},
-wife:{English:"wife",Spanish:"esposa",German:"Ehefrau",French:"femme",Italian:"moglie",Greek:"σύζυγος",Mandarin:"妻子"},
-husband:{English:"husband",Spanish:"esposo",German:"Ehemann",French:"mari",Italian:"marito",Greek:"σύζυγος",Mandarin:"丈夫"},
-family:{English:"family",Spanish:"familia",German:"Familie",French:"famille",Italian:"famiglia",Greek:"οικογένεια",Mandarin:"家庭"},
-stepmother:{English:"stepmother",Spanish:"madrastra",German:"Stiefmutter",French:"belle-mère",Italian:"matrigna",Greek:"μητριά",Mandarin:"继母"},
-stepfather:{English:"stepfather",Spanish:"padrastro",German:"Stiefvater",French:"beau-père",Italian:"patrigno",Greek:"πατριός",Mandarin:"继父"},
-stepsister:{English:"stepsister",Spanish:"hermanastra",German:"Stiefschwester",French:"demi-soeur",Italian:"sorellastra",Greek:"ετεροθαλή αδελφή",Mandarin:"继姐"},
-stepbrother:{English:"stepbrother",Spanish:"hermanastro",German:"Stiefbruder",French:"demi-frère",Italian:"fratellastro",Greek:"ετεροθαλή αδελφός",Mandarin:"继兄"},
-inlaws:{English:"in-laws",Spanish:"suegros",German:"Schwiegereltern",French:"beaux-parents",Italian:"suoceri",Greek:"πεθερικά",Mandarin:"姻亲"},
-motherinlaw:{English:"mother-in-law",Spanish:"suegra",German:"Schwiegermutter",French:"belle-mère",Italian:"suocera",Greek:"πεθερά",Mandarin:"婆婆"},
-fatherinlaw:{English:"father-in-law",Spanish:"suegro",German:"Schwiegervater",French:"beau-père",Italian:"suocero",Greek:"πεθερός",Mandarin:"公公"},
-brotherinlaw:{English:"brother-in-law",Spanish:"cuñado",German:"Schwager",French:"beau-frère",Italian:"cognato",Greek:"γαμπρός",Mandarin:"姐夫"},
-sisterinlaw:{English:"sister-in-law",Spanish:"cuñada",German:"Schwägerin",French:"belle-soeur",Italian:"cognata",Greek:"νύφη",Mandarin:"嫂子"}
-}
-});
-</script>
-<script>
-PARTS.push({
-people:{
-person:{English:"person",Spanish:"persona",German:"Person",French:"personne",Italian:"persona",Greek:"άτομο",Mandarin:"人"},
-people:{English:"people",Spanish:"gente",German:"Leute",French:"gens",Italian:"persone",Greek:"άνθρωποι",Mandarin:"人们"},
-friend:{English:"friend",Spanish:"amigo",German:"Freund",French:"ami",Italian:"amico",Greek:"φίλος",Mandarin:"朋友"},
-girlfriend:{English:"girlfriend",Spanish:"novia",German:"Freundin",French:"petite amie",Italian:"fidanzata",Greek:"κοπέλα",Mandarin:"女朋友"},
-boyfriend:{English:"boyfriend",Spanish:"novio",German:"Freund",French:"petit ami",Italian:"fidanzato",Greek:"αγόρι",Mandarin:"男朋友"},
-child:{English:"child",Spanish:"niño",German:"Kind",French:"enfant",Italian:"bambino",Greek:"παιδί",Mandarin:"孩子"},
-baby:{English:"baby",Spanish:"bebé",German:"Baby",French:"bébé",Italian:"bambino",Greek:"μωρό",Mandarin:"宝宝"},
-teenager:{English:"teenager",Spanish:"adolescente",German:"Teenager",French:"ado",Italian:"adolescente",Greek:"έφηβος",Mandarin:"青少年"},
-adult:{English:"adult",Spanish:"adulto",German:"Erwachsener",French:"adulte",Italian:"adulto",Greek:"ενήλικας",Mandarin:"成年人"},
-elderly:{English:"elderly",Spanish:"anciano",German:"ältere",French:"âgé",Italian:"anziano",Greek:"ηλικιωμένος",Mandarin:"老人"},
-teacher:{English:"teacher",Spanish:"profesor",German:"Lehrer",French:"professeur",Italian:"insegnante",Greek:"δάσκαλος",Mandarin:"老师"},
-student:{English:"student",Spanish:"estudiante",German:"Student",French:"étudiant",Italian:"studente",Greek:"μαθητής",Mandarin:"学生"},
-doctor:{English:"doctor",Spanish:"doctor",German:"Arzt",French:"médecin",Italian:"dottore",Greek:"γιατρός",Mandarin:"医生"},
-nurse:{English:"nurse",Spanish:"enfermera",German:"Krankenschwester",French:"infirmière",Italian:"infermiere",Greek:"νοσοκόμα",Mandarin:"护士"},
-police:{English:"police officer",Spanish:"policía",German:"Polizist",French:"policier",Italian:"poliziotto",Greek:"αστυνομικός",Mandarin:"警察"},
-firefighter:{English:"firefighter",Spanish:"bombero",German:"Feuerwehrmann",French:"pompier",Italian:"vigile del fuoco",Greek:"πυροσβέστης",Mandarin:"消防员"},
-driver:{English:"driver",Spanish:"conductor",German:"Fahrer",French:"conducteur",Italian:"autista",Greek:"οδηγός",Mandarin:"司机"},
-worker:{English:"worker",Spanish:"trabajador",German:"Arbeiter",French:"travailleur",Italian:"lavoratore",Greek:"εργάτης",Mandarin:"工人"},
-boss:{English:"boss",Spanish:"jefe",German:"Chef",French:"chef",Italian:"capo",Greek:"αφεντικό",Mandarin:"老板"},
-neighbor:{English:"neighbor",Spanish:"vecino",German:"Nachbar",French:"voisin",Italian:"vicino",Greek:"γείτονας",Mandarin:"邻居"},
-stranger:{English:"stranger",Spanish:"desconocido",German:"Fremder",French:"étranger",Italian:"sconosciuto",Greek:"άγνωστος",Mandarin:"陌生人"},
-man:{English:"man",Spanish:"hombre",German:"Mann",French:"homme",Italian:"uomo",Greek:"άντρας",Mandarin:"男人"},
-woman:{English:"woman",Spanish:"mujer",German:"Frau",French:"femme",Italian:"donna",Greek:"γυναίκα",Mandarin:"女人"},
-boy:{English:"boy",Spanish:"niño",German:"Junge",French:"garçon",Italian:"ragazzo",Greek:"αγόρι",Mandarin:"男孩"},
-girl:{English:"girl",Spanish:"niña",German:"Mädchen",French:"fille",Italian:"ragazza",Greek:"κορίτσι",Mandarin:"女孩"},
-colleague:{English:"colleague",Spanish:"colega",German:"Kollege",French:"collègue",Italian:"collega",Greek:"συνάδελφος",Mandarin:"同事"},
-partner:{English:"partner",Spanish:"pareja",German:"Partner",French:"partenaire",Italian:"partner",Greek:"σύντροφος",Mandarin:"伴侣"},
-boss:{English:"boss",Spanish:"jefe",German:"Chef",French:"chef",Italian:"capo",Greek:"αφεντικό",Mandarin:"老板"},
-leader:{English:"leader",Spanish:"líder",German:"Anführer",French:"chef",Italian:"leader",Greek:"ηγέτης",Mandarin:"领导"}
-}
-});
-</script>
-<script>
-PARTS.push({
-work:{
-job:{English:"job",Spanish:"trabajo",German:"Job",French:"emploi",Italian:"lavoro",Greek:"δουλειά",Mandarin:"工作"},
-work:{English:"work",Spanish:"trabajar",German:"arbeiten",French:"travailler",Italian:"lavorare",Greek:"εργάζομαι",Mandarin:"工作"},
-office:{English:"office",Spanish:"oficina",German:"Büro",French:"bureau",Italian:"ufficio",Greek:"γραφείο",Mandarin:"办公室"},
-company:{English:"company",Spanish:"empresa",German:"Firma",French:"entreprise",Italian:"azienda",Greek:"εταιρεία",Mandarin:"公司"},
-manager:{English:"manager",Spanish:"gerente",German:"Manager",French:"gestionnaire",Italian:"manager",Greek:"διευθυντής",Mandarin:"经理"},
-employee:{English:"employee",Spanish:"empleado",German:"Angestellter",French:"employé",Italian:"impiegato",Greek:"υπάλληλος",Mandarin:"员工"},
-team:{English:"team",Spanish:"equipo",German:"Team",French:"équipe",Italian:"squadra",Greek:"ομάδα",Mandarin:"团队"},
-meeting:{English:"meeting",Spanish:"reunión",German:"Besprechung",French:"réunion",Italian:"riunione",Greek:"συνάντηση",Mandarin:"会议"},
-project:{English:"project",Spanish:"proyecto",German:"Projekt",French:"projet",Italian:"progetto",Greek:"έργο",Mandarin:"项目"},
-task:{English:"task",Spanish:"tarea",German:"Aufgabe",French:"tâche",Italian:"compito",Greek:"εργασία",Mandarin:"任务"},
-deadline:{English:"deadline",Spanish:"plazo",German:"Frist",French:"date limite",Italian:"scadenza",Greek:"προθεσμία",Mandarin:"截止日期"},
-salary:{English:"salary",Spanish:"salario",German:"Gehalt",French:"salaire",Italian:"stipendio",Greek:"μισθός",Mandarin:"工资"},
-boss:{English:"boss",Spanish:"jefe",German:"Chef",French:"chef",Italian:"capo",Greek:"αφεντικό",Mandarin:"老板"},
-colleague:{English:"colleague",Spanish:"colega",German:"Kollege",French:"collègue",Italian:"collega",Greek:"συνάδελφος",Mandarin:"同事"},
-assistant:{English:"assistant",Spanish:"asistente",German:"Assistent",French:"assistant",Italian:"assistente",Greek:"βοηθός",Mandarin:"助理"},
-engineer:{English:"engineer",Spanish:"ingeniero",German:"Ingenieur",French:"ingénieur",Italian:"ingegnere",Greek:"μηχανικός",Mandarin:"工程师"},
-designer:{English:"designer",Spanish:"diseñador",German:"Designer",French:"designer",Italian:"designer",Greek:"σχεδιαστής",Mandarin:"设计师"},
-chef:{English:"chef",Spanish:"chef",German:"Koch",French:"chef",Italian:"cuoco",Greek:"σεφ",Mandarin:"厨师"},
-farmer:{English:"farmer",Spanish:"granjero",German:"Bauer",French:"fermier",Italian:"contadino",Greek:"αγρότης",Mandarin:"农民"},
-builder:{English:"builder",Spanish:"constructor",German:"Bauarbeiter",French:"constructeur",Italian:"costruttore",Greek:"οικοδόμος",Mandarin:"建筑工人"},
-electrician:{English:"electrician",Spanish:"electricista",German:"Elektriker",French:"électricien",Italian:"elettricista",Greek:"ηλεκτρολόγος",Mandarin:"电工"},
-plumber:{English:"plumber",Spanish:"plomero",German:"Klempner",French:"plombier",Italian:"idraulico",Greek:"υδραυλικός",Mandarin:"水管工"},
-mechanic:{English:"mechanic",Spanish:"mecánico",German:"Mechaniker",French:"mécanicien",Italian:"meccanico",Greek:"μηχανικός",Mandarin:"机械师"},
-scientist:{English:"scientist",Spanish:"científico",German:"Wissenschaftler",French:"scientifique",Italian:"scienziato",Greek:"επιστήμονας",Mandarin:"科学家"},
-writer:{English:"writer",Spanish:"escritor",German:"Schriftsteller",French:"écrivain",Italian:"scrittore",Greek:"συγγραφέας",Mandarin:"作家"},
-artist:{English:"artist",Spanish:"artista",German:"Künstler",French:"artiste",Italian:"artista",Greek:"καλλιτέχνης",Mandarin:"艺术家"},
-actor:{English:"actor",Spanish:"actor",German:"Schauspieler",French:"acteur",Italian:"attore",Greek:"ηθοποιός",Mandarin:"演员"},
-singer:{English:"singer",Spanish:"cantante",German:"Sänger",French:"chanteur",Italian:"cantante",Greek:"τραγουδιστής",Mandarin:"歌手"},
-driver:{English:"driver",Spanish:"conductor",German:"Fahrer",French:"conducteur",Italian:"autista",Greek:"οδηγός",Mandarin:"司机"},
-pilot:{English:"pilot",Spanish:"piloto",German:"Pilot",French:"pilote",Italian:"pilota",Greek:"πιλότος",Mandarin:"飞行员"},
-lawyer:{English:"lawyer",Spanish:"abogado",German:"Anwalt",French:"avocat",Italian:"avvocato",Greek:"δικηγόρος",Mandarin:"律师"},
-judge:{English:"judge",Spanish:"juez",German:"Richter",French:"juge",Italian:"giudice",Greek:"δικαστής",Mandarin:"法官"},
-cashier:{English:"cashier",Spanish:"cajero",German:"Kassierer",French:"caissier",Italian:"cassiere",Greek:"ταμίας",Mandarin:"收银员"},
-waiter:{English:"waiter",Spanish:"camarero",German:"Kellner",French:"serveur",Italian:"cameriere",Greek:"σερβιτόρος",Mandarin:"服务员"}
-}
-});
-</script>
-<script>
-PARTS.push({
-travel:{
-travel:{English:"travel",Spanish:"viajar",German:"reisen",French:"voyager",Italian:"viaggiare",Greek:"ταξιδεύω",Mandarin:"旅行"},
-trip:{English:"trip",Spanish:"viaje",German:"Reise",French:"voyage",Italian:"viaggio",Greek:"ταξίδι",Mandarin:"旅程"},
-vacation:{English:"vacation",Spanish:"vacaciones",German:"Urlaub",French:"vacances",Italian:"vacanza",Greek:"διακοπές",Mandarin:"假期"},
-hotel:{English:"hotel",Spanish:"hotel",German:"Hotel",French:"hôtel",Italian:"hotel",Greek:"ξενοδοχείο",Mandarin:"酒店"},
-airport:{English:"airport",Spanish:"aeropuerto",German:"Flughafen",French:"aéroport",Italian:"aeroporto",Greek:"αεροδρόμιο",Mandarin:"机场"},
-flight:{English:"flight",Spanish:"vuelo",German:"Flug",French:"vol",Italian:"volo",Greek:"πτήση",Mandarin:"航班"},
-ticket:{English:"ticket",Spanish:"boleto",German:"Ticket",French:"billet",Italian:"biglietto",Greek:"εισιτήριο",Mandarin:"票"},
-passport:{English:"passport",Spanish:"pasaporte",German:"Reisepass",French:"passeport",Italian:"passaporto",Greek:"διαβατήριο",Mandarin:"护照"},
-luggage:{English:"luggage",Spanish:"equipaje",German:"Gepäck",French:"bagages",Italian:"bagaglio",Greek:"αποσκευές",Mandarin:"行李"},
-bag:{English:"bag",Spanish:"bolsa",German:"Tasche",French:"sac",Italian:"borsa",Greek:"τσάντα",Mandarin:"包"},
-map:{English:"map",Spanish:"mapa",German:"Karte",French:"carte",Italian:"mappa",Greek:"χάρτης",Mandarin:"地图"},
-train:{English:"train",Spanish:"tren",German:"Zug",French:"train",Italian:"treno",Greek:"τρένο",Mandarin:"火车"},
-bus:{English:"bus",Spanish:"autobús",German:"Bus",French:"bus",Italian:"autobus",Greek:"λεωφορείο",Mandarin:"公交车"},
-taxi:{English:"taxi",Spanish:"taxi",German:"Taxi",French:"taxi",Italian:"taxi",Greek:"ταξί",Mandarin:"出租车"},
-station:{English:"station",Spanish:"estación",German:"Bahnhof",French:"gare",Italian:"stazione",Greek:"σταθμός",Mandarin:"车站"},
-border:{English:"border",Spanish:"frontera",German:"Grenze",French:"frontière",Italian:"confine",Greek:"σύνορα",Mandarin:"边境"},
-tourist:{English:"tourist",Spanish:"turista",German:"Tourist",French:"touriste",Italian:"turista",Greek:"τουρίστας",Mandarin:"游客"},
-guide:{English:"guide",Spanish:"guía",German:"Reiseführer",French:"guide",Italian:"guida",Greek:"ξεναγός",Mandarin:"导游"},
-museum:{English:"museum",Spanish:"museo",German:"Museum",French:"musée",Italian:"museo",Greek:"μουσείο",Mandarin:"博物馆"},
-beach:{English:"beach",Spanish:"playa",German:"Strand",French:"plage",Italian:"spiaggia",Greek:"παραλία",Mandarin:"海滩"},
-mountain:{English:"mountain",Spanish:"montaña",German:"Berg",French:"montagne",Italian:"montagna",Greek:"βουνό",Mandarin:"山"},
-city:{English:"city",Spanish:"ciudad",German:"Stadt",French:"ville",Italian:"città",Greek:"πόλη",Mandarin:"城市"},
-village:{English:"village",Spanish:"pueblo",German:"Dorf",French:"village",Italian:"villaggio",Greek:"χωριό",Mandarin:"村庄"},
-restaurant:{English:"restaurant",Spanish:"restaurante",German:"Restaurant",French:"restaurant",Italian:"ristorante",Greek:"εστιατόριο",Mandarin:"餐厅"},
-reservation:{English:"reservation",Spanish:"reserva",German:"Reservierung",French:"réservation",Italian:"prenotazione",Greek:"κράτηση",Mandarin:"预订"},
-tour:{English:"tour",Spanish:"tour",German:"Tour",French:"tour",Italian:"tour",Greek:"περιοδεία",Mandarin:"旅游"},
-adventure:{English:"adventure",Spanish:"aventura",German:"Abenteuer",French:"aventure",Italian:"avventura",Greek:"περιπέτεια",Mandarin:"冒险"},
-souvenir:{English:"souvenir",Spanish:"recuerdo",German:"Souvenir",French:"souvenir",Italian:"souvenir",Greek:"αναμνηστικό",Mandarin:"纪念品"},
-customs:{English:"customs",Spanish:"aduanas",German:"Zoll",French:"douane",Italian:"dogana",Greek:"τελωνείο",Mandarin:"海关"}
-}
-});
-</script>
-<script>
-PARTS.push({
-countries:{
-germany:{English:"Germany",Spanish:"Alemania",German:"Deutschland",French:"Allemagne",Italian:"Germania",Greek:"Γερμανία",Mandarin:"德国"},
-france:{English:"France",Spanish:"Francia",German:"Frankreich",French:"France",Italian:"Francia",Greek:"Γαλλία",Mandarin:"法国"},
-spain:{English:"Spain",Spanish:"España",German:"Spanien",French:"Espagne",Italian:"Spagna",Greek:"Ισπανία",Mandarin:"西班牙"},
-italy:{English:"Italy",Spanish:"Italia",German:"Italien",French:"Italie",Italian:"Italia",Greek:"Ιταλία",Mandarin:"意大利"},
-portugal:{English:"Portugal",Spanish:"Portugal",German:"Portugal",French:"Portugal",Italian:"Portogallo",Greek:"Πορτογαλία",Mandarin:"葡萄牙"},
-greece:{English:"Greece",Spanish:"Grecia",German:"Griechenland",French:"Grèce",Italian:"Grecia",Greek:"Ελλάδα",Mandarin:"希腊"},
-unitedkingdom:{English:"United Kingdom",Spanish:"Reino Unido",German:"Vereinigtes Königreich",French:"Royaume-Uni",Italian:"Regno Unito",Greek:"Ηνωμένο Βασίλειο",Mandarin:"英国"},
-ireland:{English:"Ireland",Spanish:"Irlanda",German:"Irland",French:"Irlande",Italian:"Irlanda",Greek:"Ιρλανδία",Mandarin:"爱尔兰"},
-usa:{English:"United States",Spanish:"Estados Unidos",German:"Vereinigte Staaten",French:"États-Unis",Italian:"Stati Uniti",Greek:"ΗΠΑ",Mandarin:"美国"},
-canada:{English:"Canada",Spanish:"Canadá",German:"Kanada",French:"Canada",Italian:"Canada",Greek:"Καναδάς",Mandarin:"加拿大"},
-mexico:{English:"Mexico",Spanish:"México",German:"Mexiko",French:"Mexique",Italian:"Messico",Greek:"Μεξικό",Mandarin:"墨西哥"},
-brazil:{English:"Brazil",Spanish:"Brasil",German:"Brasilien",French:"Brésil",Italian:"Brasile",Greek:"Βραζιλία",Mandarin:"巴西"},
-argentina:{English:"Argentina",Spanish:"Argentina",German:"Argentinien",French:"Argentine",Italian:"Argentina",Greek:"Αργεντινή",Mandarin:"阿根廷"},
-china:{English:"China",Spanish:"China",German:"China",French:"Chine",Italian:"Cina",Greek:"Κίνα",Mandarin:"中国"},
-japan:{English:"Japan",Spanish:"Japón",German:"Japan",French:"Japon",Italian:"Giappone",Greek:"Ιαπωνία",Mandarin:"日本"},
-southkorea:{English:"South Korea",Spanish:"Corea del Sur",German:"Südkorea",French:"Corée du Sud",Italian:"Corea del Sud",Greek:"Νότια Κορέα",Mandarin:"韩国"},
-india:{English:"India",Spanish:"India",German:"Indien",French:"Inde",Italian:"India",Greek:"Ινδία",Mandarin:"印度"},
-russia:{English:"Russia",Spanish:"Rusia",German:"Russland",French:"Russie",Italian:"Russia",Greek:"Ρωσία",Mandarin:"俄罗斯"},
-australia:{English:"Australia",Spanish:"Australia",German:"Australien",French:"Australie",Italian:"Australia",Greek:"Αυστραλία",Mandarin:"澳大利亚"},
-newzealand:{English:"New Zealand",Spanish:"Nueva Zelanda",German:"Neuseeland",French:"Nouvelle-Zélande",Italian:"Nuova Zelanda",Greek:"Νέα Ζηλανδία",Mandarin:"新西兰"},
-egypt:{English:"Egypt",Spanish:"Egipto",German:"Ägypten",French:"Égypte",Italian:"Egitto",Greek:"Αίγυπτος",Mandarin:"埃及"},
-southafrica:{English:"South Africa",Spanish:"Sudáfrica",German:"Südafrika",French:"Afrique du Sud",Italian:"Sudafrica",Greek:"Νότια Αφρική",Mandarin:"南非"},
-turkey:{English:"Turkey",Spanish:"Turquía",German:"Türkei",French:"Turquie",Italian:"Turchia",Greek:"Τουρκία",Mandarin:"土耳其"},
-saudiarabia:{English:"Saudi Arabia",Spanish:"Arabia Saudita",German:"Saudi-Arabien",French:"Arabie Saoudite",Italian:"Arabia Saudita",Greek:"Σαουδική Αραβία",Mandarin:"沙特阿拉伯"},
-uae:{English:"United Arab Emirates",Spanish:"Emiratos Árabes Unidos",German:"Vereinigte Arabische Emirate",French:"Émirats arabes unis",Italian:"Emirati Arabi Uniti",Greek:"ΗΑΕ",Mandarin:"阿联酋"}
-}
-});
-</script>
-<script>
-PARTS.push({
-places:{
-home:{English:"home",Spanish:"casa",German:"Zuhause",French:"maison",Italian:"casa",Greek:"σπίτι",Mandarin:"家"},
-house:{English:"house",Spanish:"casa",German:"Haus",French:"maison",Italian:"casa",Greek:"σπίτι",Mandarin:"房子"},
-apartment:{English:"apartment",Spanish:"apartamento",German:"Wohnung",French:"appartement",Italian:"appartamento",Greek:"διαμέρισμα",Mandarin:"公寓"},
-school:{English:"school",Spanish:"escuela",German:"Schule",French:"école",Italian:"scuola",Greek:"σχολείο",Mandarin:"学校"},
-university:{English:"university",Spanish:"universidad",German:"Universität",French:"université",Italian:"università",Greek:"πανεπιστήμιο",Mandarin:"大学"},
-hospital:{English:"hospital",Spanish:"hospital",German:"Krankenhaus",French:"hôpital",Italian:"ospedale",Greek:"νοσοκομείο",Mandarin:"医院"},
-pharmacy:{English:"pharmacy",Spanish:"farmacia",German:"Apotheke",French:"pharmacie",Italian:"farmacia",Greek:"φαρμακείο",Mandarin:"药店"},
-bank:{English:"bank",Spanish:"banco",German:"Bank",French:"banque",Italian:"banca",Greek:"τράπεζα",Mandarin:"银行"},
-store:{English:"store",Spanish:"tienda",German:"Laden",French:"magasin",Italian:"negozio",Greek:"κατάστημα",Mandarin:"商店"},
-supermarket:{English:"supermarket",Spanish:"supermercado",German:"Supermarkt",French:"supermarché",Italian:"supermercato",Greek:"σούπερ μάρκετ",Mandarin:"超市"},
-mall:{English:"mall",Spanish:"centro comercial",German:"Einkaufszentrum",French:"centre commercial",Italian:"centro commerciale",Greek:"εμπορικό κέντρο",Mandarin:"商场"},
-park:{English:"park",Spanish:"parque",German:"Park",French:"parc",Italian:"parco",Greek:"πάρκο",Mandarin:"公园"},
-street:{English:"street",Spanish:"calle",German:"Straße",French:"rue",Italian:"strada",Greek:"δρόμος",Mandarin:"街道"},
-road:{English:"road",Spanish:"carretera",German:"Straße",French:"route",Italian:"strada",Greek:"δρόμος",Mandarin:"道路"},
-bridge:{English:"bridge",Spanish:"puente",German:"Brücke",French:"pont",Italian:"ponte",Greek:"γέφυρα",Mandarin:"桥"},
-river:{English:"river",Spanish:"río",German:"Fluss",French:"rivière",Italian:"fiume",Greek:"ποτάμι",Mandarin:"河"},
-lake:{English:"lake",Spanish:"lago",German:"See",French:"lac",Italian:"lago",Greek:"λίμνη",Mandarin:"湖"},
-forest:{English:"forest",Spanish:"bosque",German:"Wald",French:"forêt",Italian:"foresta",Greek:"δάσος",Mandarin:"森林"},
-desert:{English:"desert",Spanish:"desierto",German:"Wüste",French:"désert",Italian:"deserto",Greek:"έρημος",Mandarin:"沙漠"},
-island:{English:"island",Spanish:"isla",German:"Insel",French:"île",Italian:"isola",Greek:"νησί",Mandarin:"岛"},
-market:{English:"market",Spanish:"mercado",German:"Markt",French:"marché",Italian:"mercato",Greek:"αγορά",Mandarin:"市场"},
-restaurant:{English:"restaurant",Spanish:"restaurante",German:"Restaurant",French:"restaurant",Italian:"ristorante",Greek:"εστιατόριο",Mandarin:"餐厅"},
-cafe:{English:"cafe",Spanish:"cafetería",German:"Café",French:"café",Italian:"caffè",Greek:"καφετέρια",Mandarin:"咖啡馆"},
-library:{English:"library",Spanish:"biblioteca",German:"Bibliothek",French:"bibliothèque",Italian:"biblioteca",Greek:"βιβλιοθήκη",Mandarin:"图书馆"},
-cinema:{English:"cinema",Spanish:"cine",German:"Kino",French:"cinéma",Italian:"cinema",Greek:"σινεμά",Mandarin:"电影院"},
-theater:{English:"theater",Spanish:"teatro",German:"Theater",French:"théâtre",Italian:"teatro",Greek:"θέατρο",Mandarin:"剧院"},
-gym:{English:"gym",Spanish:"gimnasio",German:"Fitnessstudio",French:"salle de sport",Italian:"palestra",Greek:"γυμναστήριο",Mandarin:"健身房"},
-pool:{English:"pool",Spanish:"piscina",German:"Schwimmbad",French:"piscine",Italian:"piscina",Greek:"πισίνα",Mandarin:"游泳池"},
-church:{English:"church",Spanish:"iglesia",German:"Kirche",French:"église",Italian:"chiesa",Greek:"εκκλησία",Mandarin:"教堂"},
-mosque:{English:"mosque",Spanish:"mezquita",German:"Moschee",French:"mosquée",Italian:"moschea",Greek:"τζαμί",Mandarin:"清真寺"},
-temple:{English:"temple",Spanish:"templo",German:"Tempel",French:"temple",Italian:"tempio",Greek:"ναός",Mandarin:"寺庙"},
-factory:{English:"factory",Spanish:"fábrica",German:"Fabrik",French:"usine",Italian:"fabbrica",Greek:"εργοστάσιο",Mandarin:"工厂"},
-farm:{English:"farm",Spanish:"granja",German:"Bauernhof",French:"ferme",Italian:"fattoria",Greek:"φάρμα",Mandarin:"农场"},
-harbor:{English:"harbor",Spanish:"puerto",German:"Hafen",French:"port",Italian:"porto",Greek:"λιμάνι",Mandarin:"港口"},
-station:{English:"station",Spanish:"estación",German:"Bahnhof",French:"gare",Italian:"stazione",Greek:"σταθμός",Mandarin:"车站"}
-}
-});
-</script>
-<script>
-PARTS.push({
-food:{
-food:{English:"food",Spanish:"comida",German:"Essen",French:"nourriture",Italian:"cibo",Greek:"φαγητό",Mandarin:"食物"},
-water:{English:"water",Spanish:"agua",German:"Wasser",French:"eau",Italian:"acqua",Greek:"νερό",Mandarin:"水"},
-bread:{English:"bread",Spanish:"pan",German:"Brot",French:"pain",Italian:"pane",Greek:"ψωμί",Mandarin:"面包"},
-rice:{English:"rice",Spanish:"arroz",German:"Reis",French:"riz",Italian:"riso",Greek:"ρύζι",Mandarin:"米饭"},
-pasta:{English:"pasta",Spanish:"pasta",German:"Pasta",French:"pâtes",Italian:"pasta",Greek:"ζυμαρικά",Mandarin:"意大利面"},
-meat:{English:"meat",Spanish:"carne",German:"Fleisch",French:"viande",Italian:"carne",Greek:"κρέας",Mandarin:"肉"},
-chicken:{English:"chicken",Spanish:"pollo",German:"Hähnchen",French:"poulet",Italian:"pollo",Greek:"κοτόπουλο",Mandarin:"鸡肉"},
-fish:{English:"fish",Spanish:"pescado",German:"Fisch",French:"poisson",Italian:"pesce",Greek:"ψάρι",Mandarin:"鱼"},
-egg:{English:"egg",Spanish:"huevo",German:"Ei",French:"œuf",Italian:"uovo",Greek:"αυγό",Mandarin:"鸡蛋"},
-milk:{English:"milk",Spanish:"leche",German:"Milch",French:"lait",Italian:"latte",Greek:"γάλα",Mandarin:"牛奶"},
-cheese:{English:"cheese",Spanish:"queso",German:"Käse",French:"fromage",Italian:"formaggio",Greek:"τυρί",Mandarin:"奶酪"},
-butter:{English:"butter",Spanish:"mantequilla",German:"Butter",French:"beurre",Italian:"burro",Greek:"βούτυρο",Mandarin:"黄油"},
-salt:{English:"salt",Spanish:"sal",German:"Salz",French:"sel",Italian:"sale",Greek:"αλάτι",Mandarin:"盐"},
-pepper:{English:"pepper",Spanish:"pimienta",German:"Pfeffer",French:"poivre",Italian:"pepe",Greek:"πιπέρι",Mandarin:"胡椒"},
-sugar:{English:"sugar",Spanish:"azúcar",German:"Zucker",French:"sucre",Italian:"zucchero",Greek:"ζάχαρη",Mandarin:"糖"},
-fruit:{English:"fruit",Spanish:"fruta",German:"Obst",French:"fruit",Italian:"frutta",Greek:"φρούτο",Mandarin:"水果"},
-vegetable:{English:"vegetable",Spanish:"verdura",German:"Gemüse",French:"légume",Italian:"verdura",Greek:"λαχανικό",Mandarin:"蔬菜"},
-apple:{English:"apple",Spanish:"manzana",German:"Apfel",French:"pomme",Italian:"mela",Greek:"μήλο",Mandarin:"苹果"},
-banana:{English:"banana",Spanish:"banana",German:"Banane",French:"banane",Italian:"banana",Greek:"μπανάνα",Mandarin:"香蕉"},
-orange:{English:"orange",Spanish:"naranja",German:"Orange",French:"orange",Italian:"arancia",Greek:"πορτοκάλι",Mandarin:"橙子"},
-grape:{English:"grape",Spanish:"uva",German:"Traube",French:"raisin",Italian:"uva",Greek:"σταφύλι",Mandarin:"葡萄"},
-strawberry:{English:"strawberry",Spanish:"fresa",German:"Erdbeere",French:"fraise",Italian:"fragola",Greek:"φράουλα",Mandarin:"草莓"},
-tomato:{English:"tomato",Spanish:"tomate",German:"Tomate",French:"tomate",Italian:"pomodoro",Greek:"ντομάτα",Mandarin:"西红柿"},
-potato:{English:"potato",Spanish:"patata",German:"Kartoffel",French:"pomme de terre",Italian:"patata",Greek:"πατάτα",Mandarin:"土豆"},
-carrot:{English:"carrot",Spanish:"zanahoria",German:"Karotte",French:"carotte",Italian:"carota",Greek:"καρότο",Mandarin:"胡萝卜"},
-onion:{English:"onion",Spanish:"cebolla",German:"Zwiebel",French:"oignon",Italian:"cipolla",Greek:"κρεμμύδι",Mandarin:"洋葱"},
-salad:{English:"salad",Spanish:"ensalada",German:"Salat",French:"salade",Italian:"insalata",Greek:"σαλάτα",Mandarin:"沙拉"},
-soup:{English:"soup",Spanish:"sopa",German:"Suppe",French:"soupe",Italian:"zuppa",Greek:"σούπα",Mandarin:"汤"},
-pizza:{English:"pizza",Spanish:"pizza",German:"Pizza",French:"pizza",Italian:"pizza",Greek:"πίτσα",Mandarin:"披萨"},
-sandwich:{English:"sandwich",Spanish:"sándwich",German:"Sandwich",French:"sandwich",Italian:"panino",Greek:"σάντουιτς",Mandarin:"三明治"},
-cake:{English:"cake",Spanish:"pastel",German:"Kuchen",French:"gâteau",Italian:"torta",Greek:"κέικ",Mandarin:"蛋糕"},
-icecream:{English:"ice cream",Spanish:"helado",German:"Eis",French:"glace",Italian:"gelato",Greek:"παγωτό",Mandarin:"冰淇淋"},
-coffee:{English:"coffee",Spanish:"café",German:"Kaffee",French:"café",Italian:"caffè",Greek:"καφές",Mandarin:"咖啡"},
-tea:{English:"tea",Spanish:"té",German:"Tee",French:"thé",Italian:"tè",Greek:"τσάι",Mandarin:"茶"},
-juice:{English:"juice",Spanish:"jugo",German:"Saft",French:"jus",Italian:"succo",Greek:"χυμός",Mandarin:"果汁"},
-wine:{English:"wine",Spanish:"vino",German:"Wein",French:"vin",Italian:"vino",Greek:"κρασί",Mandarin:"葡萄酒"},
-beer:{English:"beer",Spanish:"cerveza",German:"Bier",French:"bière",Italian:"birra",Greek:"μπύρα",Mandarin:"啤酒"}
-}
-});
-</script>
-<script>
-PARTS.push({
-activities:{
-run:{English:"run",Spanish:"correr",German:"laufen",French:"courir",Italian:"correre",Greek:"τρέχω",Mandarin:"跑步"},
-walk:{English:"walk",Spanish:"caminar",German:"gehen",French:"marcher",Italian:"camminare",Greek:"περπατάω",Mandarin:"走路"},
-jump:{English:"jump",Spanish:"saltar",German:"springen",French:"sauter",Italian:"saltare",Greek:"πηδάω",Mandarin:"跳"},
-swim:{English:"swim",Spanish:"nadar",German:"schwimmen",French:"nager",Italian:"nuotare",Greek:"κολυμπάω",Mandarin:"游泳"},
-dance:{English:"dance",Spanish:"bailar",German:"tanzen",French:"danser",Italian:"ballare",Greek:"χορεύω",Mandarin:"跳舞"},
-sing:{English:"sing",Spanish:"cantar",German:"singen",French:"chanter",Italian:"cantare",Greek:"τραγουδάω",Mandarin:"唱歌"},
-read:{English:"read",Spanish:"leer",German:"lesen",French:"lire",Italian:"leggere",Greek:"διαβάζω",Mandarin:"读书"},
-write:{English:"write",Spanish:"escribir",German:"schreiben",French:"écrire",Italian:"scrivere",Greek:"γράφω",Mandarin:"写字"},
-draw:{English:"draw",Spanish:"dibujar",German:"zeichnen",French:"dessiner",Italian:"disegnare",Greek:"ζωγραφίζω",Mandarin:"画画"},
-paint:{English:"paint",Spanish:"pintar",German:"malen",French:"peindre",Italian:"dipingere",Greek:"ζωγραφίζω",Mandarin:"绘画"},
-cook:{English:"cook",Spanish:"cocinar",German:"kochen",French:"cuisiner",Italian:"cucinare",Greek:"μαγειρεύω",Mandarin:"做饭"},
-bake:{English:"bake",Spanish:"hornear",German:"backen",French:"cuire",Italian:"cuocere",Greek:"ψήνω",Mandarin:"烘焙"},
-clean:{English:"clean",Spanish:"limpiar",German:"putzen",French:"nettoyer",Italian:"pulire",Greek:"καθαρίζω",Mandarin:"打扫"},
-wash:{English:"wash",Spanish:"lavar",German:"waschen",French:"laver",Italian:"lavare",Greek:"πλένω",Mandarin:"洗"},
-drive:{English:"drive",Spanish:"conducir",German:"fahren",French:"conduire",Italian:"guidare",Greek:"οδηγώ",Mandarin:"开车"},
-ride:{English:"ride",Spanish:"montar",German:"reiten",French:"monter",Italian:"cavalcare",Greek:"ιππεύω",Mandarin:"骑"},
-sleep:{English:"sleep",Spanish:"dormir",German:"schlafen",French:"dormir",Italian:"dormire",Greek:"κοιμάμαι",Mandarin:"睡觉"},
-rest:{English:"rest",Spanish:"descansar",German:"ausruhen",French:"se reposer",Italian:"riposare",Greek:"ξεκουράζομαι",Mandarin:"休息"},
-study:{English:"study",Spanish:"estudiar",German:"studieren",French:"étudier",Italian:"studiare",Greek:"μελετάω",Mandarin:"学习"},
-learn:{English:"learn",Spanish:"aprender",German:"lernen",French:"apprendre",Italian:"imparare",Greek:"μαθαίνω",Mandarin:"学"},
-teach:{English:"teach",Spanish:"enseñar",German:"unterrichten",French:"enseigner",Italian:"insegnare",Greek:"διδάσκω",Mandarin:"教"},
-play:{English:"play",Spanish:"jugar",German:"spielen",French:"jouer",Italian:"giocare",Greek:"παίζω",Mandarin:"玩"},
-watch:{English:"watch",Spanish:"mirar",German:"schauen",French:"regarder",Italian:"guardare",Greek:"βλέπω",Mandarin:"看"},
-listen:{English:"listen",Spanish:"escuchar",German:"hören",French:"écouter",Italian:"ascoltare",Greek:"ακούω",Mandarin:"听"},
-talk:{English:"talk",Spanish:"hablar",German:"sprechen",French:"parler",Italian:"parlare",Greek:"μιλάω",Mandarin:"说话"},
-help:{English:"help",Spanish:"ayudar",German:"helfen",French:"aider",Italian:"aiutare",Greek:"βοηθάω",Mandarin:"帮助"},
-shop:{English:"shop",Spanish:"comprar",German:"einkaufen",French:"acheter",Italian:"comprare",Greek:"ψωνίζω",Mandarin:"购物"},
-travel:{English:"travel",Spanish:"viajar",German:"reisen",French:"voyager",Italian:"viaggiare",Greek:"ταξιδεύω",Mandarin:"旅行"},
-exercise:{English:"exercise",Spanish:"ejercitar",German:"trainieren",French:"s'entraîner",Italian:"allenarsi",Greek:"γυμνάζομαι",Mandarin:"锻炼"},
-swim:{English:"swim",Spanish:"nadar",German:"schwimmen",French:"nager",Italian:"nuotare",Greek:"κολυμπάω",Mandarin:"游泳"},
-relax:{English:"relax",Spanish:"relajarse",German:"entspannen",French:"se détendre",Italian:"rilassarsi",Greek:"χαλαρώνω",Mandarin:"放松"}
-}
-});
-</script>
-<script>
-PARTS.push({
-school:{
-school:{English:"school",Spanish:"escuela",German:"Schule",French:"école",Italian:"scuola",Greek:"σχολείο",Mandarin:"学校"},
-class:{English:"class",Spanish:"clase",German:"Klasse",French:"classe",Italian:"classe",Greek:"τάξη",Mandarin:"班级"},
-teacher:{English:"teacher",Spanish:"profesor",German:"Lehrer",French:"professeur",Italian:"insegnante",Greek:"δάσκαλος",Mandarin:"老师"},
-student:{English:"student",Spanish:"estudiante",German:"Student",French:"étudiant",Italian:"studente",Greek:"μαθητής",Mandarin:"学生"},
-lesson:{English:"lesson",Spanish:"lección",German:"Lektion",French:"leçon",Italian:"lezione",Greek:"μάθημα",Mandarin:"课"},
-homework:{English:"homework",Spanish:"tarea",German:"Hausaufgabe",French:"devoirs",Italian:"compiti",Greek:"εργασία",Mandarin:"作业"},
-exam:{English:"exam",Spanish:"examen",German:"Prüfung",French:"examen",Italian:"esame",Greek:"εξέταση",Mandarin:"考试"},
-test:{English:"test",Spanish:"prueba",German:"Test",French:"test",Italian:"test",Greek:"τεστ",Mandarin:"测试"},
-grade:{English:"grade",Spanish:"nota",German:"Note",French:"note",Italian:"voto",Greek:"βαθμός",Mandarin:"成绩"},
-subject:{English:"subject",Spanish:"asignatura",German:"Fach",French:"matière",Italian:"materia",Greek:"μάθημα",Mandarin:"科目"},
-math:{English:"math",Spanish:"matemáticas",German:"Mathe",French:"maths",Italian:"matematica",Greek:"μαθηματικά",Mandarin:"数学"},
-science:{English:"science",Spanish:"ciencia",German:"Wissenschaft",French:"science",Italian:"scienza",Greek:"επιστήμη",Mandarin:"科学"},
-history:{English:"history",Spanish:"historia",German:"Geschichte",French:"histoire",Italian:"storia",Greek:"ιστορία",Mandarin:"历史"},
-geography:{English:"geography",Spanish:"geografía",German:"Geografie",French:"géographie",Italian:"geografia",Greek:"γεωγραφία",Mandarin:"地理"},
-language:{English:"language",Spanish:"idioma",German:"Sprache",French:"langue",Italian:"lingua",Greek:"γλώσσα",Mandarin:"语言"},
-book:{English:"book",Spanish:"libro",German:"Buch",French:"livre",Italian:"libro",Greek:"βιβλίο",Mandarin:"书"},
-notebook:{English:"notebook",Spanish:"cuaderno",German:"Notizbuch",French:"cahier",Italian:"quaderno",Greek:"τετράδιο",Mandarin:"笔记本"},
-pen:{English:"pen",Spanish:"bolígrafo",German:"Stift",French:"stylo",Italian:"penna",Greek:"στυλό",Mandarin:"笔"},
-pencil:{English:"pencil",Spanish:"lápiz",German:"Bleistift",French:"crayon",Italian:"matita",Greek:"μολύβι",Mandarin:"铅笔"},
-eraser:{English:"eraser",Spanish:"goma",German:"Radiergummi",French:"gomme",Italian:"gomma",Greek:"γόμα",Mandarin:"橡皮"},
-desk:{English:"desk",Spanish:"escritorio",German:"Schreibtisch",French:"bureau",Italian:"scrivania",Greek:"θρανίο",Mandarin:"书桌"},
-chair:{English:"chair",Spanish:"silla",German:"Stuhl",French:"chaise",Italian:"sedia",Greek:"καρέκλα",Mandarin:"椅子"},
-library:{English:"library",Spanish:"biblioteca",German:"Bibliothek",French:"bibliothèque",Italian:"biblioteca",Greek:"βιβλιοθήκη",Mandarin:"图书馆"},
-principal:{English:"principal",Spanish:"director",German:"Direktor",French:"directeur",Italian:"preside",Greek:"διευθυντής",Mandarin:"校长"},
-uniform:{English:"uniform",Spanish:"uniforme",German:"Uniform",French:"uniforme",Italian:"uniforme",Greek:"στολή",Mandarin:"校服"},
-recess:{English:"recess",Spanish:"recreo",German:"Pause",French:"récréation",Italian:"intervallo",Greek:"διάλειμμα",Mandarin:"休息"},
-schedule:{English:"schedule",Spanish:"horario",German:"Stundenplan",French:"emploi du temps",Italian:"orario",Greek:"πρόγραμμα",Mandarin:"课程表"}
-}
-});
-</script>
-<script>
-PARTS.forEach(p=>{
- let cat=Object.keys(p)[0];
- DICT[cat]=p[cat];
-});
- /* Clear All Notes */
-document.getElementById("clearNotesBtn").addEventListener("click", () => {
-    document.getElementById("notes").innerHTML = "";
-    localStorage.removeItem("notes");
-});
- 
-</script>
-
+</div>
