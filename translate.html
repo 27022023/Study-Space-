@@ -158,9 +158,12 @@ button {
         <button id="speakBtn">🔊</button>
       </div>
     </div>
-
+<script>
+const DICT = Object.assign({}, ...PARTS);
+</script>
     <button id="translateBtn">Translate</button>
-    <div id="result"></div>
+    <div id="result">
+    </div>
   </div><script>
 document.addEventListener("DOMContentLoaded", () => {
 
