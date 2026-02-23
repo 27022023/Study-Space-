@@ -161,7 +161,54 @@ button {
 
     <button id="translateBtn">Translate</button>
     <div id="result"></div>
-  </div>
+  </div><script>
+document.addEventListener("DOMContentLoaded", () => {
+
+  const translateBtn = document.getElementById("translateBtn");
+  const clearBtn = document.getElementById("clearNotesBtn");
+
+  translateBtn.addEventListener("click", () => {
+
+    // Make sure DICT exists
+    if (typeof DICT === "undefined") {
+      document.getElementById("result").textContent = "—";
+      return;
+    }
+
+    let word = document.getElementById("inputWord").value.trim().toLowerCase();
+    let to = document.getElementById("outputLang").value;
+
+    let found = null;
+
+    // Search inside every category
+    for (let category in DICT) {
+      if (DICT[category] && DICT[category][word]) {
+        found = DICT[category][word];
+        break;
+      }
+    }
+
+    if (!found) {
+      document.getElementById("result").textContent = "—";
+      return;
+    }
+
+    let translated = found[to] || "—";
+    document.getElementById("result").textContent = translated;
+
+    let notes = document.getElementById("notes");
+    notes.innerHTML += `<div>${word} → ${translated}</div>`;
+    localStorage.setItem("notes", notes.innerHTML);
+  });
+
+  clearBtn.addEventListener("click", () => {
+    document.getElementById("notes").innerHTML = "";
+    localStorage.removeItem("notes");
+  });
+
+});
+      </script>
+  
 
   <div class="notebook">
     <h2>Notebook</h2>
@@ -3290,45 +3337,7 @@ PARTS.push({
 
   }
 });
-</div>
 
-<script>
-window.onload = () => {
-
-  document.getElementById("translateBtn").onclick = () => {
-    let word = document.getElementById("inputWord").value.trim().toLowerCase();
-    let from = document.getElementById("inputLang").value;
-    let to = document.getElementById("outputLang").value;
-
-    let found = null;
-
-    // Search inside every category
-    for (let category in DICT) {
-      if (DICT[category][word]) {
-        found = DICT[category][word];
-        break;
-      }
-    }
-
-    if (!found) {
-      document.getElementById("result").textContent = "—";
-      return;
-    }
-
-    let translated = found[to] || "—";
-    document.getElementById("result").textContent = translated;
-
-    let notes = document.getElementById("notes");
-    notes.innerHTML += `<div>${word} → ${translated}</div>`;
-    localStorage.setItem("notes", notes.innerHTML);
-  };
-
-  document.getElementById("clearNotesBtn").onclick = () => {
-    document.getElementById("notes").innerHTML = "";
-    localStorage.removeItem("notes");
-  };
-
-};
 </script>
 
 </body>
