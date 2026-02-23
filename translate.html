@@ -159,13 +159,6 @@ button {
       </div>
     </div>
 <script>
-const DICT = Object.assign({}, ...PARTS);
-</script>
-    <button id="translateBtn">Translate</button>
-    <div id="result">
-    </div>
-  </div><script>
-document.addEventListener("DOMContentLoaded", () => {
 
   const translateBtn = document.getElementById("translateBtn");
   const clearBtn = document.getElementById("clearNotesBtn");
@@ -3340,6 +3333,62 @@ PARTS.push({
 
   }
 });
+</div>
+
+<!-- 1️⃣ BUILD DICT FROM ALL YOUR CHUNKS -->
+<script>
+const DICT = Object.assign({}, ...PARTS);
+</script>
+
+<!-- 2️⃣ TRANSLATOR LOGIC -->
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+  const translateBtn = document.getElementById("translateBtn");
+  const clearBtn = document.getElementById("clearNotesBtn");
+
+  translateBtn.addEventListener("click", () => {
+
+    if (typeof DICT === "undefined") {
+      document.getElementById("result").textContent = "—";
+      return;
+    }
+
+    let word = document.getElementById("inputWord").value.trim().toLowerCase();
+    let to = document.getElementById("outputLang").value;
+
+    let found = null;
+
+    for (let category in DICT) {
+      if (DICT[category] && DICT[category][word]) {
+        found = DICT[category][word];
+        break;
+      }
+    }
+
+    if (!found) {
+      document.getElementById("result").textContent = "—";
+      return;
+    }
+
+    let translated = found[to] || "—";
+    document.getElementById("result").textContent = translated;
+
+    let notes = document.getElementById("notes");
+    notes.innerHTML += `<div>${word} → ${translated}</div>`;
+    localStorage.setItem("notes", notes.innerHTML);
+  });
+
+  clearBtn.addEventListener("click", () => {
+    document.getElementById("notes").innerHTML = "";
+    localStorage.removeItem("notes");
+  });
+
+});
+</script>
+
+</body>
+</html>
 
 </script>
 
