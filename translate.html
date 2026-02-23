@@ -236,3 +236,9 @@ document.getElementById("clearNotesBtn").onclick = () => {
   localStorage.removeItem("notes");
 };
 </script>
+<script>
+PARTS.forEach(p=>{
+ let cat = Object.keys(p)[0];
+ DICT[cat] = p[cat];
+});
+</script>
