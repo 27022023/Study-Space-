@@ -3326,6 +3326,46 @@ PARTS.push({
 
   }
 });
+</div>
+
+<script>
+window.onload = () => {
+
+  document.getElementById("translateBtn").onclick = () => {
+    let word = document.getElementById("inputWord").value.trim().toLowerCase();
+    let from = document.getElementById("inputLang").value;
+    let to = document.getElementById("outputLang").value;
+
+    let found = null;
+
+    // Search inside every category
+    for (let category in DICT) {
+      if (DICT[category][word]) {
+        found = DICT[category][word];
+        break;
+      }
+    }
+
+    if (!found) {
+      document.getElementById("result").textContent = "—";
+      return;
+    }
+
+    let translated = found[to] || "—";
+    document.getElementById("result").textContent = translated;
+
+    let notes = document.getElementById("notes");
+    notes.innerHTML += `<div>${word} → ${translated}</div>`;
+    localStorage.setItem("notes", notes.innerHTML);
+  };
+
+  document.getElementById("clearNotesBtn").onclick = () => {
+    document.getElementById("notes").innerHTML = "";
+    localStorage.removeItem("notes");
+  };
+
+};
 </script>
+
 </body>
 </html>
