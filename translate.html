@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Translator + Notebook</title>
+<title>Translator + Pronunciation + Notebook</title>
 
 <style>
 body {
@@ -137,7 +137,7 @@ input, select, button {
       <div id="resultBox">
         <div><strong>Translation:</strong> <span id="result"></span></div>
         <div id="pronunciationBox" style="display:none;">
-          <strong>Pronunciation hint:</strong>
+          <strong>Pronunciation (IPA):</strong>
           <div id="pronunciationText"></div>
         </div>
       </div>
@@ -154,27 +154,26 @@ input, select, button {
 </div>
 
 <script>
-// languages with flags + ISO codes for LibreTranslate
-// Supported languages: https://libretranslate.com (docs)
+// languages with flags + ISO codes
 const langs = [
-  { name: "English",   flag: "🇬🇧", code: "en" },
-  { name: "Spanish",   flag: "🇪🇸", code: "es" },
-  { name: "German",    flag: "🇩🇪", code: "de" },
-  { name: "French",    flag: "🇫🇷", code: "fr" },
-  { name: "Italian",   flag: "🇮🇹", code: "it" },
-  { name: "Portuguese",flag: "🇵🇹", code: "pt" },
-  { name: "Russian",   flag: "🇷🇺", code: "ru" },
-  { name: "Arabic",    flag: "🇸🇦", code: "ar" },
-  { name: "Chinese",   flag: "🇨🇳", code: "zh" },
-  { name: "Japanese",  flag: "🇯🇵", code: "ja" },
-  { name: "Korean",    flag: "🇰🇷", code: "ko" },
-  { name: "Hindi",     flag: "🇮🇳", code: "hi" },
-  { name: "Dutch",     flag: "🇳🇱", code: "nl" },
-  { name: "Polish",    flag: "🇵🇱", code: "pl" },
+  { name: "English", flag: "🇬🇧", code: "en" },
+  { name: "Spanish", flag: "🇪🇸", code: "es" },
+  { name: "German", flag: "🇩🇪", code: "de" },
+  { name: "French", flag: "🇫🇷", code: "fr" },
+  { name: "Italian", flag: "🇮🇹", code: "it" },
+  { name: "Portuguese", flag: "🇵🇹", code: "pt" },
+  { name: "Russian", flag: "🇷🇺", code: "ru" },
+  { name: "Arabic", flag: "🇸🇦", code: "ar" },
+  { name: "Chinese", flag: "🇨🇳", code: "zh" },
+  { name: "Japanese", flag: "🇯🇵", code: "ja" },
+  { name: "Korean", flag: "🇰🇷", code: "ko" },
+  { name: "Hindi", flag: "🇮🇳", code: "hi" },
+  { name: "Dutch", flag: "🇳🇱", code: "nl" },
+  { name: "Polish", flag: "🇵🇱", code: "pl" },
   { name: "Ukrainian", flag: "🇺🇦", code: "uk" }
 ];
 
-const inSel  = document.getElementById("inputLang");
+const inSel = document.getElementById("inputLang");
 const outSel = document.getElementById("outputLang");
 
 langs.forEach(l => {
@@ -185,16 +184,11 @@ langs.forEach(l => {
   outSel.appendChild(opt);
 });
 
-// default: from English to Spanish
+// default languages
 inSel.value = "en";
 outSel.value = "es";
 
-function getLangByCode(code) {
-  return langs.find(l => l.code === code);
-}
-
-// LibreTranslate public endpoint
-// Docs: https://libretranslate.com (no key needed for basic use)
+// LibreTranslate API
 async function translateText(text, fromCode, toCode) {
   const res = await fetch("https://libretranslate.com/translate", {
     method: "POST",
@@ -210,42 +204,23 @@ async function translateText(text, fromCode, toCode) {
   return data.translatedText;
 }
 
-// very simple pronunciation hint generator
-function buildPronunciationHint(text, langCode) {
-  // This is intentionally simple: it just gives a "say it like" helper.
-  // For real IPA you'd need a dedicated phonetic API per language.
-  if (!text) return "";
+// Pronunciation API (Free Dictionary API)
+async function getPronunciation(word, langCode) {
+  if (langCode !== "en") return ""; // Only English IPA available for free
 
-  // For languages using Latin alphabet, we just repeat the word
-  const latinLangs = ["en","es","fr","de","it","pt","nl","pl","ro","sv","no"];
-  if (latinLangs.includes(langCode)) {
-    return `Say it slowly like: "${text}"`;
+  try {
+    const res = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`);
+    const data = await res.json();
+    if (data[0]?.phonetics?.length > 0) {
+      return data[0].phonetics[0].text || "";
+    }
+  } catch (e) {
+    return "";
   }
-
-  if (langCode === "ja") {
-    return `Japanese: try to read it evenly, each syllable the same length: "${text}"`;
-  }
-
-  if (langCode === "zh") {
-    return `Chinese: tones matter. Try to keep the syllables clear: "${text}"`;
-  }
-
-  if (langCode === "ko") {
-    return `Korean: read it smoothly, no strong stress: "${text}"`;
-  }
-
-  if (langCode === "ar") {
-    return `Arabic: emphasize consonants clearly: "${text}"`;
-  }
-
-  if (langCode === "ru" || langCode === "uk") {
-    return `Slavic: roll the 'r' slightly and keep vowels short: "${text}"`;
-  }
-
-  return `Pronounce it clearly as written: "${text}"`;
+  return "";
 }
 
-// load notebook memory
+// Load notebook memory
 window.onload = () => {
   const saved = localStorage.getItem("notes");
   if (saved) document.getElementById("notes").innerHTML = saved;
@@ -254,7 +229,7 @@ window.onload = () => {
 document.getElementById("translateBtn").onclick = async () => {
   const word = document.getElementById("inputWord").value.trim();
   const fromCode = document.getElementById("inputLang").value;
-  const toCode   = document.getElementById("outputLang").value;
+  const toCode = document.getElementById("outputLang").value;
 
   if (!word) return;
 
@@ -262,23 +237,23 @@ document.getElementById("translateBtn").onclick = async () => {
     const translated = await translateText(word, fromCode, toCode);
     document.getElementById("result").textContent = translated;
 
-    // pronunciation hint
-    const hint = buildPronunciationHint(translated, toCode);
+    // Pronunciation (only for English output)
+    const ipa = await getPronunciation(translated, toCode);
     const pronBox = document.getElementById("pronunciationBox");
     const pronText = document.getElementById("pronunciationText");
-    if (hint) {
-      pronText.textContent = hint;
+
+    if (ipa) {
+      pronText.textContent = ipa;
       pronBox.style.display = "block";
     } else {
       pronBox.style.display = "none";
     }
 
-    // notebook
+    // Notebook
     const notes = document.getElementById("notes");
-    const fromLang = getLangByCode(fromCode);
-    const toLang   = getLangByCode(toCode);
-    notes.innerHTML += `<div>${fromLang.flag} ${word} → ${toLang.flag} ${translated}</div>`;
+    notes.innerHTML += `<div>${word} → ${translated}</div>`;
     localStorage.setItem("notes", notes.innerHTML);
+
   } catch (e) {
     document.getElementById("result").textContent = "Error translating. Try again.";
   }
