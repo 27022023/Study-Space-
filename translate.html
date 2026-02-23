@@ -3007,4 +3007,119 @@ PARTS.push({
   }
 });
   </script>
+ <script>
+PARTS.push({
+  weather: {
+
+    sunny: {
+      English:"sunny", Spanish:"soleado", German:"sonnig", French:"ensoleillé", Italian:"soleggiato",
+      Greek:"ηλιόλουστος", Mandarin:"晴朗", Russian:"солнечно", Arabic:"مشمس", Norwegian:"solrik",
+      Swedish:"soligt", Finnish:"aurinkoinen", Estonian:"päikeseline", Czech:"slunečno", Croatian:"sunčano",
+      Serbian:"сунчано", Slovenian:"sončno", Korean:"맑은", Japanese:"晴れ", Portuguese:"ensolarado",
+      Afrikaans:"sonnig", "Egyptian Arabic":"مشمس", Hindi:"धूप", Dutch:"zonnig", Polish:"słonecznie",
+      Ukrainian:"сонячно", Romanian:"senin", Hungarian:"napos", Indonesian:"cerah", Swahili:"jua"
+    },
+
+    cloudy: {
+      English:"cloudy", Spanish:"nublado", German:"bewölkt", French:"nuageux", Italian:"nuvoloso",
+      Greek:"συννεφιασμένος", Mandarin:"多云", Russian:"облачно", Arabic:"غائم", Norwegian:"skyet",
+      Swedish:"molnigt", Finnish:"pilvinen", Estonian:"pilvine", Czech:"zataženo", Croatian:"oblačno",
+      Serbian:"облачно", Slovenian:"oblačno", Korean:"흐린", Japanese:"曇り", Portuguese:"nublado",
+      Afrikaans:"bewolk", "Egyptian Arabic":"غائم", Hindi:"बादल", Dutch:"bewolkt", Polish:"pochmurno",
+      Ukrainian:"хмарно", Romanian:"înnorat", Hungarian:"felhős", Indonesian:"berawan", Swahili:"mawingu"
+    },
+
+    rainy: {
+      English:"rainy", Spanish:"lluvioso", German:"regnerisch", French:"pluvieux", Italian:"piovoso",
+      Greek:"βροχερός", Mandarin:"下雨", Russian:"дождливо", Arabic:"ممطر", Norwegian:"regnfull",
+      Swedish:"regnigt", Finnish:"sateinen", Estonian:"vihmane", Czech:"deštivo", Croatian:"kišovito",
+      Serbian:"кишовито", Slovenian:"deževno", Korean:"비 오는", Japanese:"雨", Portuguese:"chuvoso",
+      Afrikaans:"reënerig", "Egyptian Arabic":"ممطر", Hindi:"बारिश", Dutch:"regenachtig", Polish:"deszczowo",
+      Ukrainian:"дощово", Romanian:"ploios", Hungarian:"esős", Indonesian:"hujan", Swahili:"mvua"
+    },
+
+    snowy: {
+      English:"snowy", Spanish:"nevado", German:"schneereich", French:"enneigé", Italian:"nevoso",
+      Greek:"χιονισμένος", Mandarin:"下雪", Russian:"снежно", Arabic:"مثلج", Norwegian:"snøfull",
+      Swedish:"snöigt", Finnish:"luminen", Estonian:"lumine", Czech:"sněžný", Croatian:"snježno",
+      Serbian:"снежно", Slovenian:"snežno", Korean:"눈 오는", Japanese:"雪", Portuguese:"nevado",
+      Afrikaans:"sneeuagtig", "Egyptian Arabic":"ثلج", Hindi:"बर्फ़ीला", Dutch:"sneeuwerig", Polish:"śnieżnie",
+      Ukrainian:"сніжно", Romanian:"ninsoare", Hungarian:"havas", Indonesian:"bersalju", Swahili:"theluji"
+    },
+
+    windy: {
+      English:"windy", Spanish:"ventoso", German:"windig", French:"venteux", Italian:"ventoso",
+      Greek:"ανεμώδης", Mandarin:"有风", Russian:"ветрено", Arabic:"عاصف", Norwegian:"vindfull",
+      Swedish:"blåsigt", Finnish:"tuulinen", Estonian:"tuuline", Czech:"větrno", Croatian:"vjetrovito",
+      Serbian:"ветровито", Slovenian:"vetrovno", Korean:"바람 부는", Japanese:"風が強い", Portuguese:"ventoso",
+      Afrikaans:"winderig", "Egyptian Arabic":"عاصف", Hindi:"हवादार", Dutch:"winderig", Polish:"wietrznie",
+      Ukrainian:"вітряно", Romanian:"vântos", Hungarian:"szeles", Indonesian:"berangin", Swahili:"upepo"
+    },
+
+    stormy: {
+      English:"stormy", Spanish:"tormentoso", German:"stürmisch", French:"orageux", Italian:"tempestoso",
+      Greek:"θυελλώδης", Mandarin:"暴风雨", Russian:"бурно", Arabic:"عاصف", Norwegian:"stormfull",
+      Swedish:"stormigt", Finnish:"myrskyinen", Estonian:"tormine", Czech:"bouřlivý", Croatian:"olujno",
+      Serbian:"олујно", Slovenian:"neurje", Korean:"폭풍우", Japanese:"嵐", Portuguese:"tempestuoso",
+      Afrikaans:"stormagtig", "Egyptian Arabic":"عاصف", Hindi:"तूफ़ानी", Dutch:"stormachtig", Polish:"burzowo",
+      Ukrainian:"бурхливо", Romanian:"furtunos", Hungarian:"viharos", Indonesian:"badai", Swahili:"dhoruba"
+    },
+
+    foggy: {
+      English:"foggy", Spanish:"brumoso", German:"neblig", French:"brumeux", Italian:"nebbioso",
+      Greek:"ομιχλώδης", Mandarin:"有雾", Russian:"туманно", Arabic:"ضبابي", Norwegian:"tåket",
+      Swedish:"dimma", Finnish:"sumuinen", Estonian:"udu", Czech:"mlhavý", Croatian:"maglovito",
+      Serbian:"магловито", Slovenian:"megleno", Korean:"안개 낀", Japanese:"霧", Portuguese:"nebuloso",
+      Afrikaans:"mis", "Egyptian Arabic":"ضبابي", Hindi:"कोहरा", Dutch:"mistig", Polish:"mgliście",
+      Ukrainian:"туманно", Romanian:"cețos", Hungarian:"ködös", Indonesian:"berkabut", Swahili:"ukungu"
+    },
+
+    hot: {
+      English:"hot", Spanish:"caliente", German:"heiß", French:"chaud", Italian:"caldo",
+      Greek:"ζεστός", Mandarin:"热", Russian:"жарко", Arabic:"حار", Norwegian:"varmt",
+      Swedish:"varmt", Finnish:"kuuma", Estonian:"kuum", Czech:"horko", Croatian:"vruće",
+      Serbian:"вруће", Slovenian:"vroče", Korean:"더운", Japanese:"暑い", Portuguese:"quente",
+      Afrikaans:"warm", "Egyptian Arabic":"حر", Hindi:"गरम", Dutch:"heet", Polish:"gorąco",
+      Ukrainian:"спекотно", Romanian:"cald", Hungarian:"forró", Indonesian:"panas", Swahili:"joto"
+    },
+
+    cold: {
+      English:"cold", Spanish:"frío", German:"kalt", French:"froid", Italian:"freddo",
+      Greek:"κρύος", Mandarin:"冷", Russian:"холодно", Arabic:"بارد", Norwegian:"kaldt",
+      Swedish:"kallt", Finnish:"kylmä", Estonian:"külm", Czech:"zima", Croatian:"hladno",
+      Serbian:"хладно", Slovenian:"hladno", Korean:"추운", Japanese:"寒い", Portuguese:"frio",
+      Afrikaans:"koud", "Egyptian Arabic":"برد", Hindi:"ठंडा", Dutch:"koud", Polish:"zimno",
+      Ukrainian:"холодно", Romanian:"rece", Hungarian:"hideg", Indonesian:"dingin", Swahili:"baridi"
+    },
+
+    warm: {
+      English:"warm", Spanish:"templado", German:"warm", French:"chaud", Italian:"caldo",
+      Greek:"ζεστός", Mandarin:"温暖", Russian:"тёплый", Arabic:"دافئ", Norwegian:"varm",
+      Swedish:"varmt", Finnish:"lämmin", Estonian:"soe", Czech:"teplý", Croatian:"toplo",
+      Serbian:"топло", Slovenian:"toplo", Korean:"따뜻한", Japanese:"暖かい", Portuguese:"morno",
+      Afrikaans:"warm", "Egyptian Arabic":"دافي", Hindi:"गर्माहट", Dutch:"warm", Polish:"ciepło",
+      Ukrainian:"тепло", Romanian:"cald", Hungarian:"meleg", Indonesian:"hangat", Swahili:"joto la wastani"
+    },
+
+    lightning: {
+      English:"lightning", Spanish:"relámpago", German:"Blitz", French:"éclair", Italian:"fulmine",
+      Greek:"αστραπή", Mandarin:"闪电", Russian:"молния", Arabic:"برق", Norwegian:"lyn",
+      Swedish:"blixt", Finnish:"salama", Estonian:"välk", Czech:"blesk", Croatian:"munja",
+      Serbian:"муња", Slovenian:"strela", Korean:"번개", Japanese:"稲妻", Portuguese:"raio",
+      Afrikaans:"weerlig", "Egyptian Arabic":"برق", Hindi:"बिजली", Dutch:"bliksem", Polish:"błyskawica",
+      Ukrainian:"блискавка", Romanian:"fulger", Hungarian:"villám", Indonesian:"kilat", Swahili:"radi"
+    },
+
+    thunder: {
+      English:"thunder", Spanish:"trueno", German:"Donner", French:"tonnerre", Italian:"tuono",
+      Greek:"βροντή", Mandarin:"雷声", Russian:"гром", Arabic:"رعد", Norwegian:"torden",
+      Swedish:"åska", Finnish:"ukkonen", Estonian:"kõu", Czech:"hrom", Croatian:"grom",
+      Serbian:"гром", Slovenian:"grom", Korean:"천둥", Japanese:"雷", Portuguese:"trovão",
+      Afrikaans:"donder", "Egyptian Arabic":"رعد", Hindi:"गरज", Dutch:"donder", Polish:"grzmot",
+      Ukrainian:"грім", Romanian:"tunet", Hungarian:"mennydörgés", Indonesian:"guntur", Swahili:"ngurumo"
+    }
+
+  }
+});
+ </script>
   
