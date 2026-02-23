@@ -219,7 +219,7 @@ document.getElementById("translateBtn").onclick = () => {
 
   let found = null;
 
-  // Search through all categories
+  // Search inside every category
   for (let category in DICT) {
     if (DICT[category][word]) {
       found = DICT[category][word];
@@ -227,15 +227,18 @@ document.getElementById("translateBtn").onclick = () => {
     }
   }
 
+  // If not found
   if (!found) {
     document.getElementById("result").textContent = "—";
     return;
   }
 
+  // Translate
   let translated = found[to] || "—";
   document.getElementById("result").textContent = translated;
 
-  let notes = document.getElementById("notes");
+  // Notes
+  let notes = <document.getElementById("notes");
   notes.innerHTML += `<div>${word} → ${translated}</div>`;
   localStorage.setItem("notes", notes.innerHTML);
 };
