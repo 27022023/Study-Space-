@@ -141,53 +141,57 @@ input, select, button {
 </div>
 
 <script>
-// languages with flags
+// languages with flags + proper codes
 const langs = [
-  { name: "English", flag: "🇬🇧" },
-  { name: "Spanish", flag: "🇪🇸" },
-  { name: "German", flag: "🇩🇪" },
-  { name: "French", flag: "🇫🇷" },
-  { name: "Italian", flag: "🇮🇹" },
-  { name: "Greek", flag: "🇬🇷" },
-  { name: "Mandarin", flag: "🇨🇳" },
-  { name: "Russian", flag: "🇷🇺" },
-  { name: "Arabic", flag: "🇸🇦" },
-  { name: "Norwegian", flag: "🇳🇴" },
-  { name: "Swedish", flag: "🇸🇪" },
-  { name: "Finnish", flag: "🇫🇮" },
-  { name: "Estonian", flag: "🇪🇪" },
-  { name: "Czech", flag: "🇨🇿" },
-  { name: "Croatian", flag: "🇭🇷" },
-  { name: "Serbian", flag: "🇷🇸" },
-  { name: "Slovenian", flag: "🇸🇮" },
-  { name: "Korean", flag: "🇰🇷" },
-  { name: "Japanese", flag: "🇯🇵" },
-  { name: "Portuguese", flag: "🇵🇹" },
-  { name: "Afrikaans", flag: "🇿🇦" },
-  { name: "Hindi", flag: "🇮🇳" },
-  { name: "Dutch", flag: "🇳🇱" },
-  { name: "Polish", flag: "🇵🇱" },
-  { name: "Ukrainian", flag: "🇺🇦" },
-  { name: "Romanian", flag: "🇷🇴" },
-  { name: "Hungarian", flag: "🇭🇺" },
-  { name: "Indonesian", flag: "🇮🇩" },
-  { name: "Swahili", flag: "🇰🇪" }
+  { name: "English",   flag: "🇬🇧", code: "en" },
+  { name: "Spanish",   flag: "🇪🇸", code: "es" },
+  { name: "German",    flag: "🇩🇪", code: "de" },
+  { name: "French",    flag: "🇫🇷", code: "fr" },
+  { name: "Italian",   flag: "🇮🇹", code: "it" },
+  { name: "Greek",     flag: "🇬🇷", code: "el" },
+  { name: "Mandarin",  flag: "🇨🇳", code: "zh" },
+  { name: "Russian",   flag: "🇷🇺", code: "ru" },
+  { name: "Arabic",    flag: "🇸🇦", code: "ar" },
+  { name: "Norwegian", flag: "🇳🇴", code: "no" },
+  { name: "Swedish",   flag: "🇸🇪", code: "sv" },
+  { name: "Finnish",   flag: "🇫🇮", code: "fi" },
+  { name: "Estonian",  flag: "🇪🇪", code: "et" },
+  { name: "Czech",     flag: "🇨🇿", code: "cs" },
+  { name: "Croatian",  flag: "🇭🇷", code: "hr" },
+  { name: "Serbian",   flag: "🇷🇸", code: "sr" },
+  { name: "Slovenian", flag: "🇸🇮", code: "sl" },
+  { name: "Korean",    flag: "🇰🇷", code: "ko" },
+  { name: "Japanese",  flag: "🇯🇵", code: "ja" },
+  { name: "Portuguese",flag: "🇵🇹", code: "pt" },
+  { name: "Afrikaans", flag: "🇿🇦", code: "af" },
+  { name: "Hindi",     flag: "🇮🇳", code: "hi" },
+  { name: "Dutch",     flag: "🇳🇱", code: "nl" },
+  { name: "Polish",    flag: "🇵🇱", code: "pl" },
+  { name: "Ukrainian", flag: "🇺🇦", code: "uk" },
+  { name: "Romanian",  flag: "🇷🇴", code: "ro" },
+  { name: "Hungarian", flag: "🇭🇺", code: "hu" },
+  { name: "Indonesian",flag: "🇮🇩", code: "id" },
+  { name: "Swahili",   flag: "🇰🇪", code: "sw" }
 ];
 
-const inSel = document.getElementById("inputLang");
+const inSel  = document.getElementById("inputLang");
 const outSel = document.getElementById("outputLang");
 
 langs.forEach(l => {
   let opt = document.createElement("option");
-  opt.value = l.name;
+  opt.value = l.code; // use code as value
   opt.textContent = `${l.flag} ${l.name}`;
   inSel.appendChild(opt.cloneNode(true));
   outSel.appendChild(opt);
 });
 
-// translator using online API
-async function translateText(text, from, to) {
-  const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${from}|${to}`;
+function getLangByCode(code) {
+  return langs.find(l => l.code === code);
+}
+
+// translator using MyMemory (free)
+async function translateText(text, fromCode, toCode) {
+  const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${fromCode}|${toCode}`;
   const res = await fetch(url);
   const data = await res.json();
   return data.responseData.translatedText;
@@ -199,7 +203,7 @@ window.onload = () => {
   if (saved) document.getElementById("notes").innerHTML = saved;
 };
 
-// load voices properly
+// voices
 let voices = [];
 speechSynthesis.onvoiceschanged = () => {
   voices = speechSynthesis.getVoices();
@@ -207,16 +211,18 @@ speechSynthesis.onvoiceschanged = () => {
 
 document.getElementById("translateBtn").onclick = async () => {
   let word = document.getElementById("inputWord").value.trim();
-  let from = document.getElementById("inputLang").value;
-  let to = document.getElementById("outputLang").value;
+  let fromCode = document.getElementById("inputLang").value;
+  let toCode   = document.getElementById("outputLang").value;
 
   if (!word) return;
 
-  let translated = await translateText(word, from, to);
+  let translated = await translateText(word, fromCode, toCode);
   document.getElementById("result").textContent = translated;
 
   let notes = document.getElementById("notes");
-  notes.innerHTML += `<div>${word} → ${translated}</div>`;
+  const fromLang = getLangByCode(fromCode);
+  const toLang   = getLangByCode(toCode);
+  notes.innerHTML += `<div>${fromLang.flag} ${word} → ${toLang.flag} ${translated}</div>`;
   localStorage.setItem("notes", notes.innerHTML);
 };
 
@@ -225,50 +231,18 @@ document.getElementById("clearNotesBtn").onclick = () => {
   localStorage.removeItem("notes");
 };
 
-// speaker button FIXED
+// speaker button
 document.getElementById("speakBtn").onclick = () => {
   let text = document.getElementById("result").textContent;
   if (!text) return;
 
-  let lang = document.getElementById("outputLang").value;
-
-  const voiceMap = {
-    English: "en",
-    Spanish: "es",
-    German: "de",
-    French: "fr",
-    Italian: "it",
-    Greek: "el",
-    Mandarin: "zh",
-    Russian: "ru",
-    Arabic: "ar",
-    Norwegian: "no",
-    Swedish: "sv",
-    Finnish: "fi",
-    Estonian: "et",
-    Czech: "cs",
-    Croatian: "hr",
-    Serbian: "sr",
-    Slovenian: "sl",
-    Korean: "ko",
-    Japanese: "ja",
-    Portuguese: "pt",
-    Afrikaans: "af",
-    Hindi: "hi",
-    Dutch: "nl",
-    Polish: "pl",
-    Ukrainian: "uk",
-    Romanian: "ro",
-    Hungarian: "hu",
-    Indonesian: "id",
-    Swahili: "sw"
-  };
+  let toCode = document.getElementById("outputLang").value;
 
   let utter = new SpeechSynthesisUtterance(text);
-  utter.lang = voiceMap[lang] || "en";
+  utter.lang = toCode; // e.g. "es", "fr", "ja"
 
-  // choose correct voice
-  let voice = voices.find(v => v.lang.startsWith(utter.lang));
+  // try to find a matching voice
+  let voice = voices.find(v => v.lang.toLowerCase().startsWith(toCode));
   if (voice) utter.voice = voice;
 
   speechSynthesis.speak(utter);
