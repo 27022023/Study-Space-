@@ -43,6 +43,7 @@ body {
 
 .row {
   display: flex;
+  flex-direction: column;
   gap: 10px;
   margin-bottom: 10px;
 }
@@ -108,18 +109,26 @@ input, select, button {
     <h2>Translator</h2>
 
     <div class="translator-inner">
+
       <div class="row">
         <input id="inputWord" placeholder="Enter word">
+      </div>
+
+      <div class="row">
         <select id="inputLang"></select>
       </div>
 
       <div class="row">
         <select id="outputLang"></select>
-        <button id="speakBtn">🔊</button>
+      </div>
+
+      <div class="row">
+        <button id="speakBtn">🔊 Speak</button>
       </div>
 
       <button id="translateBtn">Translate</button>
       <div id="result"></div>
+
     </div>
   </div>
 
@@ -132,13 +141,37 @@ input, select, button {
 </div>
 
 <script>
-// languages
+// languages with flags
 const langs = [
-  "English","Spanish","German","French","Italian","Greek","Mandarin",
-  "Russian","Arabic","Norwegian","Swedish","Finnish","Estonian",
-  "Czech","Croatian","Serbian","Slovenian","Korean","Japanese",
-  "Portuguese","Afrikaans","Hindi","Dutch","Polish","Ukrainian",
-  "Romanian","Hungarian","Indonesian","Swahili"
+  { name: "English", flag: "🇬🇧" },
+  { name: "Spanish", flag: "🇪🇸" },
+  { name: "German", flag: "🇩🇪" },
+  { name: "French", flag: "🇫🇷" },
+  { name: "Italian", flag: "🇮🇹" },
+  { name: "Greek", flag: "🇬🇷" },
+  { name: "Mandarin", flag: "🇨🇳" },
+  { name: "Russian", flag: "🇷🇺" },
+  { name: "Arabic", flag: "🇸🇦" },
+  { name: "Norwegian", flag: "🇳🇴" },
+  { name: "Swedish", flag: "🇸🇪" },
+  { name: "Finnish", flag: "🇫🇮" },
+  { name: "Estonian", flag: "🇪🇪" },
+  { name: "Czech", flag: "🇨🇿" },
+  { name: "Croatian", flag: "🇭🇷" },
+  { name: "Serbian", flag: "🇷🇸" },
+  { name: "Slovenian", flag: "🇸🇮" },
+  { name: "Korean", flag: "🇰🇷" },
+  { name: "Japanese", flag: "🇯🇵" },
+  { name: "Portuguese", flag: "🇵🇹" },
+  { name: "Afrikaans", flag: "🇿🇦" },
+  { name: "Hindi", flag: "🇮🇳" },
+  { name: "Dutch", flag: "🇳🇱" },
+  { name: "Polish", flag: "🇵🇱" },
+  { name: "Ukrainian", flag: "🇺🇦" },
+  { name: "Romanian", flag: "🇷🇴" },
+  { name: "Hungarian", flag: "🇭🇺" },
+  { name: "Indonesian", flag: "🇮🇩" },
+  { name: "Swahili", flag: "🇰🇪" }
 ];
 
 const inSel = document.getElementById("inputLang");
@@ -146,8 +179,8 @@ const outSel = document.getElementById("outputLang");
 
 langs.forEach(l => {
   let opt = document.createElement("option");
-  opt.value = l;
-  opt.textContent = l;
+  opt.value = l.name;
+  opt.textContent = `${l.flag} ${l.name}`;
   inSel.appendChild(opt.cloneNode(true));
   outSel.appendChild(opt);
 });
@@ -180,10 +213,47 @@ document.getElementById("clearNotesBtn").onclick = () => {
   localStorage.removeItem("notes");
 };
 
+// speaker button
 document.getElementById("speakBtn").onclick = () => {
   let text = document.getElementById("result").textContent;
   if (!text) return;
+
+  let lang = document.getElementById("outputLang").value;
+
+  const voiceMap = {
+    English: "en",
+    Spanish: "es",
+    German: "de",
+    French: "fr",
+    Italian: "it",
+    Greek: "el",
+    Mandarin: "zh",
+    Russian: "ru",
+    Arabic: "ar",
+    Norwegian: "no",
+    Swedish: "sv",
+    Finnish: "fi",
+    Estonian: "et",
+    Czech: "cs",
+    Croatian: "hr",
+    Serbian: "sr",
+    Slovenian: "sl",
+    Korean: "ko",
+    Japanese: "ja",
+    Portuguese: "pt",
+    Afrikaans: "af",
+    Hindi: "hi",
+    Dutch: "nl",
+    Polish: "pl",
+    Ukrainian: "uk",
+    Romanian: "ro",
+    Hungarian: "hu",
+    Indonesian: "id",
+    Swahili: "sw"
+  };
+
   let utter = new SpeechSynthesisUtterance(text);
+  utter.lang = voiceMap[lang] || "en";
   speechSynthesis.speak(utter);
 };
 </script>
