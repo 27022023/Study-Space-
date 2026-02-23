@@ -12,7 +12,6 @@ body {
   background: #cfe9ff;
 }
 
-/* EARTH ICON */
 #earthIcon {
   position: fixed;
   top: 15px;
@@ -139,7 +138,6 @@ button {
 
 <body>
 
-<!-- EARTH ICON -->
 <div id="earthIcon">🌍</div>
 
 <div id="app">
@@ -157,13 +155,12 @@ button {
         <select id="outputLang"></select>
         <button id="speakBtn">🔊</button>
       </div>
+
+      <button id="translateBtn">Translate</button>
+      <div id="result"></div>
     </div>
-<script>
+  </div>
 
-  const translateBtn = document.getElementById("translateBtn");
-  const clearBtn = document.getElementById("clearNotesBtn");
-
-  translateBtn.addEventListener("click", () => {
   <div class="notebook">
     <h2>Notebook</h2>
     <div id="notes"></div>
@@ -171,6 +168,8 @@ button {
   </div>
 
 </div>
+
+<!-- 1️⃣ LANGUAGE DROPDOWNS -->
 <script>
 const langs = [
   "English 🇬🇧","Spanish 🇪🇸","German 🇩🇪","French 🇫🇷","Italian 🇮🇹",
@@ -185,33 +184,84 @@ const inSel = document.getElementById("inputLang");
 const outSel = document.getElementById("outputLang");
 
 langs.forEach(l => {
-  let parts = l.split(" ");
-  let name = parts.slice(0, -1).join(" ");
+  let name = l.split(" ").slice(0, -1).join(" ");
   let opt = document.createElement("option");
   opt.value = name;
   opt.textContent = l;
   inSel.appendChild(opt.cloneNode(true));
   outSel.appendChild(opt);
 });
-
-document.getElementById("speakBtn").onclick = () => {
-  let text = document.getElementById("result").textContent;
-  if (!text) return;
-
-  const voiceMap = {
-    English:"en",Spanish:"es",German:"de",French:"fr",Italian:"it",
-    Greek:"el",Mandarin:"zh",Russian:"ru",Arabic:"ar",Norwegian:"no",
-    Swedish:"sv",Finnish:"fi",Estonian:"et",Czech:"cs",Croatian:"hr",
-    Serbian:"sr",Slovenian:"sl",Korean:"ko",Japanese:"ja",Portuguese:"pt",
-    Afrikaans:"af","Egyptian Arabic":"ar",Hindi:"hi",Dutch:"nl",Polish:"pl",
-    Ukrainian:"uk",Romanian:"ro",Hungarian:"hu",Indonesian:"id",Swahili:"sw"
-  };
-
-  let utter = new SpeechSynthesisUtterance(text);
-  utter.lang = voiceMap[outSel.value] || "en";
-  speechSynthesis.speak(utter);
-};
 </script>
+
+<!-- 2️⃣ DICTIONARY PARTS (YOU WILL INSERT YOUR PARTS HERE) -->
+<script>
+const PARTS = [];
+
+// Example chunk — replace with your real chunks
+PARTS.push({
+  animals: {
+    cat: { English:"cat", Spanish:"gato" },
+    dog: { English:"dog", Spanish:"perro" }
+  }
+});
+</script>
+
+<!-- 3️⃣ BUILD DICT -->
+<script>
+const DICT = Object.assign({}, ...PARTS);
+</script>
+
+<!-- 4️⃣ TRANSLATOR LOGIC -->
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+  const translateBtn = document.getElementById("translateBtn");
+  const clearBtn = document.getElementById("clearNotesBtn");
+
+  translateBtn.addEventListener("click", () => {
+
+    if (!DICT) {
+      document.getElementById("result").textContent = "—";
+      return;
+    }
+
+    let word = document.getElementById("inputWord").value.trim().toLowerCase();
+    let to = document.getElementById("outputLang").value;
+
+    let found = null;
+
+    for (let category in DICT) {
+      if (DICT[category] && DICT[category][word]) {
+        found = DICT[category][word];
+        break;
+      }
+    }
+
+    if (!found) {
+      document.getElementById("result").textContent = "—";
+      return;
+    }
+
+    let translated = found[to] || "—";
+    document.getElementById("result").textContent = translated;
+
+    let notes = document.getElementById("notes");
+    notes.innerHTML += `<div>${word} → ${translated}</div>`;
+    localStorage.setItem("notes", notes.innerHTML);
+  });
+
+  clearBtn.addEventListener("click", () => {
+    document.getElementById("notes").innerHTML = "";
+    localStorage.removeItem("notes");
+  });
+
+});
+</script>
+
+</body>
+</html>
+  background: #fff;
+  
 
 PARTS.forEach(p=>{
  let cat = Object.keys(p)[0];
@@ -3291,64 +3341,9 @@ PARTS.push({
 
   }
 });
-</div>
 
-<!-- 1️⃣ BUILD DICT FROM ALL YOUR CHUNKS -->
-<script>
-const DICT = Object.assign({}, ...PARTS);
 </script>
-
-<!-- 2️⃣ TRANSLATOR LOGIC -->
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-
-  const translateBtn = document.getElementById("translateBtn");
-  const clearBtn = document.getElementById("clearNotesBtn");
-
-  translateBtn.addEventListener("click", () => {
-
-    if (typeof DICT === "undefined") {
-      document.getElementById("result").textContent = "—";
-      return;
-    }
-
-    let word = document.getElementById("inputWord").value.trim().toLowerCase();
-    let to = document.getElementById("outputLang").value;
-
-    let found = null;
-
-    for (let category in DICT) {
-      if (DICT[category] && DICT[category][word]) {
-        found = DICT[category][word];
-        break;
-      }
-    }
-
-    if (!found) {
-      document.getElementById("result").textContent = "—";
-      return;
-    }
-
-    let translated = found[to] || "—";
-    document.getElementById("result").textContent = translated;
-
-    let notes = document.getElementById("notes");
-    notes.innerHTML += `<div>${word} → ${translated}</div>`;
-    localStorage.setItem("notes", notes.innerHTML);
-  });
-
-  clearBtn.addEventListener("click", () => {
-    document.getElementById("notes").innerHTML = "";
-    localStorage.removeItem("notes");
-  });
-
-});
-</script>
-
 </body>
 </html>
 
-</script>
 
-</body>
-</html>
