@@ -1141,4 +1141,191 @@ PARTS.push({
   }
 });
   </script>
+  <script>
+PARTS.push({
+  colors: {
+
+    red: {
+      English:"red", Spanish:"rojo", German:"rot", French:"rouge", Italian:"rosso",
+      Greek:"κόκκινο", Mandarin:"红色", Russian:"красный", Arabic:"أحمر", Norwegian:"rød",
+      Swedish:"röd", Finnish:"punainen", Estonian:"punane", Czech:"červená", Croatian:"crvena",
+      Serbian:"црвена", Slovenian:"rdeča", Korean:"빨간색", Japanese:"赤", Portuguese:"vermelho",
+      Afrikaans:"rooi", "Egyptian Arabic":"أحمر", Hindi:"लाल", Dutch:"rood", Polish:"czerwony",
+      Ukrainian:"червоний", Romanian:"roșu", Hungarian:"piros", Indonesian:"merah", Swahili:"nyekundu"
+    },
+
+    blue: {
+      English:"blue", Spanish:"azul", German:"blau", French:"bleu", Italian:"blu",
+      Greek:"μπλε", Mandarin:"蓝色", Russian:"синий", Arabic:"أزرق", Norwegian:"blå",
+      Swedish:"blå", Finnish:"sininen", Estonian:"sinine", Czech:"modrá", Croatian:"plava",
+      Serbian:"плава", Slovenian:"modra", Korean:"파란색", Japanese:"青", Portuguese:"azul",
+      Afrikaans:"blou", "Egyptian Arabic":"أزرق", Hindi:"नीला", Dutch:"blauw", Polish:"niebieski",
+      Ukrainian:"синій", Romanian:"albastru", Hungarian:"kék", Indonesian:"biru", Swahili:"bluu"
+    },
+
+    yellow: {
+      English:"yellow", Spanish:"amarillo", German:"gelb", French:"jaune", Italian:"giallo",
+      Greek:"κίτρινο", Mandarin:"黄色", Russian:"жёлтый", Arabic:"أصفر", Norwegian:"gul",
+      Swedish:"gul", Finnish:"keltainen", Estonian:"kollane", Czech:"žlutá", Croatian:"žuta",
+      Serbian:"жута", Slovenian:"rumena", Korean:"노란색", Japanese:"黄色", Portuguese:"amarelo",
+      Afrikaans:"geel", "Egyptian Arabic":"أصفر", Hindi:"पीला", Dutch:"geel", Polish:"żółty",
+      Ukrainian:"жовтий", Romanian:"galben", Hungarian:"sárga", Indonesian:"kuning", Swahili:"njano"
+    },
+
+    green: {
+      English:"green", Spanish:"verde", German:"grün", French:"vert", Italian:"verde",
+      Greek:"πράσινο", Mandarin:"绿色", Russian:"зелёный", Arabic:"أخضر", Norwegian:"grønn",
+      Swedish:"grön", Finnish:"vihreä", Estonian:"roheline", Czech:"zelená", Croatian:"zelena",
+      Serbian:"зелена", Slovenian:"zelena", Korean:"초록색", Japanese:"緑", Portuguese:"verde",
+      Afrikaans:"groen", "Egyptian Arabic":"أخضر", Hindi:"हरा", Dutch:"groen", Polish:"zielony",
+      Ukrainian:"зелений", Romanian:"verde", Hungarian:"zöld", Indonesian:"hijau", Swahili:"kijani"
+    },
+
+    orange: {
+      English:"orange", Spanish:"naranja", German:"orange", French:"orange", Italian:"arancione",
+      Greek:"πορτοκαλί", Mandarin:"橙色", Russian:"оранжевый", Arabic:"برتقالي", Norwegian:"oransje",
+      Swedish:"orange", Finnish:"oranssi", Estonian:"oranž", Czech:"oranžová", Croatian:"narančasta",
+      Serbian:"наранџаста", Slovenian:"oranžna", Korean:"주황색", Japanese:"オレンジ", Portuguese:"laranja",
+      Afrikaans:"oranje", "Egyptian Arabic":"برتقالي", Hindi:"नारंगी", Dutch:"oranje", Polish:"pomarańczowy",
+      Ukrainian:"помаранчевий", Romanian:"portocaliu", Hungarian:"narancs", Indonesian:"oranye", Swahili:"machungwa"
+    },
+
+    purple: {
+      English:"purple", Spanish:"morado", German:"lila", French:"violet", Italian:"viola",
+      Greek:"μωβ", Mandarin:"紫色", Russian:"фиолетовый", Arabic:"بنفسجي", Norwegian:"lilla",
+      Swedish:"lila", Finnish:"violetti", Estonian:"lilla", Czech:"fialová", Croatian:"ljubičasta",
+      Serbian:"љубичаста", Slovenian:"vijolična", Korean:"보라색", Japanese:"紫", Portuguese:"roxo",
+      Afrikaans:"pers", "Egyptian Arabic":"بنفسجي", Hindi:"बैंगनी", Dutch:"paars", Polish:"fioletowy",
+      Ukrainian:"фіолетовий", Romanian:"mov", Hungarian:"lila", Indonesian:"ungu", Swahili:"zambarau"
+    },
+
+    pink: {
+      English:"pink", Spanish:"rosa", German:"rosa", French:"rose", Italian:"rosa",
+      Greek:"ροζ", Mandarin:"粉色", Russian:"розовый", Arabic:"وردي", Norwegian:"rosa",
+      Swedish:"rosa", Finnish:"vaaleanpunainen", Estonian:"roosa", Czech:"růžová", Croatian:"roza",
+      Serbian:"розе", Slovenian:"roza", Korean:"분홍색", Japanese:"ピンク", Portuguese:"rosa",
+      Afrikaans:"pienk", "Egyptian Arabic":"وردي", Hindi:"गुलाबी", Dutch:"roze", Polish:"różowy",
+      Ukrainian:"рожевий", Romanian:"roz", Hungarian:"rózsaszín", Indonesian:"merah muda", Swahili:"waridi"
+    },
+
+    brown: {
+      English:"brown", Spanish:"marrón", German:"braun", French:"marron", Italian:"marrone",
+      Greek:"καφέ", Mandarin:"棕色", Russian:"коричневый", Arabic:"بني", Norwegian:"brun",
+      Swedish:"brun", Finnish:"ruskea", Estonian:"pruun", Czech:"hnědá", Croatian:"smeđa",
+      Serbian:"браон", Slovenian:"rjava", Korean:"갈색", Japanese:"茶色", Portuguese:"marrom",
+      Afrikaans:"bruin", "Egyptian Arabic":"بني", Hindi:"भूरा", Dutch:"bruin", Polish:"brązowy",
+      Ukrainian:"коричневий", Romanian:"maro", Hungarian:"barna", Indonesian:"coklat", Swahili:"kahawia"
+    },
+
+    black: {
+      English:"black", Spanish:"negro", German:"schwarz", French:"noir", Italian:"nero",
+      Greek:"μαύρο", Mandarin:"黑色", Russian:"чёрный", Arabic:"أسود", Norwegian:"svart",
+      Swedish:"svart", Finnish:"musta", Estonian:"must", Czech:"černá", Croatian:"crna",
+      Serbian:"црна", Slovenian:"črna", Korean:"검정색", Japanese:"黒", Portuguese:"preto",
+      Afrikaans:"swart", "Egyptian Arabic":"أسود", Hindi:"काला", Dutch:"zwart", Polish:"czarny",
+      Ukrainian:"чорний", Romanian:"negru", Hungarian:"fekete", Indonesian:"hitam", Swahili:"nyeusi"
+    },
+
+    white: {
+      English:"white", Spanish:"blanco", German:"weiß", French:"blanc", Italian:"bianco",
+      Greek:"λευκό", Mandarin:"白色", Russian:"белый", Arabic:"أبيض", Norwegian:"hvit",
+      Swedish:"vit", Finnish:"valkoinen", Estonian:"valge", Czech:"bílá", Croatian:"bijela",
+      Serbian:"бела", Slovenian:"bela", Korean:"하얀색", Japanese:"白", Portuguese:"branco",
+      Afrikaans:"wit", "Egyptian Arabic":"أبيض", Hindi:"सफेद", Dutch:"wit", Polish:"biały",
+      Ukrainian:"білий", Romanian:"alb", Hungarian:"fehér", Indonesian:"putih", Swahili:"nyeupe"
+    },
+
+    gray: {
+      English:"gray", Spanish:"gris", German:"grau", French:"gris", Italian:"grigio",
+      Greek:"γκρι", Mandarin:"灰色", Russian:"серый", Arabic:"رمادي", Norwegian:"grå",
+      Swedish:"grå", Finnish:"harmaa", Estonian:"hall", Czech:"šedá", Croatian:"siva",
+      Serbian:"сива", Slovenian:"siva", Korean:"회색", Japanese:"灰色", Portuguese:"cinza",
+      Afrikaans:"grys", "Egyptian Arabic":"رمادي", Hindi:"धूसर", Dutch:"grijs", Polish:"szary",
+      Ukrainian:"сірий", Romanian:"gri", Hungarian:"szürke", Indonesian:"abu‑abu", Swahili:"kijivu"
+    },
+
+    gold: {
+      English:"gold", Spanish:"dorado", German:"gold", French:"or", Italian:"oro",
+      Greek:"χρυσό", Mandarin:"金色", Russian:"золотой", Arabic:"ذهبي", Norwegian:"gull",
+      Swedish:"guld", Finnish:"kulta", Estonian:"kuldne", Czech:"zlatá", Croatian:"zlatna",
+      Serbian:"златна", Slovenian:"zlata", Korean:"금색", Japanese:"金色", Portuguese:"dourado",
+      Afrikaans:"goud", "Egyptian Arabic":"ذهبي", Hindi:"सोना", Dutch:"goud", Polish:"złoty",
+      Ukrainian:"золотий", Romanian:"auriu", Hungarian:"arany", Indonesian:"emas", Swahili:"dhahabu"
+    },
+
+    silver: {
+      English:"silver", Spanish:"plateado", German:"silber", French:"argent", Italian:"argento",
+      Greek:"ασημί", Mandarin:"银色", Russian:"серебряный", Arabic:"فضي", Norwegian:"sølv",
+      Swedish:"silver", Finnish:"hopea", Estonian:"hõbedane", Czech:"stříbrná", Croatian:"srebrna",
+      Serbian:"сребрна", Slovenian:"srebrna", Korean:"은색", Japanese:"銀色", Portuguese:"prateado",
+      Afrikaans:"silwer", "Egyptian Arabic":"فضي", Hindi:"चांदी", Dutch:"zilver", Polish:"srebrny",
+      Ukrainian:"срібний", Romanian:"argintiu", Hungarian:"ezüst", Indonesian:"perak", Swahili:"fedha"
+    },
+
+    beige: {
+      English:"beige", Spanish:"beige", German:"beige", French:"beige", Italian:"beige",
+      Greek:"μπεζ", Mandarin:"米色", Russian:"бежевый", Arabic:"بيج", Norwegian:"beige",
+      Swedish:"beige", Finnish:"beige", Estonian:"beež", Czech:"béžová", Croatian:"bež",
+      Serbian:"беž", Slovenian:"bež", Korean:"베이지색", Japanese:"ベージュ", Portuguese:"bege",
+      Afrikaans:"beige", "Egyptian Arabic":"بيج", Hindi:"बेज", Dutch:"beige", Polish:"beżowy",
+      Ukrainian:"бежевий", Romanian:"bej", Hungarian:"bézs", Indonesian:"krem", Swahili:"beji"
+    },
+
+    turquoise: {
+      English:"turquoise", Spanish:"turquesa", German:"türkis", French:"turquoise", Italian:"turchese",
+      Greek:"τυρκουάζ", Mandarin:"青绿色", Russian:"бирюзовый", Arabic:"فيروزي", Norwegian:"turkis",
+      Swedish:"turkos", Finnish:"turkoosi", Estonian:"türkiis", Czech:"tyrkysová", Croatian:"tirkizna",
+      Serbian:"тиркизна", Slovenian:"turkizna", Korean:"터키석색", Japanese:"ターコイズ", Portuguese:"turquesa",
+      Afrikaans:"turkoois", "Egyptian Arabic":"فيروزي", Hindi:"फ़िरोज़ी", Dutch:"turkoois", Polish:"turkusowy",
+      Ukrainian:"бірюзовий", Romanian:"turcoaz", Hungarian:"türkiz", Indonesian:"pirus", Swahili:"samawati kijani"
+    },
+
+    navy: {
+      English:"navy", Spanish:"azul marino", German:"marineblau", French:"bleu marine", Italian:"blu marino",
+      Greek:"ναυτικό μπλε", Mandarin:"藏青色", Russian:"тёмно‑синий", Arabic:"كحلي", Norwegian:"marineblå",
+      Swedish:"marinblå", Finnish:"laivastonsininen", Estonian:"tumesinine", Czech:"námořnická modrá", Croatian:"mornarsko plava",
+      Serbian:"морнарска плава", Slovenian:"mornarsko modra", Korean:"남색", Japanese:"ネイビー", Portuguese:"azul marinho",
+      Afrikaans:"vlootblou", "Egyptian Arabic":"كحلي", Hindi:"नेवी", Dutch:"marineblauw", Polish:"granatowy",
+      Ukrainian:"темно‑синій", Romanian:"bleumarin", Hungarian:"tengerészkék", Indonesian:"biru navy", Swahili:"bluu giza"
+    },
+
+    violet: {
+      English:"violet", Spanish:"violeta", German:"violett", French:"violet", Italian:"viola",
+      Greek:"βιολετί", Mandarin:"紫罗兰色", Russian:"фиолетовый", Arabic:"بنفسجي فاتح", Norwegian:"fiolett",
+      Swedish:"violett", Finnish:"violetti", Estonian:"violetne", Czech:"fialová", Croatian:"ljubičasta",
+      Serbian:"љубичаста", Slovenian:"vijolična", Korean:"보라빛", Japanese:"すみれ色", Portuguese:"violeta",
+      Afrikaans:"violet", "Egyptian Arabic":"بنفسجي فاتح", Hindi:"बैंगनी", Dutch:"violet", Polish:"fioletowy",
+      Ukrainian:"фіолетовий", Romanian:"violet", Hungarian:"ibolya", Indonesian:"violet", Swahili:"zambarau nyepesi"
+    },
+
+    maroon: {
+      English:"maroon", Spanish:"granate", German:"kastanienbraun", French:"bordeaux", Italian:"marrone scuro",
+      Greek:"μπορντό", Mandarin:"栗色", Russian:"бордовый", Arabic:"خمري", Norwegian:"burgunder",
+      Swedish:"vinröd", Finnish:"kastanjanruskea", Estonian:"bordoo", Czech:"vínová", Croatian:"bordo",
+      Serbian:"бордо", Slovenian:"bordo", Korean:"자주색", Japanese:"えんじ色", Portuguese:"bordô",
+      Afrikaans:"maroen", "Egyptian Arabic":"خمري", Hindi:"मरून", Dutch:"kastanjebruin", Polish:"bordowy",
+      Ukrainian:"бордовий", Romanian:"burgund", Hungarian:"bordó", Indonesian:"marun", Swahili:"maruni"
+    },
+
+    teal: {
+      English:"teal", Spanish:"verde azulado", German:"blaugrün", French:"sarcelle", Italian:"verde acqua",
+      Greek:"κυανό", Mandarin:"青色", Russian:"сине‑зелёный", Arabic:"أزرق مخضر", Norwegian:"blågrønn",
+      Swedish:"teal", Finnish:"sinivihreä", Estonian:"sinakasroheline", Czech:"modrozelená", Croatian:"tirkizno zelena",
+      Serbian:"плаво‑зелена", Slovenian:"modrozelena", Korean:"청록색", Japanese:"ティール", Portuguese:"verde‑azulado",
+      Afrikaans:"blougroen", "Egyptian Arabic":"أزرق مخضر", Hindi:"टील", Dutch:"teal", Polish:"morski",
+      Ukrainian:"бірюзово‑зелений", Romanian:"teal", Hungarian:"pávakék", Indonesian:"teal", Swahili:"bluu kijani"
+    },
+
+    lime: {
+      English:"lime", Spanish:"lima", German:"limette", French:"citron vert", Italian:"lime",
+      Greek:"λάιμ", Mandarin:"酸橙", Russian:"лайм", Arabic:"ليم", Norwegian:"lime",
+      Swedish:"lime", Finnish:"lime", Estonian:"laim", Czech:"limetka", Croatian:"limeta",
+      Serbian:"лајм", Slovenian:"lajm", Korean:"라임색", Japanese:"ライム", Portuguese:"lima",
+      Afrikaans:"lemmetjie", "Egyptian Arabic":"ليم", Hindi:"नींबू", Dutch:"limoen", Polish:"limonka",
+      Ukrainian:"лайм", Romanian:"lime", Hungarian:"lime", Indonesian:"jeruk nipis", Swahili:"ndimu"
+    }
+
+  }
+});
+  </script>
   
