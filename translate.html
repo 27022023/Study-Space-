@@ -242,3 +242,191 @@ PARTS.forEach(p=>{
  DICT[cat] = p[cat];
 });
 </script>
+<script>
+PARTS.push({
+  family: {
+
+    mother: {
+      English:"mother", Spanish:"madre", German:"Mutter", French:"mère", Italian:"madre",
+      Greek:"μητέρα", Mandarin:"母亲", Russian:"мать", Arabic:"أم", Norwegian:"mor",
+      Swedish:"mamma", Finnish:"äiti", Estonian:"ema", Czech:"matka", Croatian:"majka",
+      Serbian:"мајка", Slovenian:"mati", Korean:"어머니", Japanese:"母", Portuguese:"mãe",
+      Afrikaans:"ma", "Egyptian Arabic":"ماما", Hindi:"माँ", Dutch:"moeder", Polish:"matka",
+      Ukrainian:"мати", Romanian:"mamă", Hungarian:"anya", Indonesian:"ibu", Swahili:"mama"
+    },
+
+    father: {
+      English:"father", Spanish:"padre", German:"Vater", French:"père", Italian:"padre",
+      Greek:"πατέρας", Mandarin:"父亲", Russian:"отец", Arabic:"أب", Norwegian:"far",
+      Swedish:"pappa", Finnish:"isä", Estonian:"isa", Czech:"otec", Croatian:"otac",
+      Serbian:"отац", Slovenian:"oče", Korean:"아버지", Japanese:"父", Portuguese:"pai",
+      Afrikaans:"pa", "Egyptian Arabic":"بابا", Hindi:"पिता", Dutch:"vader", Polish:"ojciec",
+      Ukrainian:"батько", Romanian:"tată", Hungarian:"apa", Indonesian:"ayah", Swahili:"baba"
+    },
+
+    sister: {
+      English:"sister", Spanish:"hermana", German:"Schwester", French:"soeur", Italian:"sorella",
+      Greek:"αδελφή", Mandarin:"姐姐/妹妹", Russian:"сестра", Arabic:"أخت", Norwegian:"søster",
+      Swedish:"syster", Finnish:"sisko", Estonian:"õde", Czech:"sestra", Croatian:"sestra",
+      Serbian:"сестра", Slovenian:"sestra", Korean:"여동생/언니", Japanese:"姉/妹", Portuguese:"irmã",
+      Afrikaans:"suster", "Egyptian Arabic":"أخت", Hindi:"बहन", Dutch:"zus", Polish:"siostra",
+      Ukrainian:"сестра", Romanian:"soră", Hungarian:"lánytestvér", Indonesian:"saudari", Swahili:"dada"
+    },
+
+    brother: {
+      English:"brother", Spanish:"hermano", German:"Bruder", French:"frère", Italian:"fratello",
+      Greek:"αδελφός", Mandarin:"哥哥/弟弟", Russian:"брат", Arabic:"أخ", Norwegian:"bror",
+      Swedish:"bror", Finnish:"veli", Estonian:"vend", Czech:"bratr", Croatian:"brat",
+      Serbian:"брат", Slovenian:"brat", Korean:"형/남동생", Japanese:"兄/弟", Portuguese:"irmão",
+      Afrikaans:"broer", "Egyptian Arabic":"أخو", Hindi:"भाई", Dutch:"broer", Polish:"brat",
+      Ukrainian:"брат", Romanian:"frate", Hungarian:"fiútestvér", Indonesian:"saudara laki‑laki", Swahili:"kaka"
+    },
+
+    grandmother: {
+      English:"grandmother", Spanish:"abuela", German:"Großmutter", French:"grand‑mère", Italian:"nonna",
+      Greek:"γιαγιά", Mandarin:"奶奶/外婆", Russian:"бабушка", Arabic:"جدة", Norwegian:"bestemor",
+      Swedish:"mormor/farmor", Finnish:"isoäiti", Estonian:"vanaema", Czech:"babička", Croatian:"baka",
+      Serbian:"бака", Slovenian:"babica", Korean:"할머니", Japanese:"祖母", Portuguese:"avó",
+      Afrikaans:"ouma", "Egyptian Arabic":"تيتا", Hindi:"दादी/नानी", Dutch:"grootmoeder", Polish:"babcia",
+      Ukrainian:"бабуся", Romanian:"bunică", Hungarian:"nagymama", Indonesian:"nenek", Swahili:"bibi"
+    },
+
+    grandfather: {
+      English:"grandfather", Spanish:"abuelo", German:"Großvater", French:"grand‑père", Italian:"nonno",
+      Greek:"παππούς", Mandarin:"爷爷/外公", Russian:"дедушка", Arabic:"جد", Norwegian:"bestefar",
+      Swedish:"morfar/farfar", Finnish:"isoisä", Estonian:"vanaisa", Czech:"dědeček", Croatian:"djed",
+      Serbian:"деда", Slovenian:"dedek", Korean:"할아버지", Japanese:"祖父", Portuguese:"avô",
+      Afrikaans:"oupa", "Egyptian Arabic":"جدو", Hindi:"दादा/नाना", Dutch:"grootvader", Polish:"dziadek",
+      Ukrainian:"дідусь", Romanian:"bunic", Hungarian:"nagypapa", Indonesian:"kakek", Swahili:"babu"
+    },
+
+    aunt: {
+      English:"aunt", Spanish:"tía", German:"Tante", French:"tante", Italian:"zia",
+      Greek:"θεία", Mandarin:"阿姨/姑姑", Russian:"тётя", Arabic:"عمة/خالة", Norwegian:"tante",
+      Swedish:"moster/faster", Finnish:"täti", Estonian:"tädi", Czech:"teta", Croatian:"teta",
+      Serbian:"тетка", Slovenian:"teta", Korean:"이모/고모", Japanese:"おば", Portuguese:"tia",
+      Afrikaans:"tannie", "Egyptian Arabic":"خالة/عمة", Hindi:"चाची/मौसी", Dutch:"tante", Polish:"ciocia",
+      Ukrainian:"тітка", Romanian:"mătușă", Hungarian:"nagynéni", Indonesian:"bibi", Swahili:"shangazi"
+    },
+
+    uncle: {
+      English:"uncle", Spanish:"tío", German:"Onkel", French:"oncle", Italian:"zio",
+      Greek:"θείος", Mandarin:"叔叔/舅舅", Russian:"дядя", Arabic:"عم/خال", Norwegian:"onkel",
+      Swedish:"morbror/farbror", Finnish:"setä", Estonian:"onu", Czech:"strýc", Croatian:"ujak",
+      Serbian:"ујак", Slovenian:"stric", Korean:"삼촌", Japanese:"おじ", Portuguese:"tio",
+      Afrikaans:"oom", "Egyptian Arabic":"خال/عم", Hindi:"चाचा/मामा", Dutch:"oom", Polish:"wujek",
+      Ukrainian:"дядько", Romanian:"unchi", Hungarian:"nagybácsi", Indonesian:"paman", Swahili:"mjomba"
+    },
+
+    cousin: {
+      English:"cousin", Spanish:"primo/prima", German:"Cousin/Cousine", French:"cousin/cousine", Italian:"cugino/cugina",
+      Greek:"ξάδερφος/ξαδέρφη", Mandarin:"表亲", Russian:"двоюродный брат/сестра", Arabic:"ابن/ابنة العم/الخال", Norwegian:"søskenbarn",
+      Swedish:"kusin", Finnish:"serkku", Estonian:"nõbu", Czech:"bratranec/sestřenice", Croatian:"rođak",
+      Serbian:"рођак", Slovenian:"bratranec/sestrična", Korean:"사촌", Japanese:"いとこ", Portuguese:"primo/prima",
+      Afrikaans:"neef/niggie", "Egyptian Arabic":"ابن/بنت العم", Hindi:"चचेरा/ममेरा भाई/बहन", Dutch:"neef/nicht", Polish:"kuzyn/kuzynka",
+      Ukrainian:"двоюрідний брат/сестра", Romanian:"văr/verișoară", Hungarian:"unokatestvér", Indonesian:"sepupu", Swahili:"binamu"
+    },
+
+    family: {
+      English:"family", Spanish:"familia", German:"Familie", French:"famille", Italian:"famiglia",
+      Greek:"οικογένεια", Mandarin:"家庭", Russian:"семья", Arabic:"عائلة", Norwegian:"familie",
+      Swedish:"familj", Finnish:"perhe", Estonian:"perekond", Czech:"rodina", Croatian:"obitelj",
+      Serbian:"породица", Slovenian:"družina", Korean:"가족", Japanese:"家族", Portuguese:"família",
+      Afrikaans:"familie", "Egyptian Arabic":"عيلة", Hindi:"परिवार", Dutch:"familie", Polish:"rodzina",
+      Ukrainian:"сім'я", Romanian:"familie", Hungarian:"család", Indonesian:"keluarga", Swahili:"familia"
+    },
+
+    parents: {
+      English:"parents", Spanish:"padres", German:"Eltern", French:"parents", Italian:"genitori",
+      Greek:"γονείς", Mandarin:"父母", Russian:"родители", Arabic:"الوالدان", Norwegian:"foreldre",
+      Swedish:"föräldrar", Finnish:"vanhemmat", Estonian:"vanemad", Czech:"rodiče", Croatian:"roditelji",
+      Serbian:"родитељи", Slovenian:"starši", Korean:"부모님", Japanese:"両親", Portuguese:"pais",
+      Afrikaans:"ouers", "Egyptian Arabic":"أهلي", Hindi:"माता‑पिता", Dutch:"ouders", Polish:"rodzice",
+      Ukrainian:"батьки", Romanian:"părinți", Hungarian:"szülők", Indonesian:"orang tua", Swahili:"wazazi"
+    },
+
+    children: {
+      English:"children", Spanish:"niños", German:"Kinder", French:"enfants", Italian:"bambini",
+      Greek:"παιδιά", Mandarin:"孩子们", Russian:"дети", Arabic:"أطفال", Norwegian:"barn",
+      Swedish:"barn", Finnish:"lapset", Estonian:"lapsed", Czech:"děti", Croatian:"djeca",
+      Serbian:"деца", Slovenian:"otroci", Korean:"아이들", Japanese:"子供たち", Portuguese:"crianças",
+      Afrikaans:"kinders", "Egyptian Arabic":"أطفال", Hindi:"बच्चे", Dutch:"kinderen", Polish:"dzieci",
+      Ukrainian:"діти", Romanian:"copii", Hungarian:"gyerekek", Indonesian:"anak‑anak", Swahili:"watoto"
+    },
+
+    daughter: {
+      English:"daughter", Spanish:"hija", German:"Tochter", French:"fille", Italian:"figlia",
+      Greek:"κόρη", Mandarin:"女儿", Russian:"дочь", Arabic:"ابنة", Norwegian:"datter",
+      Swedish:"dotter", Finnish:"tytär", Estonian:"tütar", Czech:"dcera", Croatian:"kći",
+      Serbian:"кћи", Slovenian:"hči", Korean:"딸", Japanese:"娘", Portuguese:"filha",
+      Afrikaans:"dogter", "Egyptian Arabic":"بنتي", Hindi:"बेटी", Dutch:"dochter", Polish:"córka",
+      Ukrainian:"дочка", Romanian:"fiică", Hungarian:"lánya", Indonesian:"putri", Swahili:"binti"
+    },
+
+    son: {
+      English:"son", Spanish:"hijo", German:"Sohn", French:"fils", Italian:"figlio",
+      Greek:"γιος", Mandarin:"儿子", Russian:"сын", Arabic:"ابن", Norwegian:"sønn",
+      Swedish:"son", Finnish:"poika", Estonian:"poeg", Czech:"syn", Croatian:"sin",
+      Serbian:"син", Slovenian:"sin", Korean:"아들", Japanese:"息子", Portuguese:"filho",
+      Afrikaans:"seun", "Egyptian Arabic":"ابني", Hindi:"बेटा", Dutch:"zoon", Polish:"syn",
+      Ukrainian:"син", Romanian:"fiu", Hungarian:"fia", Indonesian:"putra", Swahili:"mwana"
+    },
+
+    wife: {
+      English:"wife", Spanish:"esposa", German:"Ehefrau", French:"femme", Italian:"moglie",
+      Greek:"σύζυγος", Mandarin:"妻子", Russian:"жена", Arabic:"زوجة", Norwegian:"kone",
+      Swedish:"fru", Finnish:"vaimo", Estonian:"naine", Czech:"manželka", Croatian:"žena",
+      Serbian:"жена", Slovenian:"žena", Korean:"아내", Japanese:"妻", Portuguese:"esposa",
+      Afrikaans:"vrou", "Egyptian Arabic":"مراتي", Hindi:"पत्नी", Dutch:"vrouw", Polish:"żona",
+      Ukrainian:"дружина", Romanian:"soție", Hungarian:"feleség", Indonesian:"istri", Swahili:"mke"
+    },
+
+    husband: {
+      English:"husband", Spanish:"esposo", German:"Ehemann", French:"mari", Italian:"marito",
+      Greek:"σύζυγος", Mandarin:"丈夫", Russian:"муж", Arabic:"زوج", Norwegian:"ektemann",
+      Swedish:"man", Finnish:"aviomies", Estonian:"mees", Czech:"manžel", Croatian:"muž",
+      Serbian:"муж", Slovenian:"mož", Korean:"남편", Japanese:"夫", Portuguese:"marido",
+      Afrikaans:"man", "Egyptian Arabic":"جوزي", Hindi:"पति", Dutch:"man", Polish:"mąż",
+      Ukrainian:"чоловік", Romanian:"soț", Hungarian:"férj", Indonesian:"suami", Swahili:"mume"
+    },
+
+    niece: {
+      English:"niece", Spanish:"sobrina", German:"Nichte", French:"nièce", Italian:"nipote",
+      Greek:"ανιψιά", Mandarin:"侄女/外甥女", Russian:"племянница", Arabic:"ابنة الأخ/الأخت", Norwegian:"niese",
+      Swedish:"brorsdotter/systerdotter", Finnish:"veljentytär", Estonian:"venna/õe tütar", Czech:"neteř", Croatian:"nećakinja",
+      Serbian:"нећакиња", Slovenian:"nečakinja", Korean:"조카딸", Japanese:"姪", Portuguese:"sobrinha",
+      Afrikaans:"niggie", "Egyptian Arabic":"بنت أخويا/أختي", Hindi:"भतीजी/भांजी", Dutch:"nicht", Polish:"siostrzenica/bratanica",
+      Ukrainian:"племінниця", Romanian:"nepoată", Hungarian:"unokahúg", Indonesian:"keponakan perempuan", Swahili:"mpwa"
+    },
+
+    nephew: {
+      English:"nephew", Spanish:"sobrino", German:"Neffe", French:"neveu", Italian:"nipote",
+      Greek:"ανιψιός", Mandarin:"侄子/外甥", Russian:"племянник", Arabic:"ابن الأخ/الأخت", Norwegian:"nevø",
+      Swedish:"brorson/systerson", Finnish:"veljenpoika", Estonian:"venna/õe poeg", Czech:"synovec", Croatian:"nećak",
+      Serbian:"нећак", Slovenian:"nečak", Korean:"조카", Japanese:"甥", Portuguese:"sobrinho",
+      Afrikaans:"neef", "Egyptian Arabic":"ابن أخويا/أختي", Hindi:"भतीजा/भांजा", Dutch:"neef", Polish:"siostrzeniec/bratanek",
+      Ukrainian:"племінник", Romanian:"nepot", Hungarian:"unokaöcs", Indonesian:"keponakan laki‑laki", Swahili:"mpwa"
+    },
+
+    siblings: {
+      English:"siblings", Spanish:"hermanos", German:"Geschwister", French:"frères et sœurs", Italian:"fratelli",
+      Greek:"αδέλφια", Mandarin:"兄弟姐妹", Russian:"братья и сестры", Arabic:"إخوة", Norwegian:"søsken",
+      Swedish:"syskon", Finnish:"sisarukset", Estonian:"õed‑vennad", Czech:"sourozenci", Croatian:"braća i sestre",
+      Serbian:"браћа и сестре", Slovenian:"sorojenci", Korean:"형제자매", Japanese:"兄弟姉妹", Portuguese:"irmãos",
+      Afrikaans:"broers en susters", "Egyptian Arabic":"إخوات", Hindi:"भाई‑बहन", Dutch:"broers en zussen", Polish:"rodzeństwo",
+      Ukrainian:"брати і сестри", Romanian:"frați", Hungarian:"testvérek", Indonesian:"saudara‑saudari", Swahili:"ndugu"
+    },
+
+    relatives: {
+      English:"relatives", Spanish:"parientes", German:"Verwandte", French:"parents", Italian:"parenti",
+      Greek:"συγγενείς", Mandarin:"亲戚", Russian:"родственники", Arabic:"أقارب", Norwegian:"slektninger",
+      Swedish:"släktingar", Finnish:"sukulaiset", Estonian:"sugulased", Czech:"příbuzní", Croatian:"rodbina",
+      Serbian:"рођаци", Slovenian:"sorodniki", Korean:"친척", Japanese:"親戚", Portuguese:"parentes",
+      Afrikaans:"familie", "Egyptian Arabic":"قرايب", Hindi:"रिश्तेदार", Dutch:"familieleden", Polish:"krewni",
+      Ukrainian:"родичі", Romanian:"rude", Hungarian:"rokonok", Indonesian:"kerabat", Swahili:"jamaa"
+    }
+
+  }
+});
+        </script>
+        
