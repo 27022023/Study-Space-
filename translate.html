@@ -217,7 +217,16 @@ document.getElementById("translateBtn").onclick = () => {
   let from = document.getElementById("inputLang").value;
   let to = document.getElementById("outputLang").value;
 
-  let found = DICT[word];
+  let found = null;
+
+  // Search through all categories
+  for (let category in DICT) {
+    if (DICT[category][word]) {
+      found = DICT[category][word];
+      break;
+    }
+  }
+
   if (!found) {
     document.getElementById("result").textContent = "—";
     return;
@@ -236,7 +245,6 @@ document.getElementById("clearNotesBtn").onclick = () => {
   localStorage.removeItem("notes");
 };
 </script>
-<script>
 PARTS.forEach(p=>{
  let cat = Object.keys(p)[0];
  DICT[cat] = p[cat];
