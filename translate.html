@@ -1983,5 +1983,216 @@ PARTS.push({
 
   }
 });
-  </script>
-  <script>
+  </script>  
+<script>
+PARTS.push({
+  pronouns_grammar: {
+
+    I: {
+      English:"I", Spanish:"yo", German:"ich", French:"je", Italian:"io",
+      Greek:"εγώ", Mandarin:"我", Russian:"я", Arabic:"أنا", Norwegian:"jeg",
+      Swedish:"jag", Finnish:"minä", Estonian:"mina", Czech:"já", Croatian:"ja",
+      Serbian:"ја", Slovenian:"jaz", Korean:"나", Japanese:"私", Portuguese:"eu",
+      Afrikaans:"ek", "Egyptian Arabic":"أنا", Hindi:"मैं", Dutch:"ik", Polish:"ja",
+      Ukrainian:"я", Romanian:"eu", Hungarian:"én", Indonesian:"saya", Swahili:"mimi"
+    },
+
+    you: {
+      English:"you", Spanish:"tú", German:"du", French:"tu", Italian:"tu",
+      Greek:"εσύ", Mandarin:"你", Russian:"ты", Arabic:"أنت", Norwegian:"du",
+      Swedish:"du", Finnish:"sinä", Estonian:"sina", Czech:"ty", Croatian:"ti",
+      Serbian:"ти", Slovenian:"ti", Korean:"너", Japanese:"あなた", Portuguese:"você",
+      Afrikaans:"jy", "Egyptian Arabic":"إنت", Hindi:"तुम", Dutch:"jij", Polish:"ty",
+      Ukrainian:"ти", Romanian:"tu", Hungarian:"te", Indonesian:"kamu", Swahili:"wewe"
+    },
+
+    he: {
+      English:"he", Spanish:"él", German:"er", French:"il", Italian:"lui",
+      Greek:"αυτός", Mandarin:"他", Russian:"он", Arabic:"هو", Norwegian:"han",
+      Swedish:"han", Finnish:"hän", Estonian:"tema", Czech:"on", Croatian:"on",
+      Serbian:"он", Slovenian:"on", Korean:"그", Japanese:"彼", Portuguese:"ele",
+      Afrikaans:"hy", "Egyptian Arabic":"هو", Hindi:"वह", Dutch:"hij", Polish:"on",
+      Ukrainian:"він", Romanian:"el", Hungarian:"ő", Indonesian:"dia", Swahili:"yeye"
+    },
+
+    she: {
+      English:"she", Spanish:"ella", German:"sie", French:"elle", Italian:"lei",
+      Greek:"αυτή", Mandarin:"她", Russian:"она", Arabic:"هي", Norwegian:"hun",
+      Swedish:"hon", Finnish:"hän", Estonian:"tema", Czech:"ona", Croatian:"ona",
+      Serbian:"она", Slovenian:"ona", Korean:"그녀", Japanese:"彼女", Portuguese:"ela",
+      Afrikaans:"sy", "Egyptian Arabic":"هي", Hindi:"वह", Dutch:"zij", Polish:"ona",
+      Ukrainian:"вона", Romanian:"ea", Hungarian:"ő", Indonesian:"dia", Swahili:"yeye"
+    },
+
+    it: {
+      English:"it", Spanish:"eso", German:"es", French:"ça", Italian:"esso",
+      Greek:"αυτό", Mandarin:"它", Russian:"оно", Arabic:"هو/هي", Norwegian:"det",
+      Swedish:"det", Finnish:"se", Estonian:"see", Czech:"to", Croatian:"to",
+      Serbian:"то", Slovenian:"to", Korean:"그것", Japanese:"それ", Portuguese:"isso",
+      Afrikaans:"dit", "Egyptian Arabic":"ده/دي", Hindi:"यह", Dutch:"het", Polish:"to",
+      Ukrainian:"це", Romanian:"acesta", Hungarian:"az", Indonesian:"itu", Swahili:"hicho"
+    },
+
+    we: {
+      English:"we", Spanish:"nosotros", German:"wir", French:"nous", Italian:"noi",
+      Greek:"εμείς", Mandarin:"我们", Russian:"мы", Arabic:"نحن", Norwegian:"vi",
+      Swedish:"vi", Finnish:"me", Estonian:"meie", Czech:"my", Croatian:"mi",
+      Serbian:"ми", Slovenian:"mi", Korean:"우리", Japanese:"私たち", Portuguese:"nós",
+      Afrikaans:"ons", "Egyptian Arabic":"إحنا", Hindi:"हम", Dutch:"wij", Polish:"my",
+      Ukrainian:"ми", Romanian:"noi", Hungarian:"mi", Indonesian:"kami", Swahili:"sisi"
+    },
+
+    they: {
+      English:"they", Spanish:"ellos", German:"sie", French:"ils", Italian:"loro",
+      Greek:"αυτοί", Mandarin:"他们", Russian:"они", Arabic:"هم", Norwegian:"de",
+      Swedish:"de", Finnish:"he", Estonian:"nemad", Czech:"oni", Croatian:"oni",
+      Serbian:"они", Slovenian:"oni", Korean:"그들", Japanese:"彼ら", Portuguese:"eles",
+      Afrikaans:"hulle", "Egyptian Arabic":"هم", Hindi:"वे", Dutch:"zij", Polish:"oni",
+      Ukrainian:"вони", Romanian:"ei", Hungarian:"ők", Indonesian:"mereka", Swahili:"wao"
+    },
+
+    my: {
+      English:"my", Spanish:"mi", German:"mein", French:"mon", Italian:"mio",
+      Greek:"μου", Mandarin:"我的", Russian:"мой", Arabic:"ـي", Norwegian:"min",
+      Swedish:"min", Finnish:"minun", Estonian:"minu", Czech:"můj", Croatian:"moj",
+      Serbian:"мој", Slovenian:"moj", Korean:"내", Japanese:"私の", Portuguese:"meu",
+      Afrikaans:"my", "Egyptian Arabic":"بتاعي", Hindi:"मेरा", Dutch:"mijn", Polish:"mój",
+      Ukrainian:"мій", Romanian:"meu", Hungarian:"enyém", Indonesian:"saya", Swahili:"yangu"
+    },
+
+    your: {
+      English:"your", Spanish:"tu", German:"dein", French:"ton", Italian:"tuo",
+      Greek:"σου", Mandarin:"你的", Russian:"твой", Arabic:"ـك", Norwegian:"din",
+      Swedish:"din", Finnish:"sinun", Estonian:"sinu", Czech:"tvůj", Croatian:"tvoj",
+      Serbian:"твој", Slovenian:"tvoj", Korean:"너의", Japanese:"あなたの", Portuguese:"seu",
+      Afrikaans:"jou", "Egyptian Arabic":"بتاعك", Hindi:"तुम्हारा", Dutch:"jouw", Polish:"twój",
+      Ukrainian:"твій", Romanian:"tău", Hungarian:"tiéd", Indonesian:"kamu", Swahili:"yako"
+    },
+
+    his: {
+      English:"his", Spanish:"su", German:"sein", French:"son", Italian:"suo",
+      Greek:"του", Mandarin:"他的", Russian:"его", Arabic:"ـه", Norwegian:"hans",
+      Swedish:"hans", Finnish:"hänen", Estonian:"tema", Czech:"jeho", Croatian:"njegov",
+      Serbian:"његов", Slovenian:"njegov", Korean:"그의", Japanese:"彼の", Portuguese:"dele",
+      Afrikaans:"sy", "Egyptian Arabic":"بتاعه", Hindi:"उसका", Dutch:"zijn", Polish:"jego",
+      Ukrainian:"його", Romanian:"lui", Hungarian:"övé", Indonesian:"dia", Swahili:"wake"
+    },
+
+    her: {
+      English:"her", Spanish:"su", German:"ihr", French:"sa", Italian:"sua",
+      Greek:"της", Mandarin:"她的", Russian:"её", Arabic:"ـها", Norwegian:"hennes",
+      Swedish:"hennes", Finnish:"hänen", Estonian:"tema", Czech:"její", Croatian:"njezina",
+      Serbian:"њена", Slovenian:"njena", Korean:"그녀의", Japanese:"彼女の", Portuguese:"dela",
+      Afrikaans:"haar", "Egyptian Arabic":"بتاعتها", Hindi:"उसकी", Dutch:"haar", Polish:"jej",
+      Ukrainian:"її", Romanian:"ei", Hungarian:"övé", Indonesian:"dia", Swahili:"wake"
+    },
+
+    mine: {
+      English:"mine", Spanish:"mío", German:"meins", French:"le mien", Italian:"mio",
+      Greek:"δικό μου", Mandarin:"我的", Russian:"моё", Arabic:"ملكي", Norwegian:"min",
+      Swedish:"min", Finnish:"minun", Estonian:"minu oma", Czech:"můj", Croatian:"moje",
+      Serbian:"моје", Slovenian:"moje", Korean:"내 것", Japanese:"私のもの", Portuguese:"meu",
+      Afrikaans:"myne", "Egyptian Arabic":"بتاعي", Hindi:"मेरा", Dutch:"de mijne", Polish:"moje",
+      Ukrainian:"моє", Romanian:"al meu", Hungarian:"enyém", Indonesian:"milik saya", Swahili:"yangu"
+    },
+
+    yours: {
+      English:"yours", Spanish:"tuyo", German:"deins", French:"le tien", Italian:"tuo",
+      Greek:"δικό σου", Mandarin:"你的", Russian:"твоё", Arabic:"ملكك", Norwegian:"din",
+      Swedish:"din", Finnish:"sinun", Estonian:"sinu oma", Czech:"tvůj", Croatian:"tvoje",
+      Serbian:"твоје", Slovenian:"tvoje", Korean:"너의 것", Japanese:"あなたのもの", Portuguese:"seu",
+      Afrikaans:"joune", "Egyptian Arabic":"بتاعك", Hindi:"तुम्हारा", Dutch:"de jouwe", Polish:"twoje",
+      Ukrainian:"твоє", Romanian:"al tău", Hungarian:"tiéd", Indonesian:"milikmu", Swahili:"yako"
+    },
+
+    his_pronoun: {
+      English:"his", Spanish:"suyo", German:"seins", French:"le sien", Italian:"suo",
+      Greek:"δικό του", Mandarin:"他的", Russian:"его", Arabic:"ملكه", Norwegian:"hans",
+      Swedish:"hans", Finnish:"hänen", Estonian:"tema oma", Czech:"jeho", Croatian:"njegovo",
+      Serbian:"његово", Slovenian:"njegovo", Korean:"그의 것", Japanese:"彼のもの", Portuguese:"dele",
+      Afrikaans:"syne", "Egyptian Arabic":"بتاعه", Hindi:"उसका", Dutch:"de zijne", Polish:"jego",
+      Ukrainian:"його", Romanian:"al lui", Hungarian:"övé", Indonesian:"miliknya", Swahili:"wake"
+    },
+
+    hers: {
+      English:"hers", Spanish:"suya", German:"ihres", French:"le sien", Italian:"sua",
+      Greek:"δικό της", Mandarin:"她的", Russian:"её", Arabic:"ملكها", Norwegian:"hennes",
+      Swedish:"hennes", Finnish:"hänen", Estonian:"tema oma", Czech:"její", Croatian:"njezino",
+      Serbian:"њено", Slovenian:"njeno", Korean:"그녀의 것", Japanese:"彼女のもの", Portuguese:"dela",
+      Afrikaans:"hare", "Egyptian Arabic":"بتاعتها", Hindi:"उसकी", Dutch:"de hare", Polish:"jej",
+      Ukrainian:"її", Romanian:"al ei", Hungarian:"övé", Indonesian:"miliknya", Swahili:"wake"
+    },
+
+    ours: {
+      English:"ours", Spanish:"nuestro", German:"unseres", French:"le nôtre", Italian:"nostro",
+      Greek:"δικό μας", Mandarin:"我们的", Russian:"наш", Arabic:"ملكنا", Norwegian:"vårt",
+      Swedish:"vårt", Finnish:"meidän", Estonian:"meie oma", Czech:"náš", Croatian:"naše",
+      Serbian:"наше", Slovenian:"naše", Korean:"우리 것", Japanese:"私たちのもの", Portuguese:"nosso",
+      Afrikaans:"ons s'n", "Egyptian Arabic":"بتاعنا", Hindi:"हमारा", Dutch:"de onze", Polish:"nasze",
+      Ukrainian:"наше", Romanian:"al nostru", Hungarian:"miénk", Indonesian:"milik kami", Swahili:"wetu"
+    },
+
+    theirs: {
+      English:"theirs", Spanish:"suyo", German:"ihres", French:"le leur", Italian:"loro",
+      Greek:"δικό τους", Mandarin:"他们的", Russian:"их", Arabic:"ملكهم", Norwegian:"deres",
+      Swedish:"deras", Finnish:"heidän", Estonian:"nende oma", Czech:"jejich", Croatian:"njihovo",
+      Serbian:"њихово", Slovenian:"njihovo", Korean:"그들의 것", Japanese:"彼らのもの", Portuguese:"deles",
+      Afrikaans:"hulle s'n", "Egyptian Arabic":"بتاعهم", Hindi:"उनका", Dutch:"de hunne", Polish:"ich",
+      Ukrainian:"їхнє", Romanian:"al lor", Hungarian:"övék", Indonesian:"milik mereka", Swahili:"wao"
+    },
+
+    I_am: {
+      English:"I am", Spanish:"yo soy", German:"ich bin", French:"je suis", Italian:"io sono",
+      Greek:"είμαι", Mandarin:"我是", Russian:"я есть", Arabic:"أنا", Norwegian:"jeg er",
+      Swedish:"jag är", Finnish:"minä olen", Estonian:"mina olen", Czech:"já jsem", Croatian:"ja sam",
+      Serbian:"ја сам", Slovenian:"jaz sem", Korean:"나는 ~이다", Japanese:"私は〜です", Portuguese:"eu sou",
+      Afrikaans:"ek is", "Egyptian Arabic":"أنا", Hindi:"मैं हूँ", Dutch:"ik ben", Polish:"jestem",
+      Ukrainian:"я є", Romanian:"eu sunt", Hungarian:"én vagyok", Indonesian:"saya adalah", Swahili:"mimi ni"
+    },
+
+    you_are: {
+      English:"you are", Spanish:"tú eres", German:"du bist", French:"tu es", Italian:"tu sei",
+      Greek:"είσαι", Mandarin:"你是", Russian:"ты есть", Arabic:"أنت", Norwegian:"du er",
+      Swedish:"du är", Finnish:"sinä olet", Estonian:"sina oled", Czech:"ty jsi", Croatian:"ti si",
+      Serbian:"ти си", Slovenian:"ti si", Korean:"너는 ~이다", Japanese:"あなたは〜です", Portuguese:"você é",
+      Afrikaans:"jy is", "Egyptian Arabic":"إنت", Hindi:"तुम हो", Dutch:"jij bent", Polish:"jesteś",
+      Ukrainian:"ти є", Romanian:"tu ești", Hungarian:"te vagy", Indonesian:"kamu adalah", Swahili:"wewe ni"
+    },
+
+    he_is: {
+      English:"he is", Spanish:"él es", German:"er ist", French:"il est", Italian:"lui è",
+      Greek:"είναι", Mandarin:"他是", Russian:"он есть", Arabic:"هو", Norwegian:"han er",
+      Swedish:"han är", Finnish:"hän on", Estonian:"tema on", Czech:"on je", Croatian:"on je",
+      Serbian:"он је", Slovenian:"on je", Korean:"그는 ~이다", Japanese:"彼は〜です", Portuguese:"ele é",
+      Afrikaans:"hy is", "Egyptian Arabic":"هو", Hindi:"वह है", Dutch:"hij is", Polish:"on jest",
+      Ukrainian:"він є", Romanian:"el este", Hungarian:"ő van", Indonesian:"dia adalah", Swahili:"yeye ni"
+    },
+
+    she_is: {
+      English:"she is", Spanish:"ella es", German:"sie ist", French:"elle est", Italian:"lei è",
+      Greek:"είναι", Mandarin:"她是", Russian:"она есть", Arabic:"هي", Norwegian:"hun er",
+      Swedish:"hon är", Finnish:"hän on", Estonian:"tema on", Czech:"ona je", Croatian:"ona je",
+      Serbian:"она је", Slovenian:"ona je", Korean:"그녀는 ~이다", Japanese:"彼女は〜です", Portuguese:"ela é",
+      Afrikaans:"sy is", "Egyptian Arabic":"هي", Hindi:"वह है", Dutch:"zij is", Polish:"ona jest",
+      Ukrainian:"вона є", Romanian:"ea este", Hungarian:"ő van", Indonesian:"dia adalah", Swahili:"yeye ni"
+    },
+
+    we_are: {
+      English:"we are", Spanish:"nosotros somos", German:"wir sind", French:"nous sommes", Italian:"noi siamo",
+      Greek:"είμαστε", Mandarin:"我们是", Russian:"мы есть", Arabic:"نحن", Norwegian:"vi er",
+      Swedish:"vi är", Finnish:"me olemme", Estonian:"me oleme", Czech:"my jsme", Croatian:"mi smo",
+      Serbian:"ми смо", Slovenian:"mi smo", Korean:"우리는 ~이다", Japanese:"私たちは〜です", Portuguese:"nós somos",
+      Afrikaans:"ons is", "Egyptian Arabic":"إحنا", Hindi:"हम हैं", Dutch:"wij zijn", Polish:"jesteśmy",
+      Ukrainian:"ми є", Romanian:"noi suntem", Hungarian:"mi vagyunk", Indonesian:"kami adalah", Swahili:"sisi ni"
+    },
+
+    they_are: {
+      English:"they are", Spanish:"ellos son", German:"sie sind", French:"ils sont", Italian:"loro sono",
+      Greek:"είναι", Mandarin:"他们是", Russian:"они есть", Arabic:"هم", Norwegian:"de er",
+      Swedish:"de är", Finnish:"he ovat", Estonian:"nad on", Czech:"oni jsou", Croatian:"oni su",
+      Serbian:"они су", Slovenian:"oni so", Korean:"그들은 ~이다", Japanese:"彼らは〜です", Portuguese:"eles são",
+      Afrikaans:"hulle is", "Egyptian Arabic":"هم", Hindi:"वे हैं", Dutch:"zij zijn", Polish:"oni są",
+      Ukrainian:"вони є", Romanian:"ei sunt", Hungarian:"ők vannak", Indonesian:"mereka adalah", Swahili:"wao ni"
+    }
+
+    
