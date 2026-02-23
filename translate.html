@@ -160,7 +160,6 @@ const langs = [
   { name: "Polish", flag: "🇵🇱", code: "pl" },
   { name: "Swedish", flag: "🇸🇪", code: "sv" },
   { name: "Norwegian", flag: "🇳🇴", code: "no" },
-  { name: "Korean", flag: "🇰🇷", code: "ko" },
   { name: "Ukrainian", flag: "🇺🇦", code: "uk" }
 ];
 
@@ -204,7 +203,7 @@ document.getElementById("translateBtn").onclick = async () => {
   localStorage.setItem("notes", notes.innerHTML);
 };
 
-// UNIVERSAL SPEAKER (works on all devices)
+// ANDROID‑SAFE SPEAKER (Lingva TTS)
 document.getElementById("speakBtn").onclick = () => {
   let text = document.getElementById("result").textContent;
   let lang = document.getElementById("outputLang").value;
@@ -212,7 +211,7 @@ document.getElementById("speakBtn").onclick = () => {
   if (!text) return;
 
   let audio = new Audio(
-    `https://translate.google.com/translate_tts?ie=UTF-8&q=${encodeURIComponent(text)}&tl=${lang}&client=tw-ob`
+    `https://lingva.ml/api/v1/${lang}/en/${encodeURIComponent(text)}`
   );
 
   audio.play();
