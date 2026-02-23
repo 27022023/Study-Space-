@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Translator + Pronunciation + Notebook</title>
+<title>Translator + Notebook</title>
 
 <style>
 body {
@@ -12,18 +12,10 @@ body {
   background: #cfe9ff;
 }
 
-#earthIcon {
-  position: fixed;
-  top: 15px;
-  right: 15px;
-  font-size: 48px;
-  opacity: 0.9;
-}
-
 #app {
-  max-width: 1000px;
+  max-width: 900px;
   margin: 0 auto;
-  padding: 10px;
+  padding: 20px;
 }
 
 .translator {
@@ -45,23 +37,29 @@ body {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
 }
 
-input, select, button {
+input, select, button, textarea {
   padding: 10px;
   border-radius: 8px;
   border: 1px solid #ccc;
   font-size: 15px;
 }
 
-#translateBtn {
+button {
   background: #f472b6;
   color: white;
   border: none;
   padding: 10px 18px;
   border-radius: 10px;
   font-weight: bold;
+  cursor: pointer;
+}
+
+#output {
+  min-height: 80px;
+  background: #ffe9f5;
 }
 
 .notebook {
@@ -89,29 +87,10 @@ input, select, button {
   margin-top: 12px;
   font-weight: bold;
 }
-
-#resultBox {
-  margin-top: 10px;
-  padding: 10px;
-  border-radius: 8px;
-  background: #ffe9f5;
-  border: 1px solid #f9a8d4;
-}
-
-#pronunciationBox {
-  margin-top: 8px;
-  padding: 8px;
-  border-radius: 8px;
-  background: #f3f4ff;
-  border: 1px solid #c7d2fe;
-  font-size: 14px;
-}
 </style>
 </head>
 
 <body>
-
-<div id="earthIcon">🌍</div>
 
 <div id="app">
 
@@ -121,25 +100,27 @@ input, select, button {
     <div class="translator-inner">
 
       <div class="row">
-        <input id="inputWord" placeholder="Enter word or sentence">
+        <label>Text to translate:</label>
+        <textarea id="inputText" rows="3" placeholder="Type here..."></textarea>
       </div>
 
       <div class="row">
-        <select id="inputLang"></select>
+        <label>From language:</label>
+        <select id="fromLang"></select>
       </div>
 
       <div class="row">
-        <select id="outputLang"></select>
+        <label>To language:</label>
+        <select id="toLang"></select>
       </div>
 
-      <button id="translateBtn">Translate</button>
+      <div class="row">
+        <button id="translateBtn">Translate</button>
+      </div>
 
-      <div id="resultBox">
-        <div><strong>Translation:</strong> <span id="result"></span></div>
-        <div id="pronunciationBox" style="display:none;">
-          <strong>Pronunciation (IPA):</strong>
-          <div id="pronunciationText"></div>
-        </div>
+      <div class="row">
+        <label>Result:</label>
+        <textarea id="output" readonly></textarea>
       </div>
 
     </div>
@@ -154,108 +135,90 @@ input, select, button {
 </div>
 
 <script>
-// languages with flags + ISO codes
-const langs = [
-  { name: "English", flag: "🇬🇧", code: "en" },
-  { name: "Spanish", flag: "🇪🇸", code: "es" },
-  { name: "German", flag: "🇩🇪", code: "de" },
-  { name: "French", flag: "🇫🇷", code: "fr" },
-  { name: "Italian", flag: "🇮🇹", code: "it" },
-  { name: "Portuguese", flag: "🇵🇹", code: "pt" },
-  { name: "Russian", flag: "🇷🇺", code: "ru" },
-  { name: "Arabic", flag: "🇸🇦", code: "ar" },
-  { name: "Chinese", flag: "🇨🇳", code: "zh" },
-  { name: "Japanese", flag: "🇯🇵", code: "ja" },
-  { name: "Korean", flag: "🇰🇷", code: "ko" },
-  { name: "Hindi", flag: "🇮🇳", code: "hi" },
-  { name: "Dutch", flag: "🇳🇱", code: "nl" },
-  { name: "Polish", flag: "🇵🇱", code: "pl" },
-  { name: "Ukrainian", flag: "🇺🇦", code: "uk" }
+// Languages with flags
+const languages = [
+  { code: "en", name: "English", flag: "🇬🇧" },
+  { code: "es", name: "Spanish", flag: "🇪🇸" },
+  { code: "fr", name: "French", flag: "🇫🇷" },
+  { code: "de", name: "German", flag: "🇩🇪" },
+  { code: "it", name: "Italian", flag: "🇮🇹" },
+  { code: "pt", name: "Portuguese", flag: "🇵🇹" },
+  { code: "ru", name: "Russian", flag: "🇷🇺" },
+  { code: "ar", name: "Arabic", flag: "🇸🇦" },
+  { code: "zh", name: "Chinese", flag: "🇨🇳" },
+  { code: "ja", name: "Japanese", flag: "🇯🇵" },
+  { code: "ko", name: "Korean", flag: "🇰🇷" },
+  { code: "nl", name: "Dutch", flag: "🇳🇱" },
+  { code: "pl", name: "Polish", flag: "🇵🇱" },
+  { code: "sv", name: "Swedish", flag: "🇸🇪" },
+  { code: "no", name: "Norwegian", flag: "🇳🇴" },
+  { code: "fi", name: "Finnish", flag: "🇫🇮" },
+  { code: "tr", name: "Turkish", flag: "🇹🇷" },
+  { code: "hi", name: "Hindi", flag: "🇮🇳" },
+  { code: "uk", name: "Ukrainian", flag: "🇺🇦" }
 ];
 
-const inSel = document.getElementById("inputLang");
-const outSel = document.getElementById("outputLang");
+const fromSel = document.getElementById("fromLang");
+const toSel = document.getElementById("toLang");
 
-langs.forEach(l => {
-  let opt = document.createElement("option");
-  opt.value = l.code;
-  opt.textContent = `${l.flag} ${l.name}`;
-  inSel.appendChild(opt.cloneNode(true));
-  outSel.appendChild(opt);
+// Fill dropdowns with flags
+languages.forEach(lang => {
+  const opt1 = document.createElement("option");
+  opt1.value = lang.code;
+  opt1.textContent = `${lang.flag} ${lang.name}`;
+  fromSel.appendChild(opt1);
+
+  const opt2 = document.createElement("option");
+  opt2.value = lang.code;
+  opt2.textContent = `${lang.flag} ${lang.name}`;
+  toSel.appendChild(opt2);
 });
 
-// default languages
-inSel.value = "en";
-outSel.value = "es";
+// Default languages
+fromSel.value = "en";
+toSel.value = "es";
 
-// LibreTranslate API
-async function translateText(text, fromCode, toCode) {
-  const res = await fetch("https://libretranslate.com/translate", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      q: text,
-      source: fromCode,
-      target: toCode,
-      format: "text"
-    })
-  });
+// Translation function
+async function translate(text, from, to) {
+  const url =
+    "https://api.mymemory.translated.net/get?q=" +
+    encodeURIComponent(text) +
+    "&langpair=" +
+    from +
+    "|" +
+    to;
+
+  const res = await fetch(url);
   const data = await res.json();
-  return data.translatedText;
+  return data.responseData.translatedText || "";
 }
 
-// Pronunciation API (Free Dictionary API)
-async function getPronunciation(word, langCode) {
-  if (langCode !== "en") return ""; // Only English IPA available for free
-
-  try {
-    const res = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`);
-    const data = await res.json();
-    if (data[0]?.phonetics?.length > 0) {
-      return data[0].phonetics[0].text || "";
-    }
-  } catch (e) {
-    return "";
-  }
-  return "";
-}
-
-// Load notebook memory
+// Load notebook
 window.onload = () => {
   const saved = localStorage.getItem("notes");
   if (saved) document.getElementById("notes").innerHTML = saved;
 };
 
 document.getElementById("translateBtn").onclick = async () => {
-  const word = document.getElementById("inputWord").value.trim();
-  const fromCode = document.getElementById("inputLang").value;
-  const toCode = document.getElementById("outputLang").value;
+  const text = document.getElementById("inputText").value.trim();
+  const from = fromSel.value;
+  const to = toSel.value;
 
-  if (!word) return;
+  if (!text) return;
+
+  document.getElementById("output").value = "Translating...";
 
   try {
-    const translated = await translateText(word, fromCode, toCode);
-    document.getElementById("result").textContent = translated;
+    const result = await translate(text, from, to);
+    document.getElementById("output").value = result;
 
-    // Pronunciation (only for English output)
-    const ipa = await getPronunciation(translated, toCode);
-    const pronBox = document.getElementById("pronunciationBox");
-    const pronText = document.getElementById("pronunciationText");
-
-    if (ipa) {
-      pronText.textContent = ipa;
-      pronBox.style.display = "block";
-    } else {
-      pronBox.style.display = "none";
-    }
-
-    // Notebook
+    // Save to notebook
     const notes = document.getElementById("notes");
-    notes.innerHTML += `<div>${word} → ${translated}</div>`;
+    notes.innerHTML += `<div>${text} → ${result}</div>`;
     localStorage.setItem("notes", notes.innerHTML);
 
   } catch (e) {
-    document.getElementById("result").textContent = "Error translating. Try again.";
+    document.getElementById("output").value = "Error. Try again.";
   }
 };
 
