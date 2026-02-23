@@ -170,3 +170,44 @@ button {
   </div>
 
 </div>
+<script>
+const langs = [
+  "English 🇬🇧","Spanish 🇪🇸","German 🇩🇪","French 🇫🇷","Italian 🇮🇹",
+  "Greek 🇬🇷","Mandarin 🇨🇳","Russian 🇷🇺","Arabic 🇸🇦","Norwegian 🇳🇴",
+  "Swedish 🇸🇪","Finnish 🇫🇮","Estonian 🇪🇪","Czech 🇨🇿","Croatian 🇭🇷",
+  "Serbian 🇷🇸","Slovenian 🇸🇮","Korean 🇰🇷","Japanese 🇯🇵","Portuguese 🇵🇹",
+  "Afrikaans 🇿🇦","Egyptian Arabic 🇪🇬","Hindi 🇮🇳","Dutch 🇳🇱","Polish 🇵🇱",
+  "Ukrainian 🇺🇦","Romanian 🇷🇴","Hungarian 🇭🇺","Indonesian 🇮🇩","Swahili 🇰🇪"
+];
+
+const inSel = document.getElementById("inputLang");
+const outSel = document.getElementById("outputLang");
+
+langs.forEach(l => {
+  let parts = l.split(" ");
+  let name = parts.slice(0, -1).join(" ");
+  let opt = document.createElement("option");
+  opt.value = name;
+  opt.textContent = l;
+  inSel.appendChild(opt.cloneNode(true));
+  outSel.appendChild(opt);
+});
+
+document.getElementById("speakBtn").onclick = () => {
+  let text = document.getElementById("result").textContent;
+  if (!text) return;
+
+  const voiceMap = {
+    English:"en",Spanish:"es",German:"de",French:"fr",Italian:"it",
+    Greek:"el",Mandarin:"zh",Russian:"ru",Arabic:"ar",Norwegian:"no",
+    Swedish:"sv",Finnish:"fi",Estonian:"et",Czech:"cs",Croatian:"hr",
+    Serbian:"sr",Slovenian:"sl",Korean:"ko",Japanese:"ja",Portuguese:"pt",
+    Afrikaans:"af","Egyptian Arabic":"ar",Hindi:"hi",Dutch:"nl",Polish:"pl",
+    Ukrainian:"uk",Romanian:"ro",Hungarian:"hu",Indonesian:"id",Swahili:"sw"
+  };
+
+  let utter = new SpeechSynthesisUtterance(text);
+  utter.lang = voiceMap[outSel.value] || "en";
+  speechSynthesis.speak(utter);
+};
+</script>
