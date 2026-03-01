@@ -483,7 +483,13 @@ inputEl.addEventListener("keydown", e => {
 
 // greeting
 addMessage("Hey, I’m Nova 💜🧪.\nI’m built to help with maths, physics and chemistry — especially of higher level.\nTry giving me an equation like “2x - 5 = 11” or say “example physics”.","nova");
-</script>
+<script>
+const menuBtn = document.getElementById("menu-btn");
+const sidebar = document.getElementById("sidebar");
 
+menuBtn.addEventListener("click", () => {
+    sidebar.classList.toggle("open");
+});
+</script>
 </body>
 </html>
