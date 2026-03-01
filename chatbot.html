@@ -106,90 +106,9 @@
     color:#6b7280;
     padding:0 14px 6px;
   }
-  /* MENU BUTTON */
-#menu-btn {
-    position: fixed;
-    top: 20px;
-    left: 20px;
-    width: 55px;
-    height: 55px;
-    border-radius: 50%;
-    background: var(--white);
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    border: none;
-    font-size: 16px;
-    cursor: pointer;
-    z-index: 1000;
-    transition: transform 0.2s ease;
-}
-
-#menu-btn:hover {
-    transform: scale(1.05);
-}
-
-/* SIDEBAR */
-#sidebar {
-    position: fixed;
-    top: 0;
-    left: -260px;
-    width: 260px;
-    height: 100%;
-    background: var(--white);
-    box-shadow: 4px 0 12px rgba(0,0,0,0.1);
-    padding: 30px 20px;
-    transition: left 0.3s ease;
-    z-index: 999;
-}
-
-#sidebar.open {
-    left: 0;
-}
-
-#sidebar h2 {
-    margin-top: 0;
-    font-size: 22px;
-    color: var(--text);
-    text-align: center;
-}
-
-#sidebar a {
-    display: block;
-    margin: 15px 0;
-    text-decoration: none;
-    color: var(--text);
-    font-size: 18px;
-    padding: 8px 10px;
-    border-radius: 8px;
-    transition: background 0.2s ease;
-    text-align: center;
-}
-
-#sidebar a:hover {
-    background: var(--lavender);
-}
-  
 </style>
 </head>
 <body>
-<!-- MENU BUTTON -->
-<button id="menu-btn">Menu</button>
-
-<!-- SIDEBAR -->
-<div id="sidebar">
-    <h2>Study Sphere</h2>
-    <a href="index.html?v=2">Home</a>
-    <a href="flashcards.html">Flashcards</a>
-    <a href="translate.html">Language learning</a>
-    <a href="notebook.html">Notebook</a>
-    <a href="chatbot.html">Chatbot</a>
-    <a href="solver.html">Problem Solver</a>
-    <a href="whiteboard.html">Whiteboard</a>
-    <a href="study-planner.html">Study Planner</a>
-    <a href="todo.html">To‑Do List</a>
-    <a href="weekly.html">Weekly Planner</a>
-    <a href="timer.html">Study Timer</a>
-    <a href="relax.html">Relax</a>
-</div>
 <header>
   <div class="nova-avatar">🤖</div>
   <div>
@@ -483,12 +402,6 @@ inputEl.addEventListener("keydown", e => {
 
 // greeting
 addMessage("Hey, I’m Nova 💜🧪.\nI’m built to help with maths, physics and chemistry — especially of higher level.\nTry giving me an equation like “2x - 5 = 11” or say “example physics”.","nova");
-<script>
-const menuBtn = document.getElementById("menu-btn");
-const sidebar = document.getElementById("sidebar");
-
-menuBtn.addEventListener("click", () => {
-    sidebar.classList.toggle("open");
 });
 </script>
 </body>
