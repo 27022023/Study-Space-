@@ -151,6 +151,14 @@ fetch("menu.html")
   .then(res => res.text())
   .then(html => {
     document.getElementById("menu-container").innerHTML = html;
+
+    // Attach menu logic AFTER loading
+    const menuBtn = document.getElementById("menu-btn");
+    const sidebar = document.getElementById("sidebar");
+
+    menuBtn.addEventListener("click", () => {
+        sidebar.classList.toggle("open");
+    });
   });
 </script>
 
