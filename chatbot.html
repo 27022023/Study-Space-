@@ -5,6 +5,7 @@
 <meta charset="UTF-8">
 <title>Nova – Study Companion</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <style>
       /* MENU BUTTON */
     #menu-btn {
@@ -68,39 +69,6 @@
         background: var(--lavender);
     }
 
-    /* HERO SECTION */
-    .hero {
-        text-align: center;
-        padding: 150px 20px;
-    }
-
-    .hero h1 {
-        font-size: 48px;
-        margin-bottom: 10px;
-    }
-
-    .hero p {
-        font-size: 20px;
-        max-width: 600px;
-        margin: 0 auto;
-    }
-
-    .cta {
-        margin-top: 30px;
-        display: inline-block;
-        padding: 14px 28px;
-        background: var(--white);
-        border-radius: 12px;
-        font-size: 18px;
-        text-decoration: none;
-        color: var(--text);
-        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-        transition: transform 0.2s ease;
-    }
-
-    .cta:hover {
-        transform: scale(1.05);
-    }
   :root{
     --bg1:#e8d9ff;
     --bg2:#d7eaff;
@@ -203,7 +171,9 @@
   }
 </style>
 </head>
+
 <body>
+
 <!-- MENU BUTTON -->
 <button id="menu-btn">Menu</button>
 
@@ -223,6 +193,7 @@
     <a href="timer.html">Study Timer</a>
     <a href="relax.html">Relax</a>
 </div>
+
 <header>
   <div class="nova-avatar">🤖</div>
   <div>
@@ -248,92 +219,48 @@ const inputEl = document.getElementById("userInput");
 const sendBtn = document.getElementById("sendBtn");
 
 let userName = null;
-let mode = "math-first"; // main focus
+let mode = "math-first";
 let lastMathProblem = null;
 
 // --- Example banks (Maths / Physics / Chemistry) ---
 const examples = {
   math: [
-    {
-      q:"Solve the equation: 2x - 5 = 11",
-      a:"2x - 5 = 11 ⇒ 2x = 16 ⇒ x = 8."
-    },
-    {
-      q:"Solve the system:\n2x + y = 7\nx - y = 1",
-      a:"From x - y = 1 ⇒ y = x - 1.\nSubstitute: 2x + (x - 1) = 7 ⇒ 3x - 1 = 7 ⇒ 3x = 8 ⇒ x = 8/3, y = 5/3."
-    },
-    {
-      q:"Solve the quadratic: x² - 5x + 6 = 0",
-      a:"x² - 5x + 6 = 0 ⇒ (x - 2)(x - 3) = 0 ⇒ x = 2 or x = 3."
-    },
-    {
-      q:"Find the derivative of f(x) = x³ - 5x + 2",
-      a:"f'(x) = 3x² - 5."
-    },
-    {
-      q:"Compute the integral ∫(3x² - 4x + 1) dx",
-      a:"∫3x² dx = x³, ∫-4x dx = -2x², ∫1 dx = x ⇒ x³ - 2x² + x + C."
-    },
-    {
-      q:"Find the domain of f(x) = 1/(x - 3)",
-      a:"All real numbers except x = 3."
-    },
-    {
-      q:"Probability: A coin is tossed 3 times. P(exactly 2 heads)?",
-      a:"Number of outcomes: 2³ = 8. Ways to get 2 heads: 3. So P = 3/8."
-    }
+    { q:"Solve the equation: 2x - 5 = 11", a:"2x - 5 = 11 ⇒ 2x = 16 ⇒ x = 8." },
+    { q:"Solve the system:\n2x + y = 7\nx - y = 1", a:"3x - 1 = 7 ⇒ x = 8/3, y = 5/3." },
+    { q:"Solve the quadratic: x² - 5x + 6 = 0", a:"x = 2 or x = 3." },
+    { q:"Find the derivative of f(x) = x³ - 5x + 2", a:"f'(x) = 3x² - 5." },
+    { q:"Compute the integral ∫(3x² - 4x + 1) dx", a:"x³ - 2x² + x + C." },
+    { q:"Find the domain of f(x) = 1/(x - 3)", a:"All real numbers except x = 3." },
+    { q:"Probability: A coin is tossed 3 times. P(exactly 2 heads)?", a:"3/8." },
+    { q:"Solve: 4(x - 2) = 3x + 10", a:"x = 18." },
+    { q:"Find the slope of the line through (2,5) and (6,13)", a:"m = 2." },
+    { q:"Simplify: (2x²y)(3xy³)", a:"6x³y⁴." }
   ],
+
   physics: [
-    {
-      q:"A body moves with constant velocity v = 10 m/s. Find the distance in 8 s.",
-      a:"s = v·t = 10·8 = 80 m."
-    },
-    {
-      q:"A car accelerates from rest with a = 2 m/s². Find its velocity after 6 s.",
-      a:"v = v₀ + a·t = 0 + 2·6 = 12 m/s."
-    },
-    {
-      q:"A stone is thrown upwards with v₀ = 20 m/s. Approximate max height (g ≈ 10 m/s²).",
-      a:"At top: v² = v₀² - 2gh ⇒ 0 = 400 - 20h ⇒ h = 20 m."
-    },
-    {
-      q:"A resistor R = 10 Ω is connected to V = 5 V. Find the current.",
-      a:"Ohm’s law: I = V/R = 5/10 = 0.5 A."
-    },
-    {
-      q:"A wave has frequency f = 50 Hz and wavelength λ = 2 m. Find speed.",
-      a:"v = f·λ = 50·2 = 100 m/s."
-    },
-    {
-      q:"A 3 kg mass moves at 4 m/s. Find kinetic energy.",
-      a:"K = ½mv² = 0.5·3·16 = 24 J."
-    }
+    { q:"A body moves with v = 10 m/s for 8 s. Distance?", a:"80 m." },
+    { q:"Car accelerates from rest at 2 m/s² for 6 s. Velocity?", a:"12 m/s." },
+    { q:"Stone thrown up at 20 m/s. Max height?", a:"20 m." },
+    { q:"R = 10 Ω, V = 5 V. Current?", a:"0.5 A." },
+    { q:"Wave f = 50 Hz, λ = 2 m. Speed?", a:"100 m/s." },
+    { q:"Mass 3 kg at 4 m/s. KE?", a:"24 J." },
+    { q:"A 2 kg object accelerates at 3 m/s². Net force?", a:"6 N." },
+    { q:"A 5 kg mass is lifted 4 m. g = 10. PE?", a:"200 J." },
+    { q:"A car travels 120 km in 2 hours. Average speed?", a:"60 km/h." },
+    { q:"A spring k=200 N/m stretched 0.1 m. Energy?", a:"1 J." }
   ],
+
   chemistry: [
-    {
-      q:"How many moles are in 18 g of water (H₂O, M = 18 g/mol)?",
-      a:"n = m/M = 18/18 = 1 mol."
-    },
-    {
-      q:"Find the molarity of a solution with 5 g NaCl (M ≈ 58.5 g/mol) in 500 mL.",
-      a:"n = 5/58.5 ≈ 0.0855 mol. Volume = 0.5 L ⇒ M ≈ 0.17 mol/L."
-    },
-    {
-      q:"pH of 0.01 M HCl (strong acid).",
-      a:"[H⁺] = 0.01 ⇒ pH = -log(0.01) = 2."
-    },
-    {
-      q:"Identify acid/base in: NH₃ + H₂O → NH₄⁺ + OH⁻",
-      a:"NH₃ is a base (accepts H⁺), H₂O acts as an acid (donates H⁺)."
-    },
-    {
-      q:"Mass percent: 10 g solute in 200 g solution.",
-      a:"% w/w = (10/200)·100% = 5%."
-    },
-    {
-      q:"Balance: H₂ + O₂ → H₂O",
-      a:"Balanced: 2H₂ + O₂ → 2H₂O."
-    }
+    { q:"How many moles in 18 g H₂O (M=18)?", a:"1 mol." },
+    { q:"Molarity: 5 g NaCl in 500 mL.", a:"≈0.17 M." },
+    { q:"pH of 0.01 M HCl.", a:"pH = 2." },
+    { q:"Identify acid/base: NH₃ + H₂O → NH₄⁺ + OH⁻", a:"NH₃ base, H₂O acid." },
+    { q:"Mass percent: 10 g in 200 g.", a:"5%." },
+    { q:"Balance: H₂ + O₂ → H₂O", a:"2H₂ + O₂ → 2H₂O." },
+    { q:"How many atoms in 2 mol of carbon?", a:"2·6.02×10²³ = 1.204×10²⁴ atoms." },
+    { q:"Moles in 44 g CO₂ (M=44)?", a:"1 mol." },
+    { q:"Oxidation state of O in H₂O₂?", a:"-1." },
+    { q:"Identify limiting reagent: 2H₂ + O₂ → 2H₂O, with 3 mol H₂ and 1 mol O₂.", a:"O₂ is limiting." }
   ]
 };
 
@@ -352,33 +279,21 @@ function looksLikeEquation(msg){
 }
 
 function solveLinearEquation(eqn){
-  // very simple: ax + b = c
-  // normalize: remove spaces
   let s = eqn.replace(/\s+/g,"");
   const parts = s.split("=");
   if (parts.length !== 2) return null;
   const left = parts[0];
   const right = parts[1];
-
-  // move everything to left: left - right = 0
-  // we only handle form ax + b = c
-  // try to extract a and b from left, c from right
-  // assume left like "ax+b" or "ax-b"
   const match = left.match(/([+-]?\d*)x([+-]\d+)?/i);
   if (!match) return null;
-
   let aStr = match[1];
   let bStr = match[2] || "+0";
-
   if (aStr === "" || aStr === "+") aStr = "1";
   if (aStr === "-") aStr = "-1";
-
   const a = parseFloat(aStr);
   const b = parseFloat(bStr);
   const c = parseFloat(right);
-
   if (isNaN(a) || isNaN(b) || isNaN(c) || a === 0) return null;
-
   const x = (c - b)/a;
   return {a,b,c,x};
 }
@@ -389,9 +304,7 @@ function looksLikeArithmetic(msg){
 
 function safeEval(expr){
   try{
-    // very basic safe eval: only numbers and operators
     if (!/^[0-9+\-*/().\s]+$/.test(expr)) return null;
-    // eslint-disable-next-line no-new-func
     const f = new Function("return ("+expr+")");
     return f();
   }catch{
@@ -399,7 +312,6 @@ function safeEval(expr){
   }
 }
 
-// --- Example selection ---
 function getRandomExample(subject){
   const arr = examples[subject];
   if (!arr || arr.length === 0) return null;
@@ -413,60 +325,51 @@ function novaRespond(raw){
 
   if (!msg) return "Give me something to chew on — a problem, an equation, anything.";
 
-  // name detection
   if (!userName && (lower.startsWith("i am ") || lower.startsWith("i'm "))){
-    userName = msg.split(" ").slice(2).join(" ") || "φίλε";
-    return `Χάρηκα, ${userName}. I’m best at solving problems in maths, physics and chemistry. Try giving me one.`;
+    userName = msg.split(" ").slice(2).join(" ") || "friend";
+    return `Nice to meet you, ${userName}. Give me a problem when you're ready.`;
   }
   if (!userName && lower.includes("my name is")){
-    userName = msg.split(/my name is/i)[1].trim() || "φίλε";
+    userName = msg.split(/my name is/i)[1].trim() || "friend";
     return `Nice to meet you, ${userName}. Throw me a problem when you’re ready.`;
   }
 
-  // ask for examples
-  if (lower.includes("example") || lower.includes("exercise") || lower.includes("askisi") || lower.includes("άσκηση")){
-    if (lower.includes("physics") || lower.includes("fysik") || lower.includes("φυσική")){
+  if (lower.includes("example") || lower.includes("exercise")){
+    if (lower.includes("physics")){
       const ex = getRandomExample("physics");
-      return ex ? `Physics example:\n\nQ: ${ex.q}\nA: ${ex.a}` : "I don’t have a physics example ready yet.";
+      return `Physics example:\n\nQ: ${ex.q}\nA: ${ex.a}`;
     }
-    if (lower.includes("chem") || lower.includes("χημεία")){
+    if (lower.includes("chem")){
       const ex = getRandomExample("chemistry");
-      return ex ? `Chemistry example:\n\nQ: ${ex.q}\nA: ${ex.a}` : "I don’t have a chemistry example ready yet.";
+      return `Chemistry example:\n\nQ: ${ex.q}\nA: ${ex.a}`;
     }
-    // default to math
     const ex = getRandomExample("math");
-    return ex ? `Math example:\n\nQ: ${ex.q}\nA: ${ex.a}` : "I don’t have a math example ready yet.";
+    return `Math example:\n\nQ: ${ex.q}\nA: ${ex.a}`;
   }
 
-  // explicit subject requests
-  if (lower.includes("math") || lower.includes("μαθηματικά")){
+  if (lower.includes("math")){
     const ex = getRandomExample("math");
-    return ex ? `Here’s a math example:\n\nQ: ${ex.q}\nA: ${ex.a}\n\nYou can also give me your own equation to solve.` 
-              : "I’m ready for math, just give me an equation.";
+    return `Here’s a math example:\n\nQ: ${ex.q}\nA: ${ex.a}`;
   }
-  if (lower.includes("physics") || lower.includes("φυσική")){
+  if (lower.includes("physics")){
     const ex = getRandomExample("physics");
-    return ex ? `Here’s a physics example:\n\nQ: ${ex.q}\nA: ${ex.a}` 
-              : "I’m ready for physics questions when you are.";
+    return `Here’s a physics example:\n\nQ: ${ex.q}\nA: ${ex.a}`;
   }
-  if (lower.includes("chemistry") || lower.includes("χημεία")){
+  if (lower.includes("chemistry")){
     const ex = getRandomExample("chemistry");
-    return ex ? `Here’s a chemistry example:\n\nQ: ${ex.q}\nA: ${ex.a}` 
-              : "I’m ready for chemistry questions when you are.";
+    return `Here’s a chemistry example:\n\nQ: ${ex.q}\nA: ${ex.a}`;
   }
 
-  // equation solving
   if (looksLikeEquation(msg)){
     const sol = solveLinearEquation(msg);
     if (sol){
       lastMathProblem = msg;
       return `Let’s solve: ${msg}\n\nWe have a = ${sol.a}, b = ${sol.b}, c = ${sol.c}.\nSo  ${sol.a}x + ${sol.b} = ${sol.c} ⇒ ${sol.a}x = ${sol.c - sol.b} ⇒ x = ${(sol.c - sol.b)}/${sol.a} = ${sol.x}.`;
     }else{
-      return "That looks like an equation, but it’s a bit more complex than my simple linear solver. You can still ask me for examples in maths, physics or chemistry.";
+      return "That looks like an equation, but it’s too complex for my simple solver.";
     }
   }
 
-  // arithmetic
   if (looksLikeArithmetic(msg)){
     const val = safeEval(msg);
     if (val !== null){
@@ -475,29 +378,26 @@ function novaRespond(raw){
     }
   }
 
-  // if user gives a number after a problem
   if (!isNaN(parseFloat(msg)) && lastMathProblem){
-    return `If that number is your answer to “${lastMathProblem}”, tell me the full equation so I can check it properly.`;
+    return `If that number is your answer to “${lastMathProblem}”, tell me the full equation so I can check it.`;
   }
 
-  // emotional / general
-  if (["sad","upset","tired","stressed","frustrated","αγχωμένος","αγχωμενος","κουρασμένος"].some(w => lower.includes(w))){
-    return "Okay, pause. You’re allowed to feel like that. If you want, give me a problem and I’ll handle the thinking part for a bit.";
+  if (["sad","upset","tired","stressed","frustrated"].some(w => lower.includes(w))){
+    return "It's okay to feel like that. Give me a problem and I’ll handle the thinking for a bit.";
   }
 
-  // chat requests
-  if (lower.includes("chat") || lower.includes("talk") || lower.includes("συζήτηση")){
+  if (lower.includes("chat") || lower.includes("talk")){
     mode = "chat";
-    return "We can chat a bit, but remember: my superpower is solving problems. Whenever you’re ready, just drop one in.";
+    return "We can chat a bit, but my superpower is solving problems.";
   }
 
-  // default: gently push back to problems
   if (mode === "math-first"){
-    return "I love that you’re talking to me. Now give me something to solve — maths, physics, chemistry, whatever you’re working on.";
-  }else{
+    return "I love that you're talking to me. Now give me something to solve — maths, physics, chemistry, anything.";
+  } else {
     return "I’m listening. And whenever you want, we can jump back into problems.";
   }
 }
+</script>
 
 <script>
 // --- Wiring UI ---
@@ -516,7 +416,6 @@ inputEl.addEventListener("keydown", e => {
 });
 </script>
 
-<!-- greeting -->
 <script>
 addMessage(
   "Hey, I’m Nova 💜🧪.\nI’m built to help with maths, physics and chemistry — especially of higher level.\nTry giving me an equation like “2x - 5 = 11” or say “example physics”.",
@@ -524,15 +423,5 @@ addMessage(
 );
 </script>
 
-<!-- MENU SCRIPT -->
 <script>
-const menuBtn = document.getElementById("menu-btn");
-const sidebar = document.getElementById("sidebar");
-
-menuBtn.addEventListener("click", () => {
-    sidebar.classList.toggle("open");
-});
-</script>
-
-</body>
-</html>
+const menuBtn = document
