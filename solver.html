@@ -155,7 +155,45 @@
     <button onclick="clearCalc()" class="clear-btn">Clear</button>
   </div>
 </section>
+<section id="unitConverter">
+  <h2>Ultimate Unit Converter</h2>
 
+  <label>Category:</label>
+  <select id="category" onchange="loadUnits()">
+    <option value="">Select category</option>
+    <option value="length">Length</option>
+    <option value="mass">Mass</option>
+    <option value="time">Time</option>
+    <option value="temperature">Temperature</option>
+    <option value="area">Area</option>
+    <option value="volume">Volume</option>
+    <option value="speed">Speed</option>
+    <option value="energy">Energy</option>
+    <option value="pressure">Pressure</option>
+    <option value="force">Force</option>
+    <option value="density">Density</option>
+    <option value="electricity">Electricity</option>
+    <option value="chemistry">Chemistry</option>
+  </select>
+
+  <div id="chemistryInputs" style="display:none;">
+    <label>Molar Mass (g/mol):</label>
+    <input type="number" id="molarMass" placeholder="e.g. 58.44 for NaCl">
+  </div>
+
+  <label>From:</label>
+  <select id="fromUnit"></select>
+
+  <label>To:</label>
+  <select id="toUnit"></select>
+
+  <input type="number" id="convertInput" placeholder="Enter value">
+
+  <button onclick="convert()">Convert</button>
+
+  <p id="convertResult"></p>
+  </section>
+  
 <!-- FORMULA BOOK -->
 <section id="formulaBook">
   <h2>Formula Book</h2>
