@@ -21,17 +21,17 @@
     box-shadow: 0 6px 16px rgba(0,0,0,0.12);
 }
 
-/* SIDEBAR (HIDDEN UNTIL OPENED) */
+/* SIDEBAR — COMPLETELY HIDDEN WHEN CLOSED */
 #sidebar {
     position: fixed;
     top: 0;
-    left: -260px; /* fully hidden */
+    left: -300px; /* fully off-screen, no strip visible */
     width: 260px;
     height: 100%;
     background: rgba(255,255,255,0.92);
     backdrop-filter: blur(14px);
     padding: 40px 20px;
-    transition: left 0.3s ease;
+    transition: left 0.35s ease;
     z-index: 9998;
     text-align: center;
     overflow-y: auto;
@@ -76,7 +76,10 @@ body{
     flex-direction:column;
     height:100vh;
 }
-header{
+
+/* FIX: push chat down so button never covers messages */
+header {
+    margin-top: 80px; /* ensures chat starts below menu button */
     padding:10px 16px;
     background:rgba(255,255,255,0.7);
     backdrop-filter:blur(10px);
@@ -85,6 +88,7 @@ header{
     align-items:center;
     gap:10px;
 }
+
 .nova-avatar{
     width:36px;
     height:36px;
@@ -202,7 +206,7 @@ fetch("menu.html")
 </div>
 
 <script>
-/* CHATBOT LOGIC */
+/* CHATBOT LOGIC — unchanged */
 const chatEl = document.getElementById("chat");
 const inputEl = document.getElementById("userInput");
 const sendBtn = document.getElementById("sendBtn");
