@@ -499,6 +499,7 @@ function novaRespond(raw){
   }
 }
 
+<script>
 // --- Wiring UI ---
 function handleSend(){
   const text = inputEl.value.trim();
@@ -513,6 +514,7 @@ sendBtn.addEventListener("click", handleSend);
 inputEl.addEventListener("keydown", e => {
   if (e.key === "Enter") handleSend();
 });
+</script>
 
 <!-- greeting -->
 <script>
@@ -530,13 +532,6 @@ const sidebar = document.getElementById("sidebar");
 menuBtn.addEventListener("click", () => {
     sidebar.classList.toggle("open");
 });
-</script>
-
-<!-- SERVICE WORKER (if you added it) -->
-<script>
-if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("/service-worker.js");
-}
 </script>
 
 </body>
