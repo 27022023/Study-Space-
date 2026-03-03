@@ -422,4 +422,32 @@ function novaRespond(raw){
 function formatExample(subject){
   const ex = getExample(subject);
   return `${subject[0].toUpperCase()+subject.slice(1)} example:\n
-  
+}
+
+/* SEND HANDLER */
+function handleSend(){
+  const text = inputEl.value.trim();
+  if (!text) return;
+
+  addMessage(text,"user");
+  inputEl.value = "";
+
+  const reply = novaRespond(text);
+  setTimeout(() => addMessage(reply,"nova"), 120);
+}
+
+sendBtn.addEventListener("click", handleSend);
+inputEl.addEventListener("keydown", e => {
+  if (e.key === "Enter") handleSend();
+});
+
+/* GREETING */
+addMessage(
+  "Hey, I’m Nova 💜🧪.\nI’m here for maths, physics, chemistry — and if you just want to talk, that’s okay too.\nTry something like “2x - 5 = 11”, “x^2 - 5x + 6 = 0”, or “I feel stressed”.",
+  "nova"
+);
+</script>
+
+</body>
+</html>
+
