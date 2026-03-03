@@ -6,60 +6,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-/* MENU BUTTON */
-#menu-btn {
-    position: fixed;
-    top: 20px;
-    left: 20px;
-    width: 55px;
-    height: 55px;
-    border-radius: 50%;
-    background: white;
-    border: none;
-    cursor: pointer;
-    z-index: 9999;
-    box-shadow: 0 6px 16px rgba(0,0,0,0.12);
-}
-
-/* SIDEBAR — COMPLETELY HIDDEN WHEN CLOSED */
-#sidebar {
-    position: fixed;
-    top: 0;
-    left: -300px; /* fully off-screen, no strip visible */
-    width: 260px;
-    height: 100%;
-    background: rgba(255,255,255,0.92);
-    backdrop-filter: blur(14px);
-    padding: 40px 20px;
-    transition: left 0.35s ease;
-    z-index: 9998;
-    text-align: center;
-    overflow-y: auto;
-}
-
-/* WHEN OPEN */
-#sidebar.open {
-    left: 0;
-}
-
-/* MENU LINKS */
-#sidebar nav a {
-    display: block;
-    margin: 14px 0;
-    padding: 10px 12px;
-    text-decoration: none;
-    color: #333;
-    font-size: 18px;
-    border-radius: 10px;
-    transition: background 0.2s ease, transform 0.15s ease;
-}
-
-#sidebar nav a:hover {
-    background: #e8d9ff;
-    transform: translateX(6px);
-}
-
-/* CHATBOT UI */
 :root{
     --bg1:#e8d9ff;
     --bg2:#d7eaff;
@@ -67,6 +13,7 @@
     --user-bubble:#c9f2ff;
     --text-main:#1e1e2e;
 }
+
 body{
     margin:0;
     font-family:system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -77,90 +24,101 @@ body{
     height:100vh;
 }
 
-/* FIX: push chat down so button never covers messages */
-header {
-    margin-top: 80px; /* ensures chat starts below menu button */
-    padding:10px 16px;
+header{
+    padding:14px 16px;
     background:rgba(255,255,255,0.7);
     backdrop-filter:blur(10px);
     border-bottom:1px solid rgba(0,0,0,0.05);
     display:flex;
     align-items:center;
-    gap:10px;
+    gap:12px;
 }
 
 .nova-avatar{
-    width:36px;
-    height:36px;
+    width:40px;
+    height:40px;
     border-radius:50%;
     background:radial-gradient(circle at 30% 30%, #a855f7, #6366f1);
     display:flex;
     align-items:center;
     justify-content:center;
-    font-size:20px;
+    font-size:22px;
 }
+
 .title{
     font-weight:700;
-    font-size:16px;
+    font-size:18px;
 }
+
 .subtitle{
     font-size:12px;
     color:#4b5563;
 }
+
 #chat{
     flex:1;
-    padding:12px;
+    padding:14px;
     overflow-y:auto;
 }
+
 .msg{
     max-width:80%;
-    margin:6px 0;
-    padding:8px 12px;
+    margin:8px 0;
+    padding:10px 14px;
     border-radius:12px;
-    font-size:14px;
-    line-height:1.4;
+    font-size:15px;
+    line-height:1.45;
     white-space:pre-wrap;
 }
+
 .nova{
     background:var(--nova-bubble);
     margin-right:auto;
     border-bottom-left-radius:4px;
 }
+
 .user{
     background:var(--user-bubble);
     margin-left:auto;
     border-bottom-right-radius:4px;
 }
+
 #inputBar{
     display:flex;
-    padding:8px;
+    padding:10px;
     background:rgba(255,255,255,0.7);
     backdrop-filter:blur(10px);
     border-top:1px solid rgba(0,0,0,0.05);
-    gap:8px;
+    gap:10px;
 }
+
 #userInput{
     flex:1;
-    padding:8px;
+    padding:10px;
     border-radius:8px;
     border:1px solid rgba(148,163,184,0.8);
-    background:rgba(255,255,255,0.8);
+    background:rgba(255,255,255,0.85);
     color:var(--text-main);
+    font-size:15px;
 }
+
 #sendBtn{
-    padding:8px 14px;
+    padding:10px 16px;
     border-radius:8px;
     border:none;
     background:#a855f7;
     color:white;
     font-weight:600;
     cursor:pointer;
+    font-size:15px;
 }
+
 #sendBtn:hover{
     background:#8b5cf6;
 }
+
 .hint{
-    font-size:11px;
+    font-size:12px;
     color:#6b7280;
     padding:0 14px 6px;
 }
@@ -169,53 +127,47 @@ header {
 
 <body>
 
-<!-- LOAD MENU -->
-<div id="menu-container"></div>
-<script>
-fetch("menu.html")
-  .then(res => res.text())
-  .then(html => {
-    document.getElementById("menu-container").innerHTML = html;
-
-    const menuBtn = document.getElementById("menu-btn");
-    const sidebar = document.getElementById("sidebar");
-
-    menuBtn.addEventListener("click", () => {
-        sidebar.classList.toggle("open");
-    });
-  });
-</script>
-
 <header>
   <div class="nova-avatar">🤖</div>
   <div>
     <div class="title">Nova</div>
-    <div class="subtitle">Pastel study buddy – Maths • Physics • Chemistry</div>
+    <div class="subtitle">Maths • Physics • Chemistry • Emotions</div>
   </div>
 </header>
 
 <div class="hint">
-  Try things like: “2x - 5 = 11”, “example physics”, “example chemistry”.
+  Try: “2x - 5 = 11”, “x^2 - 5x + 6 = 0”, “2x+y=7\nx-y=1”, “I am sad”.
 </div>
 
 <div id="chat"></div>
 
 <div id="inputBar">
-  <input id="userInput" type="text" placeholder="Give Nova a problem..." autocomplete="off">
+  <input id="userInput" type="text" placeholder="Talk to Nova..." autocomplete="off">
   <button id="sendBtn">Send</button>
 </div>
 
 <script>
-/* CHATBOT LOGIC — unchanged */
+/* CORE CHATBOT LOGIC */
 const chatEl = document.getElementById("chat");
 const inputEl = document.getElementById("userInput");
 const sendBtn = document.getElementById("sendBtn");
 
 let userName = null;
-let mode = "math-first";
 let lastMathProblem = null;
 
-/* EXAMPLES (10 EACH) */
+/* EMOTION RESPONSES */
+const emotionResponses = {
+  sad: "I'm really sorry you're feeling sad. You deserve care and support. If you want to talk about what's making you feel this way, I'm here to listen.",
+  happy: "I'm glad you're feeling happy! That’s wonderful. What made your day better?",
+  angry: "It sounds like something upset you. That can be tough. If you want to talk it through, I’m here.",
+  stressed: "Feeling stressed can be overwhelming. You’re not alone with that. Want to tell me what’s been weighing on you?",
+  tired: "It makes sense to feel tired sometimes. I hope you can rest soon — you deserve it.",
+  lonely: "Feeling lonely can be really hard. You’re not alone here. Want to talk about it?",
+  anxious: "Anxiety can feel intense. You’re not doing anything wrong by feeling this way. If you want to share what’s worrying you, I’m here.",
+  bored: "Boredom happens. Want a fun math or science challenge?"
+};
+
+/* FULL ORIGINAL EXAMPLES */
 const examples = {
   math: [
     { q:"Solve the equation: 2x - 5 = 11", a:"x = 8." },
@@ -247,7 +199,7 @@ const examples = {
     { q:"Moles in 18g H₂O?", a:"1 mol." },
     { q:"Molarity of 5g NaCl in 500mL?", a:"≈0.17 M." },
     { q:"pH of 0.01M HCl?", a:"pH = 2." },
-    { q:"NH₃ + H₂O → NH₄⁺ + OH⁻: identify acid/base", a:"NH₃ base, H₂O acid." },
+    { q:"NH₃ + H₂O → NH₄⁺ + OH⁻", a:"NH₃ is base, H₂O is acid." },
     { q:"Mass percent: 10g in 200g?", a:"5%." },
     { q:"Balance H₂ + O₂ → H₂O", a:"2H₂ + O₂ → 2H₂O." },
     { q:"Atoms in 2 mol C?", a:"1.204×10²⁴ atoms." },
@@ -266,128 +218,208 @@ function addMessage(text, from="nova"){
   chatEl.scrollTop = chatEl.scrollHeight;
 }
 
-/* Equation helpers */
-function looksLikeEquation(msg){
-  return msg.includes("=") && /[0-9x]/i.test(msg);
+/* Emotion detection */
+function detectEmotion(text){
+  const t = text.toLowerCase();
+  if (t.includes("sad") || t.includes("down")) return "sad";
+  if (t.includes("happy") || t.includes("glad")) return "happy";
+  if (t.includes("angry") || t.includes("mad")) return "angry";
+  if (t.includes("stress")) return "stressed";
+  if (t.includes("tired")) return "tired";
+  if (t.includes("lonely")) return "lonely";
+  if (t.includes("anxious") || t.includes("worried")) return "anxious";
+  if (t.includes("bored")) return "bored";
+  return null;
 }
 
+/* QUADRATIC DETECTION */
+function looksLikeQuadratic(msg){
+  return msg.replace(/\s+/g,"").includes("x^2");
+}
+
+/* QUADRATIC SOLVER — STYLE C */
+function solveQuadratic(eqn){
+  let s = eqn.replace(/\s+/g,"").replace(/-/g,"+-");
+  if (s[0] === "+") s = s.slice(1);
+
+  const m = s.match(/([+-]?\d*)x\^2([+-]?\d*)x([+-]?\d+)=0/);
+  if (!m) return null;
+
+  let a = m[1] === "" || m[1] === "+" ? 1 : (m[1] === "-" ? -1 : parseFloat(m[1]));
+  let b = m[2] === "" || m[2] === "+" ? 1 : (m[2] === "-" ? -1 : parseFloat(m[2]));
+  let c = parseFloat(m[3]);
+
+  const D = b*b - 4*a*c;
+
+  if (D > 0){
+    return {
+      type:"real",
+      x1:(-b + Math.sqrt(D)) / (2*a),
+      x2:(-b - Math.sqrt(D)) / (2*a),
+      D
+    };
+  }
+  if (D === 0){
+    return { type:"double", x:(-b)/(2*a), D };
+  }
+  return {
+    type:"complex",
+    real:(-b)/(2*a),
+    imag:Math.sqrt(-D)/(2*a),
+    D
+  };
+}
+
+/* SYSTEM DETECTION */
+function looksLikeSystem(msg){
+  return msg.includes("\n") && msg.includes("x") && msg.includes("y");
+}
+
+/* SYSTEM SOLVER — STYLE C */
+function solveSystem(text){
+  const lines = text.split("\n").map(l => l.replace(/\s+/g,""));
+  if (lines.length !== 2) return null;
+
+  function parseEq(eq){
+    const m = eq.match(/([+-]?\d*)x([+-]?\d*)y=([+-]?\d+)/);
+    if (!m) return null;
+
+    let a = m[1] === "" || m[1] === "+" ? 1 : (m[1] === "-" ? -1 : parseFloat(m[1]));
+    let b = m[2] === "" || m[2] === "+" ? 1 : (m[2] === "-" ? -1 : parseFloat(m[2]));
+    let c = parseFloat(m[3]);
+
+    return {a,b,c};
+  }
+
+  const e1 = parseEq(lines[0]);
+  const e2 = parseEq(lines[1]);
+  if (!e1 || !e2) return null;
+
+  const det = e1.a*e2.b - e2.a*e1.b;
+  if (det === 0) return null;
+
+  const x = (e1.c*e2.b - e2.c*e1.b) / det;
+  const y = (e1.a*e2.c - e2.a*e1.c) / det;
+
+  return {x,y};
+}
+
+/* LINEAR EQUATION DETECTION */
+function looksLikeEquation(msg){
+  return msg.includes("=") && msg.includes("x") && !looksLikeQuadratic(msg);
+}
+
+/* LINEAR SOLVER */
 function solveLinearEquation(eqn){
   let s = eqn.replace(/\s+/g,"");
   const parts = s.split("=");
   if (parts.length !== 2) return null;
+
   const left = parts[0];
   const right = parts[1];
-  const match = left.match(/([+-]?\d*)x([+-]\d+)?/i);
-  if (!match) return null;
-  let aStr = match[1];
-  let bStr = match[2] || "+0";
-  if (aStr === "" || aStr === "+") aStr = "1";
-  if (aStr === "-") aStr = "-1";
-  const a = parseFloat(aStr);
-  const b = parseFloat(bStr);
-  const c = parseFloat(right);
-  if (isNaN(a) || isNaN(b) || isNaN(c) || a === 0) return null;
-  const x = (c - b)/a;
-  return {a,b,c,x};
+
+  const m = left.match(/([+-]?\d*)x([+-]?\d+)?/);
+  if (!m) return null;
+
+  let a = m[1] === "" || m[1] === "+" ? 1 : (m[1] === "-" ? -1 : parseFloat(m[1]));
+  let b = m[2] ? parseFloat(m[2]) : 0;
+  let c = parseFloat(right);
+
+  if (isNaN(a) || isNaN(b) || isNaN(c)) return null;
+
+  return { x:(c - b)/a };
 }
 
+/* ARITHMETIC */
 function looksLikeArithmetic(msg){
   return /^[0-9+\-*/().\s]+$/.test(msg);
 }
 
 function safeEval(expr){
   try{
-    if (!/^[0-9+\-*/().\s]+$/.test(expr)) return null;
-    const f = new Function("return ("+expr+")");
-    return f();
+    if (!looksLikeArithmetic(expr)) return null;
+    return Function("return ("+expr+")")();
   }catch{
     return null;
   }
 }
 
-function getRandomExample(subject){
+/* EXAMPLE PICKER */
+function getExample(subject){
   const arr = examples[subject];
   return arr[Math.floor(Math.random()*arr.length)];
 }
 
-/* Nova brain */
+/* MAIN BRAIN */
 function novaRespond(raw){
   const msg = raw.trim();
   const lower = msg.toLowerCase();
 
   if (!msg) return "Give me something to chew on — a problem, an equation, anything.";
 
+  /* Emotion */
+  const emo = detectEmotion(msg);
+  if (emo) return emotionResponses[emo];
+
+  /* Name */
   if (!userName && (lower.startsWith("i am ") || lower.startsWith("i'm "))){
     userName = msg.split(" ").slice(2).join(" ") || "friend";
-    return `Nice to meet you, ${userName}. Give me a problem when you're ready.`;
-  }
-  if (!userName && lower.includes("my name is")){
-    userName = msg.split(/my name is/i)[1].trim() || "friend";
-    return `Nice to meet you, ${userName}. Throw me a problem when you’re ready.`;
+    return `Nice to meet you, ${userName}. Want to try a problem?`;
   }
 
+  if (!userName && lower.includes("my name is")){
+    userName = msg.split(/my name is/i)[1].trim() || "friend";
+    return `Nice to meet you, ${userName}. What should we work on today?`;
+  }
+
+  /* Examples */
   if (lower.includes("example")){
     if (lower.includes("physics")) return formatExample("physics");
     if (lower.includes("chem")) return formatExample("chemistry");
     return formatExample("math");
   }
 
-  if (lower.includes("math")) return formatExample("math");
-  if (lower.includes("physics")) return formatExample("physics");
-  if (lower.includes("chemistry")) return formatExample("chemistry");
+  /* Quadratic */
+  if (looksLikeQuadratic(msg)){
+    const sol = solveQuadratic(msg);
+    if (!sol) return "I tried to read that quadratic, but something didn’t match the pattern.";
 
-  if (looksLikeEquation(msg)){
-    const sol = solveLinearEquation(msg);
-    if (sol){
-      lastMathProblem = msg;
-      return `Let’s solve: ${msg}\n\nx = ${sol.x}`;
-    }
-    return "That looks like an equation, but it’s too complex for my simple solver.";
+    if (sol.type === "real")
+      return `Okay! Let’s solve this 💜\n\nThe discriminant is **${sol.D}**, which means we get two real roots:\n• x₁ = ${sol.x1}\n• x₂ = ${sol.x2}`;
+
+    if (sol.type === "double")
+      return `Cute! This one has a double root 💜\n\nThe discriminant is **${sol.D}**, so:\n• x = ${sol.x}`;
+
+    return `This one has complex roots ✨\n\nThe discriminant is **${sol.D}**, so:\n• x₁ = ${sol.real} + ${sol.imag}i\n• x₂ = ${sol.real} - ${sol.imag}i`;
   }
 
+  /* System */
+  if (looksLikeSystem(msg)){
+    const sol = solveSystem(msg);
+    if (!sol) return "I couldn't solve that system — maybe check the format?";
+
+    return `Let’s solve this system together 💜\n\nUsing elimination, we get:\n• x = ${sol.x}\n• y = ${sol.y}`;
+  }
+
+  /* Linear */
+  if (looksLikeEquation(msg)){
+    const sol = solveLinearEquation(msg);
+    if (!sol) return "That looks like an equation, but I couldn’t parse it.";
+    return `Let’s solve this 💜\n\n• x = ${sol.x}`;
+  }
+
+  /* Arithmetic */
   if (looksLikeArithmetic(msg)){
     const val = safeEval(msg);
     if (val !== null){
-      lastMathProblem = msg;
-      return `${msg} = ${val}`;
+      return `Crunching the numbers… ✨\n\n${msg} = ${val}`;
     }
   }
 
-  if (!isNaN(parseFloat(msg)) && lastMathProblem){
-    return `If that number is your answer to “${lastMathProblem}”, tell me the full equation so I can check it.`;
-  }
-
-  return "I love that you're talking to me. Now give me something to solve — maths, physics, chemistry, anything.";
+  return "I love that you're talking to me. Want to try a maths, physics, or chemistry problem?";
 }
 
 function formatExample(subject){
-  const ex = getRandomExample(subject);
-  return `${subject[0].toUpperCase()+subject.slice(1)} example:\n\nQ: ${ex.q}\nA: ${ex.a}`;
-}
-</script>
-
-<script>
-function handleSend(){
-  const text = inputEl.value.trim();
-  if (!text) return;
-  addMessage(text,"user");
-  inputEl.value = "";
-  const reply = novaRespond(text);
-  setTimeout(() => addMessage(reply,"nova"), 120);
-}
-
-sendBtn.addEventListener("click", handleSend);
-inputEl.addEventListener("keydown", e => {
-  if (e.key === "Enter") handleSend();
-});
-</script>
-
-<script>
-addMessage(
-  "Hey, I’m Nova 💜🧪.\nI’m built to help with maths, physics and chemistry.\nTry giving me an equation like “2x - 5 = 11”.",
-  "nova"
-);
-</script>
-
-</body>
-</html>
+  const ex = getExample(subject);
+  return `${subject[0].toUpperCase()+subject.slice(1)} example:\n
+  
