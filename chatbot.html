@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-/* MENU STYLES */
+/* MENU BUTTON */
 #menu-btn {
     position: fixed;
     top: 20px;
@@ -21,21 +21,42 @@
     box-shadow: 0 6px 16px rgba(0,0,0,0.12);
 }
 
+/* SIDEBAR (HIDDEN UNTIL OPENED) */
 #sidebar {
     position: fixed;
     top: 0;
-    left: -260px;
+    left: -260px; /* fully hidden */
     width: 260px;
     height: 100%;
-    background: rgba(255,255,255,0.85);
+    background: rgba(255,255,255,0.92);
     backdrop-filter: blur(14px);
     padding: 40px 20px;
     transition: left 0.3s ease;
     z-index: 9998;
+    text-align: center;
+    overflow-y: auto;
 }
 
+/* WHEN OPEN */
 #sidebar.open {
     left: 0;
+}
+
+/* MENU LINKS */
+#sidebar nav a {
+    display: block;
+    margin: 14px 0;
+    padding: 10px 12px;
+    text-decoration: none;
+    color: #333;
+    font-size: 18px;
+    border-radius: 10px;
+    transition: background 0.2s ease, transform 0.15s ease;
+}
+
+#sidebar nav a:hover {
+    background: #e8d9ff;
+    transform: translateX(6px);
 }
 
 /* CHATBOT UI */
@@ -152,7 +173,6 @@ fetch("menu.html")
   .then(html => {
     document.getElementById("menu-container").innerHTML = html;
 
-    // Attach menu logic AFTER loading
     const menuBtn = document.getElementById("menu-btn");
     const sidebar = document.getElementById("sidebar");
 
