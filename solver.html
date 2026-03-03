@@ -555,6 +555,86 @@ function calculate() {
   }
 }
 </script>
+<script>
+const units = {
+  length: { m:1, cm:100, mm:1000, km:0.001, inch:39.37, ft:3.28, mile:0.000621 },
+  mass: { g:1, kg:0.001, mg:1000, lb:0.002204, oz:0.03527 },
+  time: { sec:1, min:1/60, hr:1/3600, day:1/86400 },
+  area: { m2:1, cm2:10000, km2:0.000001, ft2:10.7639 },
+  volume: { L:1, mL:1000, m3:0.001, gallon:0.264172 },
+  speed: { "m/s":1, "km/h":3.6, "mph":2.23694 },
+  energy: { J:1, kJ:0.001, cal:0.239006, kcal:0.000239 },
+  pressure: { Pa:1, kPa:0.001, bar:0.00001, atm:0.000009869, mmHg:0.0075006 },
+  force: { N:1, kN:0.001, dyn:100000 },
+  density: { "kg/m3":1, "g/cm3":0.001 },
+  electricity: { C:1, mC:1000, uC:1000000, kWh:0.000000277 },
+  chemistry: { g:1, mol:1, mmol:1000, umol:1000000 }
+};
 
+function loadUnits() {
+  const category = document.getElementById("category").value;
+  const from = document.getElementById("fromUnit");
+  const to = document.getElementById("toUnit");
+  const chemBox = document.getElementById("chemistryInputs");
+
+  from.innerHTML = "";
+  to.innerHTML = "";
+
+  chemBox.style.display = category === "chemistry" ? "block" : "none";
+
+  if (!category) return;
+
+  Object.keys(units[category]).forEach(u => {
+    from.innerHTML += `<option value="${u}">${u}</option>`;
+    to.innerHTML += `<option value="${u}">${u}</option>`;
+  });
+}
+
+function convert() {
+  const category = document.getElementById("category").value;
+  const from = document.getElementById("fromUnit").value;
+  const to = document.getElementById("toUnit").value;
+  const value = parseFloat(document.getElementById("convertInput").value);
+  const resultEl = document.getElementById("convertResult");
+
+  if (isNaN(value)) {
+    resultEl.textContent = "Enter a valid number.";
+    return;
+  }
+
+  if (category === "temperature") {
+    let result;
+    if (from === "C" && to === "F") result = (value * 9/5) + 32;
+    if (from === "F" && to === "C") result = (value - 32) * 5/9;
+    if (from === "C" && to === "K") result = value + 273.15;
+    if (from === "K" && to === "C") result = value - 273.15;
+    resultEl.textContent = `${value} ${from} = ${result} ${to}`;
+    return;
+  }
+
+  if (category === "chemistry") {
+    const molarMass = parseFloat(document.getElementById("molarMass").value);
+    if (isNaN(molarMass)) {
+      resultEl.textContent = "Enter molar mass.";
+      return;
+    }
+
+    let result;
+    if (from === "g" && to === "mol") result = value / molarMass;
+    if (from === "mol" && to === "g") result = value * molarMass;
+    if (from === "mmol" && to === "mol") result = value / 1000;
+    if (from === "mol" && to === "mmol") result = value * 1000;
+
+    resultEl.textContent = `${value} ${from} = ${result} ${to}`;
+    return;
+  }
+
+  const base = value * units[category][from];
+  const result = base / units[category][to];
+
+  resultEl.textContent = `${value} ${from} = ${result} ${to}`;
+}
+    </script>
+  
 </body>
   </html>
