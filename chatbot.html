@@ -522,6 +522,7 @@ addMessage(
 );
 </script>
 
+<!-- MENU SCRIPT -->
 <script>
 const menuBtn = document.getElementById("menu-btn");
 const sidebar = document.getElementById("sidebar");
@@ -529,6 +530,13 @@ const sidebar = document.getElementById("sidebar");
 menuBtn.addEventListener("click", () => {
     sidebar.classList.toggle("open");
 });
+</script>
+
+<!-- SERVICE WORKER (if you added it) -->
+<script>
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("/service-worker.js");
+}
 </script>
 
 </body>
