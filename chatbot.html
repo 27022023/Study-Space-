@@ -153,7 +153,6 @@ const inputEl = document.getElementById("userInput");
 const sendBtn = document.getElementById("sendBtn");
 
 let userName = null;
-let lastMathProblem = null;
 
 /* EMOTION RESPONSES */
 const emotionResponses = {
@@ -237,17 +236,52 @@ function looksLikeQuadratic(msg){
   return msg.replace(/\s+/g,"").includes("x^2");
 }
 
-/* QUADRATIC SOLVER — STYLE C */
+/* QUADRATIC SOLVER — Style C, expects ax^2+bx+c=0 */
 function solveQuadratic(eqn){
-  let s = eqn.replace(/\s+/g,"").replace(/-/g,"+-");
-  if (s[0] === "+") s = s.slice(1);
+  let s = eqn.replace(/\s+/g,"");
+  if (!s.includes("=")) return null;
 
-  const m = s.match(/([+-]?\d*)x\^2([+-]?\d*)x([+-]?\d+)=0/);
-  if (!m) return null;
+  const parts = s.split("=");
+  let left = parts[0];
+  let right = parts[1];
 
-  let a = m[1] === "" || m[1] === "+" ? 1 : (m[1] === "-" ? -1 : parseFloat(m[1]));
-  let b = m[2] === "" || m[2] === "+" ? 1 : (m[2] === "-" ? -1 : parseFloat(m[2]));
-  let c = parseFloat(m[3]);
+  // move everything to left: left - right = 0
+  if (right !== "0"){
+    // only handle pure constant on right for simplicity
+    if (!/^[+-]?\d+(\.\d+)?$/.test(right)) return null;
+    const k = parseFloat(right);
+    left = left + (k >= 0 ? `-${k}` : `+${Math.abs(k)}`);
+  }
+
+  left = left.replace(/-/g,"+-");
+  if (left[0] === "+") left = left.slice(1);
+
+  const aMatch = left.match(/([+-]?\d*)x\^2/);
+  const bMatch = left.match(/([+-]?\d*)x(?!\^2)/);
+  const cMatch = left.replace(/([+-]?\d*)x\^2/,"").replace(/([+-]?\d*)x(?!\^2)/,"");
+
+  if (!aMatch) return null;
+
+  let aStr = aMatch[1];
+  if (aStr === "" || aStr === "+") aStr = "1";
+  if (aStr === "-") aStr = "-1";
+  const a = parseFloat(aStr);
+
+  let b = 0;
+  if (bMatch){
+    let bStr = bMatch[1];
+    if (bStr === "" || bStr === "+") bStr = "1";
+    if (bStr === "-") bStr = "-1";
+    b = parseFloat(bStr);
+  }
+
+  let c = 0;
+  if (cMatch && cMatch.trim() !== ""){
+    const partsC = cMatch.split("+").filter(Boolean);
+    c = partsC.reduce((sum, term) => sum + parseFloat(term), 0);
+  }
+
+  if (isNaN(a) || isNaN(b) || isNaN(c) || a === 0) return null;
 
   const D = b*b - 4*a*c;
 
@@ -275,13 +309,13 @@ function looksLikeSystem(msg){
   return msg.includes("\n") && msg.includes("x") && msg.includes("y");
 }
 
-/* SYSTEM SOLVER — STYLE C */
+/* SYSTEM SOLVER — Style C, expects ax+by=c form on each line */
 function solveSystem(text){
   const lines = text.split("\n").map(l => l.replace(/\s+/g,""));
   if (lines.length !== 2) return null;
 
   function parseEq(eq){
-    const m = eq.match(/([+-]?\d*)x([+-]?\d*)y=([+-]?\d+)/);
+    const m = eq.match(/([+-]?\d*)x([+-]?\d*)y=([+-]?\d+(\.\d+)?)/);
     if (!m) return null;
 
     let a = m[1] === "" || m[1] === "+" ? 1 : (m[1] === "-" ? -1 : parseFloat(m[1]));
@@ -306,10 +340,10 @@ function solveSystem(text){
 
 /* LINEAR EQUATION DETECTION */
 function looksLikeEquation(msg){
-  return msg.includes("=") && msg.includes("x") && !looksLikeQuadratic(msg);
+  return msg.includes("=") && msg.includes("x") && !looksLikeQuadratic(msg) && !looksLikeSystem(msg);
 }
 
-/* LINEAR SOLVER */
+/* LINEAR SOLVER: ax + b = c */
 function solveLinearEquation(eqn){
   let s = eqn.replace(/\s+/g,"");
   const parts = s.split("=");
@@ -321,11 +355,15 @@ function solveLinearEquation(eqn){
   const m = left.match(/([+-]?\d*)x([+-]?\d+)?/);
   if (!m) return null;
 
-  let a = m[1] === "" || m[1] === "+" ? 1 : (m[1] === "-" ? -1 : parseFloat(m[1]));
-  let b = m[2] ? parseFloat(m[2]) : 0;
-  let c = parseFloat(right);
+  let aStr = m[1];
+  if (aStr === "" || aStr === "+") aStr = "1";
+  if (aStr === "-") aStr = "-1";
+  const a = parseFloat(aStr);
 
-  if (isNaN(a) || isNaN(b) || isNaN(c)) return null;
+  const b = m[2] ? parseFloat(m[2]) : 0;
+  const c = parseFloat(right);
+
+  if (isNaN(a) || isNaN(b) || isNaN(c) || a === 0) return null;
 
   return { x:(c - b)/a };
 }
@@ -382,21 +420,21 @@ function novaRespond(raw){
   /* Quadratic */
   if (looksLikeQuadratic(msg)){
     const sol = solveQuadratic(msg);
-    if (!sol) return "I tried to read that quadratic, but something didn’t match the pattern.";
+    if (!sol) return "I tried to read that quadratic, but something didn’t match the pattern. Try writing it like: 3x^2+2x-1=0";
 
     if (sol.type === "real")
-      return `Okay! Let’s solve this 💜\n\nThe discriminant is **${sol.D}**, which means we get two real roots:\n• x₁ = ${sol.x1}\n• x₂ = ${sol.x2}`;
+      return `Okay! Let’s solve this 💜\n\nThe discriminant is ${sol.D}, which means we get two real roots:\n• x₁ = ${sol.x1}\n• x₂ = ${sol.x2}`;
 
     if (sol.type === "double")
-      return `Cute! This one has a double root 💜\n\nThe discriminant is **${sol.D}**, so:\n• x = ${sol.x}`;
+      return `Cute! This one has a double root 💜\n\nThe discriminant is ${sol.D}, so:\n• x = ${sol.x}`;
 
-    return `This one has complex roots ✨\n\nThe discriminant is **${sol.D}**, so:\n• x₁ = ${sol.real} + ${sol.imag}i\n• x₂ = ${sol.real} - ${sol.imag}i`;
+    return `This one has complex roots ✨\n\nThe discriminant is ${sol.D}, so:\n• x₁ = ${sol.real} + ${sol.imag}i\n• x₂ = ${sol.real} - ${sol.imag}i`;
   }
 
   /* System */
   if (looksLikeSystem(msg)){
     const sol = solveSystem(msg);
-    if (!sol) return "I couldn't solve that system — maybe check the format?";
+    if (!sol) return "I couldn't solve that system — try writing it like:\n2x+y=7\nx-y=1";
 
     return `Let’s solve this system together 💜\n\nUsing elimination, we get:\n• x = ${sol.x}\n• y = ${sol.y}`;
   }
@@ -404,7 +442,7 @@ function novaRespond(raw){
   /* Linear */
   if (looksLikeEquation(msg)){
     const sol = solveLinearEquation(msg);
-    if (!sol) return "That looks like an equation, but I couldn’t parse it.";
+    if (!sol) return "That looks like an equation, but I couldn’t parse it. Try something like 2x-5=11.";
     return `Let’s solve this 💜\n\n• x = ${sol.x}`;
   }
 
@@ -421,7 +459,7 @@ function novaRespond(raw){
 
 function formatExample(subject){
   const ex = getExample(subject);
-  return `${subject[0].toUpperCase()+subject.slice(1)} example:\n
+  return `${subject[0].toUpperCase()+subject.slice(1)} example:\n\nQ: ${ex.q}\nA: ${ex.a}`;
 }
 
 /* SEND HANDLER */
@@ -450,4 +488,3 @@ addMessage(
 
 </body>
 </html>
-
