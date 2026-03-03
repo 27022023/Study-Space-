@@ -6,6 +6,101 @@
 <title>Nova – Study Companion</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
+      /* MENU BUTTON */
+    #menu-btn {
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        width: 55px;
+        height: 55px;
+        border-radius: 50%;
+        background: var(--white);
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        border: none;
+        font-size: 16px;
+        cursor: pointer;
+        z-index: 1000;
+        transition: transform 0.2s ease;
+    }
+
+    #menu-btn:hover {
+        transform: scale(1.05);
+    }
+
+    /* SIDEBAR */
+    #sidebar {
+        position: fixed;
+        top: 0;
+        left: -260px;
+        width: 260px;
+        height: 100%;
+        background: var(--white);
+        box-shadow: 4px 0 12px rgba(0,0,0,0.1);
+        padding: 30px 20px;
+        transition: left 0.3s ease;
+        z-index: 999;
+    }
+
+    #sidebar.open {
+        left: 0;
+    }
+
+    #sidebar h2 {
+        margin-top: 0;
+        font-size: 22px;
+        color: var(--text);
+        text-align: center;
+    }
+
+    #sidebar a {
+        display: block;
+        margin: 15px 0;
+        text-decoration: none;
+        color: var(--text);
+        font-size: 18px;
+        padding: 8px 10px;
+        border-radius: 8px;
+        transition: background 0.2s ease;
+        text-align: center;
+    }
+
+    #sidebar a:hover {
+        background: var(--lavender);
+    }
+
+    /* HERO SECTION */
+    .hero {
+        text-align: center;
+        padding: 150px 20px;
+    }
+
+    .hero h1 {
+        font-size: 48px;
+        margin-bottom: 10px;
+    }
+
+    .hero p {
+        font-size: 20px;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .cta {
+        margin-top: 30px;
+        display: inline-block;
+        padding: 14px 28px;
+        background: var(--white);
+        border-radius: 12px;
+        font-size: 18px;
+        text-decoration: none;
+        color: var(--text);
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        transition: transform 0.2s ease;
+    }
+
+    .cta:hover {
+        transform: scale(1.05);
+    }
   :root{
     --bg1:#e8d9ff;
     --bg2:#d7eaff;
