@@ -1,82 +1,52 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<link rel="icon" href="icon_1772044007674.png?v=1" type="image/png">
 <meta charset="UTF-8">
 <title>Nova – Study Companion</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-      /* MENU BUTTON */
-    #menu-btn {
-        position: fixed;
-        top: 20px;
-        left: 20px;
-        width: 55px;
-        height: 55px;
-        border-radius: 50%;
-        background: var(--white);
-        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-        border: none;
-        font-size: 16px;
-        cursor: pointer;
-        z-index: 1000;
-        transition: transform 0.2s ease;
-    }
+/* MENU STYLES */
+#menu-btn {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    background: white;
+    border: none;
+    cursor: pointer;
+    z-index: 9999;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+}
 
-    #menu-btn:hover {
-        transform: scale(1.05);
-    }
+#sidebar {
+    position: fixed;
+    top: 0;
+    left: -260px;
+    width: 260px;
+    height: 100%;
+    background: rgba(255,255,255,0.85);
+    backdrop-filter: blur(14px);
+    padding: 40px 20px;
+    transition: left 0.3s ease;
+    z-index: 9998;
+}
 
-    /* SIDEBAR */
-    #sidebar {
-        position: fixed;
-        top: 0;
-        left: -260px;
-        width: 260px;
-        height: 100%;
-        background: var(--white);
-        box-shadow: 4px 0 12px rgba(0,0,0,0.1);
-        padding: 30px 20px;
-        transition: left 0.3s ease;
-        z-index: 999;
-    }
+#sidebar.open {
+    left: 0;
+}
 
-    #sidebar.open {
-        left: 0;
-    }
-
-    #sidebar h2 {
-        margin-top: 0;
-        font-size: 22px;
-        color: var(--text);
-        text-align: center;
-    }
-
-    #sidebar a {
-        display: block;
-        margin: 15px 0;
-        text-decoration: none;
-        color: var(--text);
-        font-size: 18px;
-        padding: 8px 10px;
-        border-radius: 8px;
-        transition: background 0.2s ease;
-        text-align: center;
-    }
-
-    #sidebar a:hover {
-        background: var(--lavender);
-    }
-
-  :root{
+/* CHATBOT UI */
+:root{
     --bg1:#e8d9ff;
     --bg2:#d7eaff;
     --nova-bubble:#d4c4ff;
     --user-bubble:#c9f2ff;
     --text-main:#1e1e2e;
-  }
-  body{
+}
+body{
     margin:0;
     font-family:system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     background:linear-gradient(135deg,var(--bg1),var(--bg2));
@@ -84,8 +54,8 @@
     display:flex;
     flex-direction:column;
     height:100vh;
-  }
-  header{
+}
+header{
     padding:10px 16px;
     background:rgba(255,255,255,0.7);
     backdrop-filter:blur(10px);
@@ -93,8 +63,8 @@
     display:flex;
     align-items:center;
     gap:10px;
-  }
-  .nova-avatar{
+}
+.nova-avatar{
     width:36px;
     height:36px;
     border-radius:50%;
@@ -103,21 +73,21 @@
     align-items:center;
     justify-content:center;
     font-size:20px;
-  }
-  .title{
+}
+.title{
     font-weight:700;
     font-size:16px;
-  }
-  .subtitle{
+}
+.subtitle{
     font-size:12px;
     color:#4b5563;
-  }
-  #chat{
+}
+#chat{
     flex:1;
     padding:12px;
     overflow-y:auto;
-  }
-  .msg{
+}
+.msg{
     max-width:80%;
     margin:6px 0;
     padding:8px 12px;
@@ -125,34 +95,34 @@
     font-size:14px;
     line-height:1.4;
     white-space:pre-wrap;
-  }
-  .nova{
+}
+.nova{
     background:var(--nova-bubble);
     margin-right:auto;
     border-bottom-left-radius:4px;
-  }
-  .user{
+}
+.user{
     background:var(--user-bubble);
     margin-left:auto;
     border-bottom-right-radius:4px;
-  }
-  #inputBar{
+}
+#inputBar{
     display:flex;
     padding:8px;
     background:rgba(255,255,255,0.7);
     backdrop-filter:blur(10px);
     border-top:1px solid rgba(0,0,0,0.05);
     gap:8px;
-  }
-  #userInput{
+}
+#userInput{
     flex:1;
     padding:8px;
     border-radius:8px;
     border:1px solid rgba(148,163,184,0.8);
     background:rgba(255,255,255,0.8);
     color:var(--text-main);
-  }
-  #sendBtn{
+}
+#sendBtn{
     padding:8px 14px;
     border-radius:8px;
     border:none;
@@ -160,39 +130,29 @@
     color:white;
     font-weight:600;
     cursor:pointer;
-  }
-  #sendBtn:hover{
+}
+#sendBtn:hover{
     background:#8b5cf6;
-  }
-  .hint{
+}
+.hint{
     font-size:11px;
     color:#6b7280;
     padding:0 14px 6px;
-  }
+}
 </style>
 </head>
 
 <body>
 
-<!-- MENU BUTTON -->
-<button id="menu-btn">Menu</button>
-
-<!-- SIDEBAR -->
-<div id="sidebar">
-    <h2>Study Sphere</h2>
-    <a href="index.html?v=2">Home</a>
-    <a href="flashcards.html">Flashcards</a>
-    <a href="translate.html">Language learning</a>
-    <a href="notebook.html">Notebook</a>
-    <a href="chatbot.html">Chatbot</a>
-    <a href="solver.html">Problem Solver</a>
-    <a href="whiteboard.html">Whiteboard</a>
-    <a href="study-planner.html">Study Planner</a>
-    <a href="todo.html">To‑Do List</a>
-    <a href="weekly.html">Weekly Planner</a>
-    <a href="timer.html">Study Timer</a>
-    <a href="relax.html">Relax</a>
-</div>
+<!-- LOAD MENU -->
+<div id="menu-container"></div>
+<script>
+fetch("menu.html")
+  .then(res => res.text())
+  .then(html => {
+    document.getElementById("menu-container").innerHTML = html;
+  });
+</script>
 
 <header>
   <div class="nova-avatar">🤖</div>
@@ -203,17 +163,18 @@
 </header>
 
 <div class="hint">
-  Try things like: “2x - 5 = 11”, “example physics”, “example chemistry”, “solve 3x+2=11”, “give me a math example”.
+  Try things like: “2x - 5 = 11”, “example physics”, “example chemistry”.
 </div>
 
 <div id="chat"></div>
 
 <div id="inputBar">
-  <input id="userInput" type="text" placeholder="Give Nova a problem or ask for an example..." autocomplete="off">
+  <input id="userInput" type="text" placeholder="Give Nova a problem..." autocomplete="off">
   <button id="sendBtn">Send</button>
 </div>
 
 <script>
+/* CHATBOT LOGIC */
 const chatEl = document.getElementById("chat");
 const inputEl = document.getElementById("userInput");
 const sendBtn = document.getElementById("sendBtn");
@@ -222,49 +183,49 @@ let userName = null;
 let mode = "math-first";
 let lastMathProblem = null;
 
-// --- Example banks (Maths / Physics / Chemistry) ---
+/* EXAMPLES (10 EACH) */
 const examples = {
   math: [
-    { q:"Solve the equation: 2x - 5 = 11", a:"2x - 5 = 11 ⇒ 2x = 16 ⇒ x = 8." },
-    { q:"Solve the system:\n2x + y = 7\nx - y = 1", a:"3x - 1 = 7 ⇒ x = 8/3, y = 5/3." },
+    { q:"Solve the equation: 2x - 5 = 11", a:"x = 8." },
+    { q:"Solve the system:\n2x + y = 7\nx - y = 1", a:"x = 8/3, y = 5/3." },
     { q:"Solve the quadratic: x² - 5x + 6 = 0", a:"x = 2 or x = 3." },
     { q:"Find the derivative of f(x) = x³ - 5x + 2", a:"f'(x) = 3x² - 5." },
-    { q:"Compute the integral ∫(3x² - 4x + 1) dx", a:"x³ - 2x² + x + C." },
-    { q:"Find the domain of f(x) = 1/(x - 3)", a:"All real numbers except x = 3." },
-    { q:"Probability: A coin is tossed 3 times. P(exactly 2 heads)?", a:"3/8." },
+    { q:"Compute ∫(3x² - 4x + 1) dx", a:"x³ - 2x² + x + C." },
+    { q:"Find domain of f(x)=1/(x-3)", a:"All real x except 3." },
+    { q:"Probability of 2 heads in 3 tosses?", a:"3/8." },
     { q:"Solve: 4(x - 2) = 3x + 10", a:"x = 18." },
-    { q:"Find the slope of the line through (2,5) and (6,13)", a:"m = 2." },
+    { q:"Slope through (2,5) and (6,13)", a:"m = 2." },
     { q:"Simplify: (2x²y)(3xy³)", a:"6x³y⁴." }
   ],
 
   physics: [
-    { q:"A body moves with v = 10 m/s for 8 s. Distance?", a:"80 m." },
-    { q:"Car accelerates from rest at 2 m/s² for 6 s. Velocity?", a:"12 m/s." },
-    { q:"Stone thrown up at 20 m/s. Max height?", a:"20 m." },
-    { q:"R = 10 Ω, V = 5 V. Current?", a:"0.5 A." },
-    { q:"Wave f = 50 Hz, λ = 2 m. Speed?", a:"100 m/s." },
-    { q:"Mass 3 kg at 4 m/s. KE?", a:"24 J." },
-    { q:"A 2 kg object accelerates at 3 m/s². Net force?", a:"6 N." },
-    { q:"A 5 kg mass is lifted 4 m. g = 10. PE?", a:"200 J." },
-    { q:"A car travels 120 km in 2 hours. Average speed?", a:"60 km/h." },
-    { q:"A spring k=200 N/m stretched 0.1 m. Energy?", a:"1 J." }
+    { q:"v=10 m/s for 8 s. Distance?", a:"80 m." },
+    { q:"Car accelerates at 2 m/s² for 6 s. Velocity?", a:"12 m/s." },
+    { q:"Stone thrown at 20 m/s. Max height?", a:"20 m." },
+    { q:"R=10Ω, V=5V. Current?", a:"0.5 A." },
+    { q:"f=50Hz, λ=2m. Speed?", a:"100 m/s." },
+    { q:"3kg at 4m/s. KE?", a:"24 J." },
+    { q:"2kg accelerates at 3m/s². Force?", a:"6 N." },
+    { q:"5kg lifted 4m. PE?", a:"200 J." },
+    { q:"120km in 2h. Speed?", a:"60 km/h." },
+    { q:"Spring k=200, x=0.1m. Energy?", a:"1 J." }
   ],
 
   chemistry: [
-    { q:"How many moles in 18 g H₂O (M=18)?", a:"1 mol." },
-    { q:"Molarity: 5 g NaCl in 500 mL.", a:"≈0.17 M." },
-    { q:"pH of 0.01 M HCl.", a:"pH = 2." },
-    { q:"Identify acid/base: NH₃ + H₂O → NH₄⁺ + OH⁻", a:"NH₃ base, H₂O acid." },
-    { q:"Mass percent: 10 g in 200 g.", a:"5%." },
-    { q:"Balance: H₂ + O₂ → H₂O", a:"2H₂ + O₂ → 2H₂O." },
-    { q:"How many atoms in 2 mol of carbon?", a:"2·6.02×10²³ = 1.204×10²⁴ atoms." },
-    { q:"Moles in 44 g CO₂ (M=44)?", a:"1 mol." },
+    { q:"Moles in 18g H₂O?", a:"1 mol." },
+    { q:"Molarity of 5g NaCl in 500mL?", a:"≈0.17 M." },
+    { q:"pH of 0.01M HCl?", a:"pH = 2." },
+    { q:"NH₃ + H₂O → NH₄⁺ + OH⁻: identify acid/base", a:"NH₃ base, H₂O acid." },
+    { q:"Mass percent: 10g in 200g?", a:"5%." },
+    { q:"Balance H₂ + O₂ → H₂O", a:"2H₂ + O₂ → 2H₂O." },
+    { q:"Atoms in 2 mol C?", a:"1.204×10²⁴ atoms." },
+    { q:"Moles in 44g CO₂?", a:"1 mol." },
     { q:"Oxidation state of O in H₂O₂?", a:"-1." },
-    { q:"Identify limiting reagent: 2H₂ + O₂ → 2H₂O, with 3 mol H₂ and 1 mol O₂.", a:"O₂ is limiting." }
+    { q:"Limiting reagent: 3 mol H₂, 1 mol O₂", a:"O₂ is limiting." }
   ]
 };
 
-// --- UI helpers ---
+/* UI */
 function addMessage(text, from="nova"){
   const div = document.createElement("div");
   div.className = "msg " + (from === "user" ? "user" : "nova");
@@ -273,7 +234,7 @@ function addMessage(text, from="nova"){
   chatEl.scrollTop = chatEl.scrollHeight;
 }
 
-// --- Math detection helpers ---
+/* Equation helpers */
 function looksLikeEquation(msg){
   return msg.includes("=") && /[0-9x]/i.test(msg);
 }
@@ -314,11 +275,10 @@ function safeEval(expr){
 
 function getRandomExample(subject){
   const arr = examples[subject];
-  if (!arr || arr.length === 0) return null;
   return arr[Math.floor(Math.random()*arr.length)];
 }
 
-// --- Nova brain ---
+/* Nova brain */
 function novaRespond(raw){
   const msg = raw.trim();
   const lower = msg.toLowerCase();
@@ -334,40 +294,23 @@ function novaRespond(raw){
     return `Nice to meet you, ${userName}. Throw me a problem when you’re ready.`;
   }
 
-  if (lower.includes("example") || lower.includes("exercise")){
-    if (lower.includes("physics")){
-      const ex = getRandomExample("physics");
-      return `Physics example:\n\nQ: ${ex.q}\nA: ${ex.a}`;
-    }
-    if (lower.includes("chem")){
-      const ex = getRandomExample("chemistry");
-      return `Chemistry example:\n\nQ: ${ex.q}\nA: ${ex.a}`;
-    }
-    const ex = getRandomExample("math");
-    return `Math example:\n\nQ: ${ex.q}\nA: ${ex.a}`;
+  if (lower.includes("example")){
+    if (lower.includes("physics")) return formatExample("physics");
+    if (lower.includes("chem")) return formatExample("chemistry");
+    return formatExample("math");
   }
 
-  if (lower.includes("math")){
-    const ex = getRandomExample("math");
-    return `Here’s a math example:\n\nQ: ${ex.q}\nA: ${ex.a}`;
-  }
-  if (lower.includes("physics")){
-    const ex = getRandomExample("physics");
-    return `Here’s a physics example:\n\nQ: ${ex.q}\nA: ${ex.a}`;
-  }
-  if (lower.includes("chemistry")){
-    const ex = getRandomExample("chemistry");
-    return `Here’s a chemistry example:\n\nQ: ${ex.q}\nA: ${ex.a}`;
-  }
+  if (lower.includes("math")) return formatExample("math");
+  if (lower.includes("physics")) return formatExample("physics");
+  if (lower.includes("chemistry")) return formatExample("chemistry");
 
   if (looksLikeEquation(msg)){
     const sol = solveLinearEquation(msg);
     if (sol){
       lastMathProblem = msg;
-      return `Let’s solve: ${msg}\n\nWe have a = ${sol.a}, b = ${sol.b}, c = ${sol.c}.\nSo  ${sol.a}x + ${sol.b} = ${sol.c} ⇒ ${sol.a}x = ${sol.c - sol.b} ⇒ x = ${(sol.c - sol.b)}/${sol.a} = ${sol.x}.`;
-    }else{
-      return "That looks like an equation, but it’s too complex for my simple solver.";
+      return `Let’s solve: ${msg}\n\nx = ${sol.x}`;
     }
+    return "That looks like an equation, but it’s too complex for my simple solver.";
   }
 
   if (looksLikeArithmetic(msg)){
@@ -382,25 +325,16 @@ function novaRespond(raw){
     return `If that number is your answer to “${lastMathProblem}”, tell me the full equation so I can check it.`;
   }
 
-  if (["sad","upset","tired","stressed","frustrated"].some(w => lower.includes(w))){
-    return "It's okay to feel like that. Give me a problem and I’ll handle the thinking for a bit.";
-  }
+  return "I love that you're talking to me. Now give me something to solve — maths, physics, chemistry, anything.";
+}
 
-  if (lower.includes("chat") || lower.includes("talk")){
-    mode = "chat";
-    return "We can chat a bit, but my superpower is solving problems.";
-  }
-
-  if (mode === "math-first"){
-    return "I love that you're talking to me. Now give me something to solve — maths, physics, chemistry, anything.";
-  } else {
-    return "I’m listening. And whenever you want, we can jump back into problems.";
-  }
+function formatExample(subject){
+  const ex = getRandomExample(subject);
+  return `${subject[0].toUpperCase()+subject.slice(1)} example:\n\nQ: ${ex.q}\nA: ${ex.a}`;
 }
 </script>
 
 <script>
-// --- Wiring UI ---
 function handleSend(){
   const text = inputEl.value.trim();
   if (!text) return;
@@ -418,18 +352,9 @@ inputEl.addEventListener("keydown", e => {
 
 <script>
 addMessage(
-  "Hey, I’m Nova 💜🧪.\nI’m built to help with maths, physics and chemistry — especially of higher level.\nTry giving me an equation like “2x - 5 = 11” or say “example physics”.",
+  "Hey, I’m Nova 💜🧪.\nI’m built to help with maths, physics and chemistry.\nTry giving me an equation like “2x - 5 = 11”.",
   "nova"
 );
-</script>
-
-<script>
-const menuBtn = document.getElementById("menu-btn");
-const sidebar = document.getElementById("sidebar");
-
-menuBtn.addEventListener("click", () => {
-    sidebar.classList.toggle("open");
-});
 </script>
 
 </body>
