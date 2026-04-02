@@ -65,7 +65,14 @@ function detectLang(t){return /[\u0370-\u03FF]/.test(t)?"el":/[\u0600-\u06FF]/.t
 
 imageInput.onchange=e=>{
 images=[...e.target.files].map(f=>({name:f.name,url:URL.createObjectURL(f)}));
-imageGrid.innerHTML="";images.forEach(i=>{let d=document.createElement("div");d.className="image-thumb";let im=document.createElement("img");im.src=i.url;d.appendChild(im);imageGrid.appendChild(d)});status.textContent=images.length+" image(s) selected."}
+imageGrid.innerHTML="";
+images.forEach((i,idx)=>{
+let d=document.createElement("div");d.className="image-thumb";
+let im=document.createElement("img");im.src=i.url;d.appendChild(im);imageGrid.appendChild(d);
+notes.value+=(notes.value.trim()?"\n":"")+`Image ${idx+1}: ${i.name} was added to your notes.`;
+});
+status.textContent=images.length+" image(s) selected.";
+}
 
 audioInput.onchange=e=>{
 let f=e.target.files[0];if(!f){audioMeta=null;audioPlayer.style.display="none";audioStatus.textContent="No audio.";return}
@@ -110,4 +117,4 @@ if(!fromSaved)save(titleInput.value.trim(),t,l,images,audioMeta)}
 playBtn.onclick=()=>play(false);stopBtn.onclick=()=>speechSynthesis.cancel();
 load();
 </script></body></html>
-    
+ 
