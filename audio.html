@@ -55,6 +55,7 @@ audio{width:100%;margin-top:8px}
 <script>
 const $=id=>document.getElementById(id);
 let images=[],audioMeta=null,voices=[],podcasts=[],utterance=null,isRecording=false;
+let imagePlaceholders=[];  /* NEW: hidden placeholder storage */
 const STORAGE="notecast_v3";
 
 function loadVoices(){voices=speechSynthesis.getVoices();fillVoices()}
@@ -65,11 +66,14 @@ function detectLang(t){return /[\u0370-\u03FF]/.test(t)?"el":/[\u0600-\u06FF]/.t
 
 imageInput.onchange=e=>{
 images=[...e.target.files].map(f=>({name:f.name,url:URL.createObjectURL(f)}));
+imagePlaceholders=[]; /* reset hidden placeholders */
 imageGrid.innerHTML="";
 images.forEach((i,idx)=>{
 let d=document.createElement("div");d.className="image-thumb";
 let im=document.createElement("img");im.src=i.url;d.appendChild(im);imageGrid.appendChild(d);
-notes.value+=(notes.value.trim()?"\n":"")+`Image ${idx+1}: ${i.name} was added to your notes.`;
+
+/* NEW: store placeholder silently */
+imagePlaceholders.push(`Image ${idx+1}: ${i.name} was added to your notes.`);
 });
 status.textContent=images.length+" image(s) selected.";
 }
@@ -85,10 +89,18 @@ recordBtn.onclick=()=>{
 if(!rec){recordStatus.textContent="Not supported.";return}
 if(!isRecording){let t=notes.value.trim(),l=languageSelect.value;if(l==="auto")l=detectLang(t);rec.lang=l+"-"+l.toUpperCase();rec.start();isRecording=true;recordBtn.classList.add("recording");recordBtn.textContent="🛑 Stop";recordStatus.textContent="Listening..."}else rec.stop()}
 
-function save(title,text,lang,imgs,aud){let o={id:Date.now(),title,text,lang,images:imgs,audio:aud,created:new Date().toISOString()};podcasts.unshift(o);localStorage.setItem(STORAGE,JSON.stringify(podcasts));render()}
+function save(title,text,lang,imgs,aud){
+let o={id:Date.now(),title,text,lang,images:imgs,audio:aud,created:new Date().toISOString(),placeholders:imagePlaceholders};
+podcasts.unshift(o);localStorage.setItem(STORAGE,JSON.stringify(podcasts));render()
+}
+
 function load(){podcasts=JSON.parse(localStorage.getItem(STORAGE)||"[]");render()}
-function render(){savedList.innerHTML="";if(!podcasts.length){savedList.innerHTML="<p style='color:#666;font-size:.85rem'>No saved podcasts.</p>";return}
-podcasts.forEach(p=>{let d=document.createElement("div");d.className="saved-item";
+
+function render(){
+savedList.innerHTML="";
+if(!podcasts.length){savedList.innerHTML="<p style='color:#666;font-size:.85rem'>No saved podcasts.</p>";return}
+podcasts.forEach(p=>{
+let d=document.createElement("div");d.className="saved-item";
 d.innerHTML=`<div class="saved-title">${p.title||"(Untitled)"}</div>
 <div class="saved-meta"><span>${new Date(p.created).toLocaleString()}</span><span>${p.lang}</span></div>
 <div class="saved-text-preview">${p.text.slice(0,160)}${p.text.length>160?"…":""}</div>`;
@@ -99,22 +111,30 @@ d.appendChild(tags);
 let a=document.createElement("div");a.className="saved-actions";
 let loadBtn=document.createElement("button");loadBtn.textContent="Load";loadBtn.onclick=()=>{
 titleInput.value=p.title;notes.value=p.text;languageSelect.value=p.lang;fillVoices(p.lang);
-images=p.images||[];imageGrid.innerHTML="";images.forEach(i=>{let x=document.createElement("div");x.className="image-thumb";let im=document.createElement("img");im.src=i.url;x.appendChild(im);imageGrid.appendChild(x)});
+images=p.images||[];imagePlaceholders=p.placeholders||[];
+imageGrid.innerHTML="";
+images.forEach(i=>{let x=document.createElement("div");x.className="image-thumb";let im=document.createElement("img");im.src=i.url;x.appendChild(im);imageGrid.appendChild(x)});
 audioMeta=p.audio||null;if(audioMeta){audioPlayer.src=audioMeta.url;audioPlayer.style.display="block"}else audioPlayer.style.display="none";
 play(true)};
 let del=document.createElement("button");del.textContent="Delete";del.style.background="#fecaca";del.onclick=()=>{podcasts=podcasts.filter(x=>x.id!==p.id);localStorage.setItem(STORAGE,JSON.stringify(podcasts));render()};
-a.appendChild(loadBtn);a.appendChild(del);d.appendChild(a);savedList.appendChild(d)})}
+a.appendChild(loadBtn);a.appendChild(del);d.appendChild(a);savedList.appendChild(d)
+})
+}
 
 function play(fromSaved){
-let t=notes.value.trim();if(!t){status.textContent="No notes.";return}
-speechSynthesis.cancel();utterance=new SpeechSynthesisUtterance(t);
-let l=languageSelect.value;if(l==="auto")l=detectLang(t);fillVoices(l);
+let t=notes.value.trim();
+let fullText=[...imagePlaceholders,t].filter(x=>x).join("\n");
+if(!fullText){status.textContent="No notes.";return}
+speechSynthesis.cancel();utterance=new SpeechSynthesisUtterance(fullText);
+let l=languageSelect.value;if(l==="auto")l=detectLang(fullText);fillVoices(l);
 let v=voices[voiceSelect.value];if(v)utterance.voice=v;
-utterance.onboundary=e=>{if(e.charIndex){let p=e.charIndex/t.length*100;progressFill.style.width=p+"%";notes.scrollTop=p/100*(notes.scrollHeight-notes.clientHeight)}}
+utterance.onboundary=e=>{if(e.charIndex){let p=e.charIndex/fullText.length*100;progressFill.style.width=p+"%";notes.scrollTop=p/100*(notes.scrollHeight-notes.clientHeight)}}
 utterance.onend=()=>progressFill.style.width="100%";
 speechSynthesis.speak(utterance);
-if(!fromSaved)save(titleInput.value.trim(),t,l,images,audioMeta)}
-playBtn.onclick=()=>play(false);stopBtn.onclick=()=>speechSynthesis.cancel();
+if(!fromSaved)save(titleInput.value.trim(),t,l,images,audioMeta)
+}
+
+playBtn.onclick=()=>play(false);
+stopBtn.onclick=()=>speechSynthesis.cancel();
 load();
 </script></body></html>
- 
